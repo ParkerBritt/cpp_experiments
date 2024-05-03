@@ -2,22 +2,36 @@
 #include <cmath>
 #include <iostream>
 #include <chrono>
+#include <unistd.h>
+#include <vector>
 
 class cell_grid : public sf::Drawable, public sf::Transformable{
     public:
         int virt_height;
         int virt_width;
+        sf::VertexArray m_vertices;
+        std::vector<std::vector<float>> grid_array;
+        int pixel_width = 100;
         cell_grid(const int window_width, const int window_height){
-            int pixel_width = 100;
             virt_width = window_width/pixel_width;
             virt_height = window_height/pixel_width;
             m_vertices.setPrimitiveType(sf::Quads);
+            grid_array.resize(virt_width, std::vector<float>(virt_height));
+
 
             for(int y=0; y<virt_height; y++){
                 for(int x=0; x<virt_width; x++){
                     float brightness = float(x+y)/(virt_width+virt_height)*255;
-                    // brightness = 255;
-                    std::cout << brightness << std::endl;
+                    grid_array[x][y] = brightness;
+                }
+            }
+            refresh_verts();
+
+        }
+        void refresh_verts(){
+            for(int y=0; y<virt_height; y++){
+                for(int x=0; x<virt_width; x++){
+                    float brightness = grid_array[x][y];
                     sf::Color color(brightness, brightness, brightness, 255);
 
                     int virt_x = x*pixel_width;
@@ -29,7 +43,12 @@ class cell_grid : public sf::Drawable, public sf::Transformable{
                 }
             }
         }
-        void change_color(const int x, const int y, sf::Color color){
+        sf::Color get_color(const int x, const int y){
+            int index = x*4+(y*virt_height*4);
+                return m_vertices[index].color;
+
+        }
+        void set_color(const int x, const int y, sf::Color color){
             int index = x*4+(y*virt_height*4);
             for(int i=0; i<4; i++){
                 m_vertices[index+i].color = color;
@@ -41,7 +60,6 @@ class cell_grid : public sf::Drawable, public sf::Transformable{
         {
             target.draw(m_vertices, states);
         }
-        sf::VertexArray m_vertices;
 };
 int main()
 {
@@ -49,8 +67,16 @@ int main()
     const int window_width = 800;
     const int window_height = 800;
     cell_grid foo(window_height, window_width);
-    foo.change_color(3, 1, sf::Color(255, 0, 0, 255));
 
+    foo.grid_array[0][0] = 255;
+    foo.refresh_verts();
+    for(int x = 0; x<foo.grid_array.size(); x++){
+        for(int y=0; y<foo.grid_array[0].size(); y++){
+            std::cout << foo.grid_array[x][y] << " ";
+        } 
+        std::cout << std::endl;
+    }
+    // return 0;
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Test Window");
  
     float i = 0;
@@ -67,10 +93,6 @@ int main()
 
         window.clear();
         float brightness = i;
-        // for(int i = 0; i<foo.m_vertices.getVertexCount(); i++){
-        //     foo.m_vertices[i].color = sf::Color(brightness, brightness, brightness, 255);
-        //     
-        // }
         window.draw(foo);
         window.display();
 
