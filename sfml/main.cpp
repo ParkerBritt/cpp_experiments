@@ -10,7 +10,7 @@ int main()
     int window_width = 800;
     int window_height = 800;
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Test Window");
-    int pixel_width = 10;
+    int pixel_width = 100;
     int virt_width = window_width/pixel_width;
     int virt_height = window_height/pixel_width;
 
@@ -29,6 +29,7 @@ int main()
         }
     }
  
+    float i = 0;
     while (window.isOpen())
     {
         auto start = std::chrono::high_resolution_clock::now();
@@ -41,12 +42,21 @@ int main()
         }
 
         window.clear();
+        // float brightness = i;
+        // for(int i = 0; i<m_vertices.getVertexCount(); i++){
+        //     m_vertices[i].color = sf::Color(brightness, brightness, brightness, 255);
+        //     
+        // }
         window.draw(m_vertices);
         window.display();
 
         auto end = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double, std::milli> duration = end - start;
         std::cout << duration.count() << " milliseconds." << std::endl;
+        i+=0.001;
+        if(i >= 255){
+            i = 0;
+        }
     }
 
     return 0;
