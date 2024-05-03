@@ -68,7 +68,7 @@ int main()
     const int window_height = 800;
     cell_grid foo(window_height, window_width);
 
-    foo.grid_array[0][0] = 255;
+    std::vector<std::vector<float>> grid_array = foo.grid_array;
     foo.refresh_verts();
     for(int x = 0; x<foo.grid_array.size(); x++){
         for(int y=0; y<foo.grid_array[0].size(); y++){
@@ -80,6 +80,8 @@ int main()
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Test Window");
  
     float i = 0;
+    int selected_x = 0;
+    int selected_y = 0;
     while (window.isOpen())
     {
         auto start = std::chrono::high_resolution_clock::now();
@@ -90,19 +92,28 @@ int main()
             if(event.type == sf::Event::Closed)
                 window.close();
         }
+        for(int x = 0; x<foo.grid_array.size(); x++){
+            for(int y=0; y<foo.grid_array[0].size(); y++){
+                foo.grid_array[x][y] = grid_array[x][y];
+            } 
+        }
+        foo.grid_array[selected_x][selected_y] = 255;
+        foo.refresh_verts();
 
         window.clear();
-        float brightness = i;
         window.draw(foo);
         window.display();
 
+        selected_x++;
+        if(selected_x > foo.virt_width-1){
+            selected_x = 0;
+            selected_y = (selected_y + 1)%(foo.virt_height-1);
+            std::cout << "COORDS" << selected_x << " " << selected_y << std::endl;
+        }
         auto end = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double, std::milli> duration = end - start;
         std::cout << duration.count() << " milliseconds." << std::endl;
-        i+=0.001;
-        if(i >= 255){
-            i = 0;
-        }
+        usleep(100000);
     }
 
     return 0;
