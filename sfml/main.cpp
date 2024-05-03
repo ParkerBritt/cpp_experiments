@@ -5,14 +5,16 @@
 
 class cell_grid : public sf::Drawable, public sf::Transformable{
     public:
+        int virt_height;
+        int virt_width;
         cell_grid(const int window_width, const int window_height){
             int pixel_width = 100;
-            int virt_width = window_width/pixel_width;
-            int virt_height = window_height/pixel_width;
+            virt_width = window_width/pixel_width;
+            virt_height = window_height/pixel_width;
             m_vertices.setPrimitiveType(sf::Quads);
 
-            for(int x=0; x<virt_width; x++){
-                for(int y=0; y<virt_height; y++){
+            for(int y=0; y<virt_height; y++){
+                for(int x=0; x<virt_width; x++){
                     float brightness = float(x+y)/(virt_width+virt_height)*255;
                     // brightness = 255;
                     std::cout << brightness << std::endl;
@@ -27,6 +29,13 @@ class cell_grid : public sf::Drawable, public sf::Transformable{
                 }
             }
         }
+        void change_color(const int x, const int y, sf::Color color){
+            int index = x*4+(y*virt_height*4);
+            for(int i=0; i<4; i++){
+                m_vertices[index+i].color = color;
+            }
+
+        }
     private:
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const
         {
@@ -40,6 +49,8 @@ int main()
     const int window_width = 800;
     const int window_height = 800;
     cell_grid foo(window_height, window_width);
+    foo.change_color(3, 1, sf::Color(255, 0, 0, 255));
+
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Test Window");
  
     float i = 0;
@@ -55,12 +66,11 @@ int main()
         }
 
         window.clear();
-        // float brightness = i;
-        // for(int i = 0; i<m_vertices.getVertexCount(); i++){
-        //     m_vertices[i].color = sf::Color(brightness, brightness, brightness, 255);
+        float brightness = i;
+        // for(int i = 0; i<foo.m_vertices.getVertexCount(); i++){
+        //     foo.m_vertices[i].color = sf::Color(brightness, brightness, brightness, 255);
         //     
         // }
-        // window.draw(m_vertices);
         window.draw(foo);
         window.display();
 
