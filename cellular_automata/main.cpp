@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <vector>
 
+const std::string WINDOW_TITLE = "";
 class cell_grid : public sf::Drawable, public sf::Transformable{
     public:
         int virt_height;
@@ -77,7 +78,7 @@ int main()
         std::cout << std::endl;
     }
     // return 0;
-    sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Test Window");
+    sf::RenderWindow window(sf::VideoMode(window_width, window_height), WINDOW_TITLE);
  
     float i = 0;
     int selected_x = 0;
@@ -107,7 +108,7 @@ int main()
         selected_x++;
         if(selected_x > foo.virt_width-1){
             selected_x = 0;
-            selected_y = (selected_y + 1)%(foo.virt_height-1);
+            selected_y = (selected_y + 1)%(foo.virt_height);
             std::cout << "COORDS" << selected_x << " " << selected_y << std::endl;
         }
         auto end = std::chrono::high_resolution_clock::now();
