@@ -7,12 +7,15 @@
 #include <algorithm>
 #include "CellGrid.hpp"
 
+// constants and configuration
 const std::string WINDOW_TITLE = "Cells";
+const int window_width = 800;
+const int window_height = 800;
+const float SCROLL_SENSITIVITY = 0.06;
+
 int main()
 {
 
-    const int window_width = 800;
-    const int window_height = 800;
     CellGrid foo(window_height, window_width);
 
     std::vector<std::vector<int>> grid_array_default_state = foo.grid_array;
@@ -21,11 +24,9 @@ int main()
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), WINDOW_TITLE);
     float viewWidth = 400.0f;
     float viewHeight = 400.0f;
-    const float SCROLL_SENSITIVITY = 0.06;
     sf::View mainView(sf::FloatRect(0,0 ,viewWidth, viewHeight));
     window.setView(mainView);
  
-    float i = 0;
     int selected_x = 0;
     int selected_y = 0;
 
@@ -97,8 +98,8 @@ int main()
 
         if(elapsedTimeSinceLastUpdate >= updateInterval || uncapUpdateSpeed){
             // reset set grid colors to initial color
-            for(int x = 0; x<foo.grid_array.size(); x++){
-                for(int y=0; y<foo.grid_array[0].size(); y++){
+            for(long unsigned x = 0; x<foo.grid_array.size(); x++){
+                for(long unsigned y=0; y<foo.grid_array[0].size(); y++){
                     foo.grid_array[x][y] = grid_array_default_state[x][y];
                 } 
             }

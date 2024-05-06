@@ -17,6 +17,7 @@ main.o: main.cpp CellGrid.hpp
 CellGrid.o: CellGrid.cpp CellGrid.hpp
 	$(CXX) $(CXXFLAGS) -c CellGrid.cpp
 
+.PHONY: clan run
 clean:
 	rm -f $(OBJECTS) $(TARGET)
 
