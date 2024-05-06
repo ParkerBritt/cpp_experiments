@@ -1,14 +1,24 @@
 CXX := g++
+CXXFLAGS := -Wall -std=c++17 -I/path/to/SFML/include
+LDFLAGS := -L/path/to/SFML/lib
+LDLIBS := -lsfml-graphics -lsfml-window -lsfml-system
 
 TARGET := cell_program
-SOURCES := main.cpp
-CXX_FLAGS := -c
+OBJECTS := main.o CellGrid.o
 
-$(TARGET): main.o 
-	$(CXX) main.o -o $(TARGET) -lsfml-graphics -lsfml-window -lsfml-system
-main.o: main.cpp
-	$(CXX) $(CXX_FLAGS) $(SOURCES)
+all: $(TARGET)
+
+$(TARGET): $(OBJECTS)
+	$(CXX) $(OBJECTS) -o $@ $(LDFLAGS) $(LDLIBS)
+
+main.o: main.cpp CellGrid.hpp
+	$(CXX) $(CXXFLAGS) -c main.cpp
+
+CellGrid.o: CellGrid.cpp CellGrid.hpp
+	$(CXX) $(CXXFLAGS) -c CellGrid.cpp
+
+clean:
+	rm -f $(OBJECTS) $(TARGET)
+
 run: $(TARGET)
 	./$(TARGET)
-clean:
-	rm -f main.o $(TARGET)

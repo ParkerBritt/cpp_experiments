@@ -5,83 +5,9 @@
 #include <unistd.h>
 #include <vector>
 #include <algorithm>
+#include "CellGrid.hpp"
 
 const std::string WINDOW_TITLE = "Cells";
-class CellGrid : public sf::Drawable, public sf::Transformable{
-    public:
-        int virt_height;
-        int virt_width;
-        sf::VertexArray m_vertices;
-        std::vector<std::vector<int>> grid_array;
-        std::vector<std::vector<int>> prev_grid_array;
-        int pixel_width = 5;
-        CellGrid(const int window_width, const int window_height){
-            virt_width = window_width/pixel_width;
-            virt_height = window_height/pixel_width;
-            m_vertices.setPrimitiveType(sf::Quads);
-            grid_array.resize(virt_width, std::vector<int>(virt_height));
-
-
-            for(int y=0; y<virt_height; y++){
-                for(int x=0; x<virt_width; x++){
-                    float brightness = float(x+y)/(virt_width+virt_height)*255;
-                    grid_array[x][y] = brightness;
-                }
-            }
-            prev_grid_array = grid_array;
-
-            // set initial vert color
-            for(int y=0; y<virt_height; y++){
-                for(int x=0; x<virt_width; x++){
-                    float brightness = grid_array[x][y];
-                    sf::Color color(brightness, brightness, brightness, 255);
-
-                    int virt_x = x*pixel_width;
-                    int virt_y = y*pixel_width;
-                    m_vertices.append(sf::Vertex(sf::Vector2f(  virt_x,   virt_y), color));
-                    m_vertices.append(sf::Vertex(sf::Vector2f(  virt_x, virt_y+pixel_width), color));
-                    m_vertices.append(sf::Vertex(sf::Vector2f( virt_x+pixel_width, virt_y+pixel_width), color));
-                    m_vertices.append(sf::Vertex(sf::Vector2f( virt_x+pixel_width, virt_y), color));
-                }
-            }
-
-        }
-        void refresh_verts(){
-            for(int y=0; y<virt_height; y++){
-                for(int x=0; x<virt_width; x++){
-                    if(prev_grid_array[x][y]==grid_array[x][y]){
-                        continue;
-                    }
-                    int cell_value = grid_array[x][y];
-                    sf::Color color(cell_value, cell_value, cell_value, 255);
-
-                    set_vert_color(x, y, color);
-                }
-            }
-            prev_grid_array = grid_array;
-        }
-
-        sf::Color get_color(const int x, const int y){
-            int index = x*4+(y*virt_height*4);
-                return m_vertices[index].color;
-
-        }
-        void set_color(const int x, const int y, int cell_value){
-            grid_array[x][y] = cell_value;
-        }
-        void set_vert_color(const int x, const int y, sf::Color color){
-            int index = x*4+(y*virt_height*4);
-            for(int i=0; i<4; i++){
-                m_vertices[index+i].color = color;
-            }
-
-        }
-    private:
-        virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const
-        {
-            target.draw(m_vertices, states);
-        }
-};
 int main()
 {
 
@@ -160,11 +86,7 @@ int main()
                 // std::cout << "move view to: " << viewX << " " << viewY << std::endl;
             }
         }
-        else{
-            if(isPanDown){
-                // do view update
-                std::cout << "LET GO OF LEFT BUTTON" << std::endl;
-            }
+        else if(isPanDown){
             isPanDown = false;
         }
         if(updateView){
