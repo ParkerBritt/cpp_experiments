@@ -4,6 +4,7 @@
 #include <chrono>
 #include <unistd.h>
 #include <vector>
+#include <algorithm>
 
 const std::string WINDOW_TITLE = "";
 class CellGrid : public sf::Drawable, public sf::Transformable{
@@ -92,7 +93,10 @@ int main()
     foo.refresh_verts();
 
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), WINDOW_TITLE);
-    sf::View mainView(sf::FloatRect(100.0f,100.0f ,600.0f, 600.0f));
+    float viewWidth = 400.0f;
+    float viewHeight = 400.0f;
+    const float SCROLL_SENSITIVITY = 0.06;
+    sf::View mainView(sf::FloatRect(0,0 ,viewWidth, viewHeight));
     window.setView(mainView);
  
     float i = 0;
@@ -108,9 +112,12 @@ int main()
     bool displayUpdateTime = false;
     sf::Vector2i prevLocalMousePos;
     int isLeftDown = false;
-    sf::Vector2f prevViewCenter;
+    sf::Vector2f prevViewCenter = mainView.getCenter();
+    float viewX=prevViewCenter.x;
+    float viewY=prevViewCenter.y;
     while (window.isOpen())
     {
+        bool updateView = false;
         auto start = std::chrono::high_resolution_clock::now();
         sf::Time dt = deltaClock.restart();
         // handle events
@@ -119,9 +126,20 @@ int main()
         {
             if(event.type == sf::Event::Closed)
                 window.close();
+            // scroll controls
+            else if(event.type == sf::Event::MouseWheelScrolled){
+                std::cout << event.mouseWheelScroll.delta << std::endl;
+                float scroll_dir = event.mouseWheelScroll.delta;
+                viewWidth = viewWidth-(viewWidth*SCROLL_SENSITIVITY*scroll_dir);
+                viewWidth = std::clamp(viewWidth, 5.0f, static_cast<float>(window_width*1.2));
+                viewHeight = viewHeight-(viewHeight*SCROLL_SENSITIVITY*scroll_dir);
+                viewHeight = std::clamp(viewHeight, 5.0f, static_cast<float>(window_height*1.2));
+                updateView = true;
+            }
         }
 
         elapsedTimeSinceLastUpdate += dt;
+        // pan controls
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left)){
             sf::Vector2i localMousePosition = sf::Mouse::getPosition(window);
             if(!isLeftDown){
@@ -135,12 +153,11 @@ int main()
             }
             else{
                 // after inial press
-                float viewX = prevViewCenter.x+(prevLocalMousePos.x-localMousePosition.x);
-                float viewY = prevViewCenter.y+(prevLocalMousePos.y-localMousePosition.y);
+                viewX = prevViewCenter.x+(prevLocalMousePos.x-localMousePosition.x);
+                viewY = prevViewCenter.y+(prevLocalMousePos.y-localMousePosition.y);
+                updateView = true;
                 // std::cout << "local pos: " << " " << localMousePosition.x << " " << localMousePosition.y << std::endl;
                 // std::cout << "move view to: " << viewX << " " << viewY << std::endl;
-                 mainView = sf::View(sf::Vector2f(viewX,viewY), sf::Vector2f(600.0f, 600.0f));
-                window.setView(mainView);
             }
         }
         else{
@@ -149,6 +166,11 @@ int main()
                 std::cout << "LET GO OF LEFT BUTTON" << std::endl;
             }
             isLeftDown = false;
+        }
+        if(updateView){
+            std::cout << "updating view" << std::endl;
+            mainView = sf::View(sf::Vector2f(viewX,viewY), sf::Vector2f(viewWidth, viewHeight));
+            window.setView(mainView);
         }
 
         if(elapsedTimeSinceLastUpdate >= updateInterval || uncapUpdateSpeed){
