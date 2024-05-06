@@ -6,7 +6,7 @@
 #include <vector>
 #include <algorithm>
 
-const std::string WINDOW_TITLE = "";
+const std::string WINDOW_TITLE = "Cells";
 class CellGrid : public sf::Drawable, public sf::Transformable{
     public:
         int virt_height;
@@ -111,7 +111,7 @@ int main()
     bool uncapUpdateSpeed = false;
     bool displayUpdateTime = false;
     sf::Vector2i prevLocalMousePos;
-    int isLeftDown = false;
+    int isPanDown = false;
     sf::Vector2f prevViewCenter = mainView.getCenter();
     float viewX=prevViewCenter.x;
     float viewY=prevViewCenter.y;
@@ -140,16 +140,16 @@ int main()
 
         elapsedTimeSinceLastUpdate += dt;
         // pan controls
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)){
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Middle) || (sf::Mouse::isButtonPressed(sf::Mouse::Left) && sf::Keyboard::isKeyPressed(sf::Keyboard::Space))){
             sf::Vector2i localMousePosition = sf::Mouse::getPosition(window);
-            if(!isLeftDown){
+            if(!isPanDown){
                 // initial down
                 prevLocalMousePos = localMousePosition;
                 prevViewCenter = mainView.getCenter();
                 std::cout << "setting prev mouse pos";
                 std::cout << "prev screen center: " << prevViewCenter.x << " " << prevViewCenter.y << std::endl;
                 // sf::View mainView(sf::FloatRect(viewX,viewY ,600.0f, 600.0f));
-                isLeftDown= true;
+                isPanDown= true;
             }
             else{
                 // after inial press
@@ -161,11 +161,11 @@ int main()
             }
         }
         else{
-            if(isLeftDown){
+            if(isPanDown){
                 // do view update
                 std::cout << "LET GO OF LEFT BUTTON" << std::endl;
             }
-            isLeftDown = false;
+            isPanDown = false;
         }
         if(updateView){
             std::cout << "updating view" << std::endl;
