@@ -13,7 +13,7 @@ class CellGrid : public sf::Drawable, public sf::Transformable{
         sf::VertexArray m_vertices;
         std::vector<std::vector<int>> grid_array;
         std::vector<std::vector<int>> prev_grid_array;
-        int pixel_width = 1;
+        int pixel_width = 5;
         CellGrid(const int window_width, const int window_height){
             virt_width = window_width/pixel_width;
             virt_height = window_height/pixel_width;
@@ -92,6 +92,8 @@ int main()
     foo.refresh_verts();
 
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), WINDOW_TITLE);
+    sf::View mainView(sf::FloatRect(100.0f,100.0f ,600.0f, 600.0f));
+    window.setView(mainView);
  
     float i = 0;
     int selected_x = 0;
@@ -102,6 +104,11 @@ int main()
     sf::Time updateInterval = sf::seconds(0.01);
     sf::Time elapsedTimeSinceLastUpdate = sf::Time::Zero;
 
+    bool uncapUpdateSpeed = false;
+    bool displayUpdateTime = false;
+    sf::Vector2i prevLocalMousePos;
+    int isLeftDown = false;
+    sf::Vector2f prevViewCenter;
     while (window.isOpen())
     {
         auto start = std::chrono::high_resolution_clock::now();
@@ -115,7 +122,36 @@ int main()
         }
 
         elapsedTimeSinceLastUpdate += dt;
-        if(elapsedTimeSinceLastUpdate >= updateInterval || true){
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)){
+            sf::Vector2i localMousePosition = sf::Mouse::getPosition(window);
+            if(!isLeftDown){
+                // initial down
+                prevLocalMousePos = localMousePosition;
+                prevViewCenter = mainView.getCenter();
+                std::cout << "setting prev mouse pos";
+                std::cout << "prev screen center: " << prevViewCenter.x << " " << prevViewCenter.y << std::endl;
+                // sf::View mainView(sf::FloatRect(viewX,viewY ,600.0f, 600.0f));
+                isLeftDown= true;
+            }
+            else{
+                // after inial press
+                float viewX = prevViewCenter.x+(prevLocalMousePos.x-localMousePosition.x);
+                float viewY = prevViewCenter.y+(prevLocalMousePos.y-localMousePosition.y);
+                // std::cout << "local pos: " << " " << localMousePosition.x << " " << localMousePosition.y << std::endl;
+                // std::cout << "move view to: " << viewX << " " << viewY << std::endl;
+                 mainView = sf::View(sf::Vector2f(viewX,viewY), sf::Vector2f(600.0f, 600.0f));
+                window.setView(mainView);
+            }
+        }
+        else{
+            if(isLeftDown){
+                // do view update
+                std::cout << "LET GO OF LEFT BUTTON" << std::endl;
+            }
+            isLeftDown = false;
+        }
+
+        if(elapsedTimeSinceLastUpdate >= updateInterval || uncapUpdateSpeed){
             // reset set grid colors to initial color
             for(int x = 0; x<foo.grid_array.size(); x++){
                 for(int y=0; y<foo.grid_array[0].size(); y++){
@@ -143,7 +179,9 @@ int main()
         auto end = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double, std::milli> duration = end - start;
         // std::cout << duration.count() << " milliseconds" << std::endl;
-        std::cout << dt.asMilliseconds() << " milliseconds" << std::endl;
+        if(displayUpdateTime){
+            std::cout << dt.asMilliseconds() << " milliseconds" << std::endl;
+        }
         // usleep(100000);
     }
 
