@@ -1,7 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <cmath>
 #include <iostream>
-#include <chrono>
 #include <unistd.h>
 #include <vector>
 #include <algorithm>
@@ -9,22 +8,34 @@
 
 // constants and configuration
 const std::string WINDOW_TITLE = "Cells";
-const int window_width = 800;
-const int window_height = 800;
+const int WINDOW_WIDTH = 800;
+const int WINDOW_HEIGHT = 800;
 const float SCROLL_SENSITIVITY = 0.06;
+
+// non constants
+float viewWidth = 400.0f;
+float viewHeight = 400.0f;
+float viewX;
+float viewY;
+
+// declare functions
+void initWindow(sf::RenderWindow& window, sf::View& view);
+void updateView(sf::RenderWindow& window, sf::View& view);
 
 int main()
 {
 
-    CellGrid foo(window_height, window_width);
+    // init cell grid
+    CellGrid grid(WINDOW_HEIGHT, WINDOW_WIDTH);
 
-    std::vector<std::vector<int>> grid_array_default_state = foo.grid_array;
-    foo.refresh_verts();
+    std::vector<std::vector<int>> gridArrayDefaultState = grid.grid_array;
+    grid.refresh_verts();
 
-    sf::RenderWindow window(sf::VideoMode(window_width, window_height), WINDOW_TITLE);
-    float viewWidth = 400.0f;
-    float viewHeight = 400.0f;
-    sf::View mainView(sf::FloatRect(0,0 ,viewWidth, viewHeight));
+    // init render window 
+    sf::RenderWindow window;
+    sf::View mainView;
+    initWindow(window, mainView);
+
     window.setView(mainView);
  
     int selected_x = 0;
@@ -40,12 +51,12 @@ int main()
     sf::Vector2i prevLocalMousePos;
     int isPanDown = false;
     sf::Vector2f prevViewCenter = mainView.getCenter();
-    float viewX=prevViewCenter.x;
-    float viewY=prevViewCenter.y;
+    viewX=prevViewCenter.x;
+    viewY=prevViewCenter.y;
+
     while (window.isOpen())
     {
-        bool updateView = false;
-        auto start = std::chrono::high_resolution_clock::now();
+        // bool updateView = false;
         sf::Time dt = deltaClock.restart();
         // handle events
         sf::Event event;
@@ -55,13 +66,12 @@ int main()
                 window.close();
             // scroll controls
             else if(event.type == sf::Event::MouseWheelScrolled){
-                std::cout << event.mouseWheelScroll.delta << std::endl;
                 float scroll_dir = event.mouseWheelScroll.delta;
                 viewWidth = viewWidth-(viewWidth*SCROLL_SENSITIVITY*scroll_dir);
-                viewWidth = std::clamp(viewWidth, 5.0f, static_cast<float>(window_width*1.2));
+                viewWidth = std::clamp(viewWidth, 5.0f, static_cast<float>(WINDOW_WIDTH*1.2));
                 viewHeight = viewHeight-(viewHeight*SCROLL_SENSITIVITY*scroll_dir);
-                viewHeight = std::clamp(viewHeight, 5.0f, static_cast<float>(window_height*1.2));
-                updateView = true;
+                viewHeight = std::clamp(viewHeight, 5.0f, static_cast<float>(WINDOW_HEIGHT*1.2));
+                // updateView = true;
             }
         }
 
@@ -73,8 +83,6 @@ int main()
                 // initial down
                 prevLocalMousePos = localMousePosition;
                 prevViewCenter = mainView.getCenter();
-                std::cout << "setting prev mouse pos";
-                std::cout << "prev screen center: " << prevViewCenter.x << " " << prevViewCenter.y << std::endl;
                 // sf::View mainView(sf::FloatRect(viewX,viewY ,600.0f, 600.0f));
                 isPanDown= true;
             }
@@ -82,7 +90,7 @@ int main()
                 // after inial press
                 viewX = prevViewCenter.x+(prevLocalMousePos.x-localMousePosition.x);
                 viewY = prevViewCenter.y+(prevLocalMousePos.y-localMousePosition.y);
-                updateView = true;
+                // updateView = true;
                 // std::cout << "local pos: " << " " << localMousePosition.x << " " << localMousePosition.y << std::endl;
                 // std::cout << "move view to: " << viewX << " " << viewY << std::endl;
             }
@@ -90,40 +98,33 @@ int main()
         else if(isPanDown){
             isPanDown = false;
         }
-        if(updateView){
-            std::cout << "updating view" << std::endl;
-            mainView = sf::View(sf::Vector2f(viewX,viewY), sf::Vector2f(viewWidth, viewHeight));
-            window.setView(mainView);
-        }
+        updateView(window, mainView);
 
         if(elapsedTimeSinceLastUpdate >= updateInterval || uncapUpdateSpeed){
             // reset set grid colors to initial color
-            for(long unsigned x = 0; x<foo.grid_array.size(); x++){
-                for(long unsigned y=0; y<foo.grid_array[0].size(); y++){
-                    foo.grid_array[x][y] = grid_array_default_state[x][y];
+            for(long unsigned x = 0; x<grid.grid_array.size(); x++){
+                for(long unsigned y=0; y<grid.grid_array[0].size(); y++){
+                    grid.grid_array[x][y] = gridArrayDefaultState[x][y];
                 } 
             }
             // set changing cell to full bright
-            foo.set_color(selected_x, selected_y, 255);
-            foo.refresh_verts();
+            grid.set_color(selected_x, selected_y, 255);
+            grid.refresh_verts();
 
             // draw frame
             window.clear();
-            window.draw(foo);
+            window.draw(grid);
             window.display();
 
             // iterate
             selected_x++;
-            if(selected_x > foo.virt_width-1){
+            if(selected_x > grid.virt_width-1){
                 selected_x = 0;
-                selected_y = (selected_y + 1)%(foo.virt_height);
+                selected_y = (selected_y + 1)%(grid.virt_height);
             }
             elapsedTimeSinceLastUpdate = sf::Time::Zero;
         }
 
-        auto end = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double, std::milli> duration = end - start;
-        // std::cout << duration.count() << " milliseconds" << std::endl;
         if(displayUpdateTime){
             std::cout << dt.asMilliseconds() << " milliseconds" << std::endl;
         }
@@ -131,4 +132,19 @@ int main()
     }
 
     return 0;
+}
+
+void updateView(sf::RenderWindow& window, sf::View& view){
+    // std::cout << "updating view" << std::endl;
+    // mainView = sf::View(sf::Vector2f(viewX,viewY), sf::Vector2f(viewWidth, viewHeight));
+    view.setCenter(viewX, viewY);
+    view.setSize(viewWidth, viewHeight);
+    window.setView(view);
+}
+
+void initWindow(sf::RenderWindow& window, sf::View& view){
+    window.create(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), WINDOW_TITLE);
+    view.setSize(viewWidth, viewHeight);
+    view.setCenter(WINDOW_WIDTH/2, WINDOW_HEIGHT/2);
+    window.setView(view);
 }

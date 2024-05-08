@@ -4,22 +4,23 @@ LDFLAGS := -L/path/to/SFML/lib
 LDLIBS := -lsfml-graphics -lsfml-window -lsfml-system
 
 TARGET := cell_program
-OBJECTS := main.o CellGrid.o
+SRC_DIR := src
+BUILD_DIR := build
+OBJECTS := $(BUILD_DIR)/main.o $(BUILD_DIR)/CellGrid.o
 
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
 	$(CXX) $(OBJECTS) -o $@ $(LDFLAGS) $(LDLIBS)
 
-main.o: main.cpp CellGrid.hpp
-	$(CXX) $(CXXFLAGS) -c main.cpp
+# build object files
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
+	@mkdir -p $(BUILD_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-CellGrid.o: CellGrid.cpp CellGrid.hpp
-	$(CXX) $(CXXFLAGS) -c CellGrid.cpp
-
-.PHONY: clan run
+.PHONY: clean run
 clean:
-	rm -f $(OBJECTS) $(TARGET)
+	rm -rf $(BUILD_DIR) $(TARGET)
 
 run: $(TARGET)
 	./$(TARGET)
