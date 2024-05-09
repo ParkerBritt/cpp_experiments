@@ -18,12 +18,33 @@ float viewHeight = 400.0f;
 float viewX;
 float viewY;
 
+struct ViewState{
+    bool isPanDown = false;
+    sf::Vector2i prevLocalMousePos;
+    sf::Vector2f prevViewCenter;
+    sf::View mainView;
+};
+
 // declare functions
 void initWindow(sf::RenderWindow& window, sf::View& view);
 void updateView(sf::RenderWindow& window, sf::View& view);
+void handleEvents(sf::RenderWindow& window, ViewState& viewState);
+void updateGameState();
+void renderFrame();
+
 
 int main()
 {
+
+
+    // init view
+    ViewState viewState;
+    sf::View& mainView = viewState.mainView;
+    viewState.prevViewCenter = mainView.getCenter();
+
+    // init render window 
+    sf::RenderWindow window;
+    initWindow(window, mainView);
 
     // init cell grid
     CellGrid grid(WINDOW_HEIGHT, WINDOW_WIDTH);
@@ -31,10 +52,6 @@ int main()
     std::vector<std::vector<int>> gridArrayDefaultState = grid.grid_array;
     grid.refresh_verts();
 
-    // init render window 
-    sf::RenderWindow window;
-    sf::View mainView;
-    initWindow(window, mainView);
 
     window.setView(mainView);
  
@@ -48,57 +65,17 @@ int main()
 
     bool uncapUpdateSpeed = false;
     bool displayUpdateTime = false;
-    sf::Vector2i prevLocalMousePos;
-    int isPanDown = false;
-    sf::Vector2f prevViewCenter = mainView.getCenter();
-    viewX=prevViewCenter.x;
-    viewY=prevViewCenter.y;
+    viewX=WINDOW_WIDTH/2;
+    viewY=WINDOW_HEIGHT/2;
 
     while (window.isOpen())
     {
         // bool updateView = false;
         sf::Time dt = deltaClock.restart();
-        // handle events
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if(event.type == sf::Event::Closed)
-                window.close();
-            // scroll controls
-            else if(event.type == sf::Event::MouseWheelScrolled){
-                float scroll_dir = event.mouseWheelScroll.delta;
-                viewWidth = viewWidth-(viewWidth*SCROLL_SENSITIVITY*scroll_dir);
-                viewWidth = std::clamp(viewWidth, 5.0f, static_cast<float>(WINDOW_WIDTH*1.2));
-                viewHeight = viewHeight-(viewHeight*SCROLL_SENSITIVITY*scroll_dir);
-                viewHeight = std::clamp(viewHeight, 5.0f, static_cast<float>(WINDOW_HEIGHT*1.2));
-                // updateView = true;
-            }
-        }
-
         elapsedTimeSinceLastUpdate += dt;
-        // pan controls
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Middle) || (sf::Mouse::isButtonPressed(sf::Mouse::Left) && sf::Keyboard::isKeyPressed(sf::Keyboard::Space))){
-            sf::Vector2i localMousePosition = sf::Mouse::getPosition(window);
-            if(!isPanDown){
-                // initial down
-                prevLocalMousePos = localMousePosition;
-                prevViewCenter = mainView.getCenter();
-                // sf::View mainView(sf::FloatRect(viewX,viewY ,600.0f, 600.0f));
-                isPanDown= true;
-            }
-            else{
-                // after inial press
-                viewX = prevViewCenter.x+(prevLocalMousePos.x-localMousePosition.x);
-                viewY = prevViewCenter.y+(prevLocalMousePos.y-localMousePosition.y);
-                // updateView = true;
-                // std::cout << "local pos: " << " " << localMousePosition.x << " " << localMousePosition.y << std::endl;
-                // std::cout << "move view to: " << viewX << " " << viewY << std::endl;
-            }
-        }
-        else if(isPanDown){
-            isPanDown = false;
-        }
-        updateView(window, mainView);
+
+        // handle events
+        handleEvents(window, viewState);
 
         if(elapsedTimeSinceLastUpdate >= updateInterval || uncapUpdateSpeed){
             // reset set grid colors to initial color
@@ -147,4 +124,50 @@ void initWindow(sf::RenderWindow& window, sf::View& view){
     view.setSize(viewWidth, viewHeight);
     view.setCenter(WINDOW_WIDTH/2, WINDOW_HEIGHT/2);
     window.setView(view);
+}
+
+void handleEvents(sf::RenderWindow& window, ViewState& viewState){
+        sf::Event event;
+        bool& isPanDown = viewState.isPanDown;
+        sf::Vector2i& prevLocalMousePos = viewState.prevLocalMousePos;
+        sf::Vector2f& prevViewCenter = viewState.prevViewCenter;
+        sf::View& mainView = viewState.mainView;
+        while (window.pollEvent(event))
+        {
+            if(event.type == sf::Event::Closed)
+                window.close();
+            // scroll controls
+            else if(event.type == sf::Event::MouseWheelScrolled){
+                float scroll_dir = event.mouseWheelScroll.delta;
+                viewWidth = viewWidth-(viewWidth*SCROLL_SENSITIVITY*scroll_dir);
+                viewWidth = std::clamp(viewWidth, 5.0f, static_cast<float>(WINDOW_WIDTH*1.2));
+                viewHeight = viewHeight-(viewHeight*SCROLL_SENSITIVITY*scroll_dir);
+                viewHeight = std::clamp(viewHeight, 5.0f, static_cast<float>(WINDOW_HEIGHT*1.2));
+                // updateView = true;
+            }
+        }
+
+        // pan controls
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Middle) || (sf::Mouse::isButtonPressed(sf::Mouse::Left) && sf::Keyboard::isKeyPressed(sf::Keyboard::Space))){
+            sf::Vector2i localMousePosition = sf::Mouse::getPosition(window);
+            if(!isPanDown){
+                // initial down
+                prevLocalMousePos = localMousePosition;
+                prevViewCenter = mainView.getCenter();
+                // sf::View mainView(sf::FloatRect(viewX,viewY ,600.0f, 600.0f));
+                isPanDown= true;
+            }
+            else{
+                // after inial press
+                viewX = prevViewCenter.x+(prevLocalMousePos.x-localMousePosition.x);
+                viewY = prevViewCenter.y+(prevLocalMousePos.y-localMousePosition.y);
+                // updateView = true;
+                // std::cout << "local pos: " << " " << localMousePosition.x << " " << localMousePosition.y << std::endl;
+                // std::cout << "move view to: " << viewX << " " << viewY << std::endl;
+            }
+        }
+        else if(isPanDown){
+            isPanDown = false;
+        }
+        updateView(window, mainView);
 }
