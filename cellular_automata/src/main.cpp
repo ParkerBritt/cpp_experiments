@@ -30,7 +30,7 @@ void initWindow(sf::RenderWindow& window, sf::View& view);
 void updateView(sf::RenderWindow& window, sf::View& view);
 void handleEvents(sf::RenderWindow& window, ViewState& viewState);
 void updateGameState();
-void renderFrame();
+void renderFrame(sf::RenderWindow& window, std::vector<sf::Drawable*> renderBuffer);
 
 
 int main()
@@ -57,6 +57,11 @@ int main()
  
     int selected_x = 0;
     int selected_y = 0;
+
+
+    // render buffer
+    std::vector<sf::Drawable*> renderBuffer;
+    renderBuffer.push_back(&grid);
 
 
     sf::Clock deltaClock;
@@ -88,10 +93,7 @@ int main()
             grid.set_color(selected_x, selected_y, 255);
             grid.refresh_verts();
 
-            // draw frame
-            window.clear();
-            window.draw(grid);
-            window.display();
+            renderFrame(window, renderBuffer);
 
             // iterate
             selected_x++;
@@ -170,4 +172,13 @@ void handleEvents(sf::RenderWindow& window, ViewState& viewState){
             isPanDown = false;
         }
         updateView(window, mainView);
+}
+
+void renderFrame(sf::RenderWindow& window, std::vector<sf::Drawable*> renderBuffer){
+        window.clear();
+        for(long unsigned i=0; i<renderBuffer.size(); i++){
+            window.draw(*renderBuffer[i]);
+            std::cout << "Drawing object: " << typeid(*renderBuffer[i]).name() << std::endl;
+        }
+        window.display();
 }
