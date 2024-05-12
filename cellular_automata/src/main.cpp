@@ -11,6 +11,7 @@ const std::string WINDOW_TITLE = "Cells";
 const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 800;
 const float SCROLL_SENSITIVITY = 0.06;
+const sf::Color BG_COLOR(18,18,18);
 
 // non constants
 float viewWidth = 400.0f;
@@ -145,7 +146,6 @@ void handleEvents(sf::RenderWindow& window, ViewState& viewState){
                 viewWidth = std::clamp(viewWidth, 5.0f, static_cast<float>(WINDOW_WIDTH*1.2));
                 viewHeight = viewHeight-(viewHeight*SCROLL_SENSITIVITY*scroll_dir);
                 viewHeight = std::clamp(viewHeight, 5.0f, static_cast<float>(WINDOW_HEIGHT*1.2));
-                // updateView = true;
             }
         }
 
@@ -163,9 +163,6 @@ void handleEvents(sf::RenderWindow& window, ViewState& viewState){
                 // after inial press
                 viewX = prevViewCenter.x+(prevLocalMousePos.x-localMousePosition.x);
                 viewY = prevViewCenter.y+(prevLocalMousePos.y-localMousePosition.y);
-                // updateView = true;
-                // std::cout << "local pos: " << " " << localMousePosition.x << " " << localMousePosition.y << std::endl;
-                // std::cout << "move view to: " << viewX << " " << viewY << std::endl;
             }
         }
         else if(isPanDown){
@@ -175,10 +172,10 @@ void handleEvents(sf::RenderWindow& window, ViewState& viewState){
 }
 
 void renderFrame(sf::RenderWindow& window, std::vector<sf::Drawable*> renderBuffer){
-        window.clear();
+        window.clear(BG_COLOR);
         for(long unsigned i=0; i<renderBuffer.size(); i++){
             window.draw(*renderBuffer[i]);
-            std::cout << "Drawing object: " << typeid(*renderBuffer[i]).name() << std::endl;
+            // std::cout << "Drawing object: " << typeid(*renderBuffer[i]).name() << std::endl;
         }
         window.display();
 }
