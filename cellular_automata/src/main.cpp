@@ -27,14 +27,16 @@ struct ViewState{
 };
 
 struct GameState{
-    
+    unsigned int selected_x;
+    unsigned int selected_y;
+    std::vector<std::vector<int>> gridArrayDefaultState;
 };
 
 // declare functions
 void initWindow(sf::RenderWindow& window, sf::View& view);
 void updateView(sf::RenderWindow& window, sf::View& view);
 void handleEvents(sf::RenderWindow& window, ViewState& viewState);
-void updateGameState();
+void updateGameState(GameState& gameState, CellGrid& cellGrid);
 void renderFrame(sf::RenderWindow& window, std::vector<sf::Drawable*> renderBuffer);
 
 
@@ -55,15 +57,14 @@ int main()
     // init cell grid
     CellGrid grid(WINDOW_HEIGHT, WINDOW_WIDTH);
 
-    std::vector<std::vector<int>> gridArrayDefaultState = grid.grid_array;
+    // set initial gameState
+    gameState.gridArrayDefaultState = grid.grid_array;
+
     grid.refresh_verts();
 
 
     window.setView(mainView);
  
-    int selected_x = 0;
-    int selected_y = 0;
-
 
     // render buffer
     std::vector<sf::Drawable*> renderBuffer;
@@ -89,31 +90,14 @@ int main()
         handleEvents(window, viewState);
 
         if(elapsedTimeSinceLastUpdate >= updateInterval || uncapUpdateSpeed){
-            // reset set grid colors to initial color
-            for(long unsigned x = 0; x<grid.grid_array.size(); x++){
-                for(long unsigned y=0; y<grid.grid_array[0].size(); y++){
-                    grid.grid_array[x][y] = gridArrayDefaultState[x][y];
-                } 
-            }
-            // set changing cell to full bright
-            grid.set_color(selected_x, selected_y, 255);
-            grid.refresh_verts();
-
+            updateGameState(gameState, grid);
             renderFrame(window, renderBuffer);
-
-            // iterate
-            selected_x++;
-            if(selected_x > grid.virt_width-1){
-                selected_x = 0;
-                selected_y = (selected_y + 1)%(grid.virt_height);
-            }
             elapsedTimeSinceLastUpdate = sf::Time::Zero;
         }
 
         if(displayUpdateTime){
             std::cout << dt.asMilliseconds() << " milliseconds" << std::endl;
         }
-        // usleep(100000);
     }
 
     return 0;
@@ -174,6 +158,21 @@ void handleEvents(sf::RenderWindow& window, ViewState& viewState){
             isPanDown = false;
         }
         updateView(window, mainView);
+}
+
+void updateGameState(GameState& gameState, CellGrid& cellGrid){
+    cellGrid.grid_array = gameState.gridArrayDefaultState;
+    unsigned int& selected_x = gameState.selected_x;
+    unsigned int& selected_y = gameState.selected_y;
+    cellGrid.set_color(selected_x, selected_y, 255);
+    cellGrid.refresh_verts();
+
+    // iterate
+    selected_x++;
+    if(selected_x > cellGrid.virt_width-1){
+        selected_x = 0;
+        selected_y = (selected_y + 1)%(cellGrid.virt_height);
+    }
 }
 
 void renderFrame(sf::RenderWindow& window, std::vector<sf::Drawable*> renderBuffer){
