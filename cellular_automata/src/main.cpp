@@ -26,6 +26,10 @@ struct ViewState{
     sf::View mainView;
 };
 
+struct GameState{
+    
+};
+
 // declare functions
 void initWindow(sf::RenderWindow& window, sf::View& view);
 void updateView(sf::RenderWindow& window, sf::View& view);
@@ -40,6 +44,7 @@ int main()
 
     // init view
     ViewState viewState;
+    GameState gameState;
     sf::View& mainView = viewState.mainView;
     viewState.prevViewCenter = mainView.getCenter();
 
