@@ -35,7 +35,7 @@ struct GameState{
 // declare functions
 void initWindow(sf::RenderWindow& window, sf::View& view);
 void updateView(sf::RenderWindow& window, sf::View& view);
-void handleEvents(sf::RenderWindow& window, ViewState& viewState);
+void handleEvents(sf::RenderWindow& window, ViewState& viewState, GameState& gameState, CellGrid& cellGrid);
 void updateGameState(GameState& gameState, CellGrid& cellGrid);
 void renderFrame(sf::RenderWindow& window, std::vector<sf::Drawable*> renderBuffer);
 
@@ -87,7 +87,7 @@ int main()
         elapsedTimeSinceLastUpdate += dt;
 
         // handle events
-        handleEvents(window, viewState);
+        handleEvents(window, viewState, gameState, grid);
 
         if(elapsedTimeSinceLastUpdate >= updateInterval || uncapUpdateSpeed){
             updateGameState(gameState, grid);
@@ -118,7 +118,7 @@ void initWindow(sf::RenderWindow& window, sf::View& view){
     window.setView(view);
 }
 
-void handleEvents(sf::RenderWindow& window, ViewState& viewState){
+void handleEvents(sf::RenderWindow& window, ViewState& viewState, GameState& gameState, CellGrid& cellGrid){
         sf::Event event;
         bool& isPanDown = viewState.isPanDown;
         sf::Vector2i& prevLocalMousePos = viewState.prevLocalMousePos;
@@ -156,6 +156,11 @@ void handleEvents(sf::RenderWindow& window, ViewState& viewState){
         }
         else if(isPanDown){
             isPanDown = false;
+        }
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
+            sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+            // mainView.getCenter
+            std::cout << mousePosition.x << mousePosition.y << std::endl;
         }
         updateView(window, mainView);
 }
