@@ -43,6 +43,8 @@ void renderFrame(sf::RenderWindow& window, std::vector<sf::Drawable*> renderBuff
 int main()
 {
 
+    viewWidth = static_cast<float>(WINDOW_WIDTH);
+    viewHeight = static_cast<float>(WINDOW_HEIGHT);
 
     // init view
     ViewState viewState;
@@ -159,8 +161,14 @@ void handleEvents(sf::RenderWindow& window, ViewState& viewState, GameState& gam
         }
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
             sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
-            // mainView.getCenter
-            std::cout << mousePosition.x << mousePosition.y << std::endl;
+            sf::Vector2f viewCenter = mainView.getCenter();
+            sf::Vector2f viewSize = mainView.getSize();
+            sf::Transform transform = mainView.getTransform();
+            sf::Vector2f mousePositionFloat(mousePosition);
+            std::cout << "mouse position: " << mousePosition.x << " " << mousePosition.y << std::endl;
+            std::cout << "view center: " << viewCenter.x << " " << viewCenter.y << std::endl;
+            std::cout << "view size: " << viewSize.x << " " << viewSize.y << std::endl;
+            std::cout << "rel position: " << mousePosition.x/(WINDOW_WIDTH/viewSize.x)+(viewCenter.x-viewSize.x/2) << std::endl;
         }
         updateView(window, mainView);
 }
