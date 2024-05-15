@@ -5,8 +5,6 @@
     // unsigned int windowHeight = windowSize.y;
 
 sf::Vector2f windowToWorldTransform(sf::Vector2f& windowPos, sf::RenderWindow& window, sf::View& view){
-    std::cout << "working" << std::endl;
-    
     // size
     sf::Vector2u windowSize = window.getSize(); 
     sf::Vector2f viewCenter = view.getCenter();

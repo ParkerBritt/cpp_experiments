@@ -139,6 +139,7 @@ void handleEvents(sf::RenderWindow& window, ViewState& viewState, GameState& gam
                 viewWidth = std::clamp(viewWidth, 5.0f, static_cast<float>(WINDOW_WIDTH*1.2));
                 viewHeight = viewHeight-(viewHeight*SCROLL_SENSITIVITY*scroll_dir);
                 viewHeight = std::clamp(viewHeight, 5.0f, static_cast<float>(WINDOW_HEIGHT*1.2));
+                updateView(window, mainView);
             }
         }
 
@@ -165,21 +166,31 @@ void handleEvents(sf::RenderWindow& window, ViewState& viewState, GameState& gam
             return;
         }
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
+            sf::Vector2u windowSize = window.getSize();
             sf::Vector2f mouseWindowPos(sf::Mouse::getPosition(window));
             sf::Vector2f mouseWorldPos = windowToWorldTransform(mouseWindowPos, window, mainView);
-            std::cout << "rel x: " << mouseWorldPos.x << " " << mouseWorldPos.y << std::endl;
-            unsigned int selected_x = mouseWorldPos.x/PIXEL_WIDTH;
-            // cellGrid.set_color(selected_x, selected_y, 255);
-            return;
+            // guard against drawing outside bounds
+            if(0 < mouseWorldPos.x && mouseWorldPos.x < windowSize.x &&
+               0 < mouseWorldPos.y && mouseWorldPos.y < windowSize.y){
+                unsigned int selectedX = mouseWorldPos.x/PIXEL_WIDTH;
+                unsigned int selectedY = mouseWorldPos.y/PIXEL_WIDTH;
+                // cellGrid.set_color(selectedX-1, selectedY, 1);
+                cellGrid.set_color(selectedX, selectedY, 1);
+                // cellGrid.set_color(selectedX+1, selectedY, 1);
+                // cellGrid.set_color(selectedX, selectedY-1, 1);
+                // cellGrid.set_color(selectedX, selectedY+1, 1);
+                cellGrid.refresh_verts();
+                return;
+            }
+
         }
-        updateView(window, mainView);
 }
 
 void updateGameState(GameState& gameState, CellGrid& cellGrid){
-    cellGrid.grid_array = gameState.gridArrayDefaultState;
+    return;
     unsigned int& selected_x = gameState.selected_x;
     unsigned int& selected_y = gameState.selected_y;
-    // cellGrid.set_color(selected_x, selected_y, 255);
+    cellGrid.set_color(selected_x, selected_y, 255);
     cellGrid.refresh_verts();
 
     // iterate

@@ -7,19 +7,21 @@ CellGrid::CellGrid(const int window_width, const int window_height, const unsign
     grid_array.resize(virt_width, std::vector<int>(virt_height));
 
 
+    // set initial grid values
     for(int y=0; y<virt_height; y++){
         for(int x=0; x<virt_width; x++){
-            float brightness = float(x+y)/(virt_width+virt_height)*255;
+            // float brightness = float(x+y)/(virt_width+virt_height)*255;
+            float brightness = 0;
             grid_array[x][y] = brightness;
         }
     }
     prev_grid_array = grid_array;
 
-    // set initial vert color
+    // init verts
     for(int y=0; y<virt_height; y++){
         for(int x=0; x<virt_width; x++){
-            float brightness = grid_array[x][y];
-            sf::Color color(brightness, brightness, brightness, 255);
+            float cellValue = grid_array[x][y];
+            sf::Color color = mapColor(cellValue);
 
             int virt_x = x*pixelWidth;
             int virt_y = y*pixelWidth;
@@ -29,7 +31,31 @@ CellGrid::CellGrid(const int window_width, const int window_height, const unsign
             m_vertices.append(sf::Vertex(sf::Vector2f( virt_x+pixelWidth, virt_y), color));
         }
     }
+    // CellGrid::refresh_verts();
 
+}
+sf::Color CellGrid::mapColor(int cellValue){
+    int rgb[3];
+    switch(cellValue){
+        case 0:
+            rgb[0]=15;
+            rgb[1]=15;
+            rgb[2]=15;
+            break;
+        case 1:
+            rgb[0]=255;
+            rgb[1]=255;
+            rgb[2]=255;
+            break;
+        default:
+            std::cout<< "undefined mapping value: " << cellValue << std::endl;
+            rgb[0]=255;
+            rgb[1]=0;
+            rgb[2]=0;
+            break;
+    }
+    sf::Color color(rgb[0], rgb[1], rgb[2], 255);
+    return color;
 }
 void CellGrid::refresh_verts(){
     for(int y=0; y<virt_height; y++){
@@ -37,10 +63,9 @@ void CellGrid::refresh_verts(){
             if(prev_grid_array[x][y]==grid_array[x][y]){
                 continue;
             }
-            int cell_value = grid_array[x][y];
-            sf::Color color(cell_value, cell_value, cell_value, 255);
+            int cellValue = grid_array[x][y];
 
-            set_vert_color(x, y, color);
+            set_vert_color(x, y, mapColor(cellValue));
         }
     }
     prev_grid_array = grid_array;
