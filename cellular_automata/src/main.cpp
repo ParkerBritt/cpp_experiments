@@ -12,6 +12,7 @@ const std::string WINDOW_TITLE = "Cells";
 const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 800;
 const float SCROLL_SENSITIVITY = 0.06;
+const int PIXEL_WIDTH = 10;
 const sf::Color BG_COLOR(18,18,18);
 
 // non constants
@@ -58,7 +59,7 @@ int main()
     initWindow(window, mainView);
 
     // init cell grid
-    CellGrid grid(WINDOW_HEIGHT, WINDOW_WIDTH);
+    CellGrid grid(WINDOW_HEIGHT, WINDOW_WIDTH, PIXEL_WIDTH);
 
     // set initial gameState
     gameState.gridArrayDefaultState = grid.grid_array;
@@ -156,15 +157,21 @@ void handleEvents(sf::RenderWindow& window, ViewState& viewState, GameState& gam
                 viewX = prevViewCenter.x+(prevLocalMousePos.x-localMousePosition.x);
                 viewY = prevViewCenter.y+(prevLocalMousePos.y-localMousePosition.y);
             }
+            updateView(window, mainView);
+            return;
         }
         else if(isPanDown){
             isPanDown = false;
+            return;
         }
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
             sf::Vector2f mouseWindowPos(sf::Mouse::getPosition(window));
             sf::Vector2f mouseWorldPos = windowToWorldTransform(mouseWindowPos, window, mainView);
             std::cout << "rel x: " << mouseWorldPos.x << " " << mouseWorldPos.y << std::endl;
-
+            // unsigned int selected_x = mouseWorldPos.x/;
+            // std::cout << "x coord" << selected_x << std::endl;
+            // cellGrid.set_color(selected_x, selected_y, 255);
+            return;
         }
         updateView(window, mainView);
 }
@@ -173,7 +180,7 @@ void updateGameState(GameState& gameState, CellGrid& cellGrid){
     cellGrid.grid_array = gameState.gridArrayDefaultState;
     unsigned int& selected_x = gameState.selected_x;
     unsigned int& selected_y = gameState.selected_y;
-    cellGrid.set_color(selected_x, selected_y, 255);
+    // cellGrid.set_color(selected_x, selected_y, 255);
     cellGrid.refresh_verts();
 
     // iterate

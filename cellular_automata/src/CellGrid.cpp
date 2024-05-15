@@ -1,8 +1,8 @@
 #include "CellGrid.hpp"
 
-CellGrid::CellGrid(const int window_width, const int window_height){
-    virt_width = window_width/pixel_width;
-    virt_height = window_height/pixel_width;
+CellGrid::CellGrid(const int window_width, const int window_height, const int pixelWidth){
+    virt_width = window_width/pixelWidth;
+    virt_height = window_height/pixelWidth;
     m_vertices.setPrimitiveType(sf::Quads);
     grid_array.resize(virt_width, std::vector<int>(virt_height));
 
@@ -21,12 +21,12 @@ CellGrid::CellGrid(const int window_width, const int window_height){
             float brightness = grid_array[x][y];
             sf::Color color(brightness, brightness, brightness, 255);
 
-            int virt_x = x*pixel_width;
-            int virt_y = y*pixel_width;
+            int virt_x = x*pixelWidth;
+            int virt_y = y*pixelWidth;
             m_vertices.append(sf::Vertex(sf::Vector2f(  virt_x,   virt_y), color));
-            m_vertices.append(sf::Vertex(sf::Vector2f(  virt_x, virt_y+pixel_width), color));
-            m_vertices.append(sf::Vertex(sf::Vector2f( virt_x+pixel_width, virt_y+pixel_width), color));
-            m_vertices.append(sf::Vertex(sf::Vector2f( virt_x+pixel_width, virt_y), color));
+            m_vertices.append(sf::Vertex(sf::Vector2f(  virt_x, virt_y+pixelWidth), color));
+            m_vertices.append(sf::Vertex(sf::Vector2f( virt_x+pixelWidth, virt_y+pixelWidth), color));
+            m_vertices.append(sf::Vertex(sf::Vector2f( virt_x+pixelWidth, virt_y), color));
         }
     }
 

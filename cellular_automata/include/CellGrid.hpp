@@ -12,10 +12,9 @@ class CellGrid : public sf::Drawable, public sf::Transformable{
         sf::VertexArray m_vertices;
         std::vector<std::vector<int>> grid_array;
         std::vector<std::vector<int>> prev_grid_array;
-        int pixel_width = 10;
 
         // constructor
-        CellGrid(const int window_width, const int window_height);
+        CellGrid(const int window_width, const int window_height, const int pixelWidth);
 
         // methods
         void refresh_verts();
