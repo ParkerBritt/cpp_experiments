@@ -5,6 +5,7 @@
 #include <vector>
 #include <algorithm>
 #include "CellGrid.hpp"
+#include "Utils.hpp"
 
 // constants and configuration
 const std::string WINDOW_TITLE = "Cells";
@@ -160,15 +161,10 @@ void handleEvents(sf::RenderWindow& window, ViewState& viewState, GameState& gam
             isPanDown = false;
         }
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
-            sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
-            sf::Vector2f viewCenter = mainView.getCenter();
-            sf::Vector2f viewSize = mainView.getSize();
-            sf::Transform transform = mainView.getTransform();
-            sf::Vector2f mousePositionFloat(mousePosition);
-            std::cout << "mouse position: " << mousePosition.x << " " << mousePosition.y << std::endl;
-            std::cout << "view center: " << viewCenter.x << " " << viewCenter.y << std::endl;
-            std::cout << "view size: " << viewSize.x << " " << viewSize.y << std::endl;
-            std::cout << "rel position: " << mousePosition.x/(WINDOW_WIDTH/viewSize.x)+(viewCenter.x-viewSize.x/2) << std::endl;
+            sf::Vector2f mouseWindowPos(sf::Mouse::getPosition(window));
+            sf::Vector2f mouseWorldPos = windowToWorldTransform(mouseWindowPos, window, mainView);
+            std::cout << "rel x: " << mouseWorldPos.x << " " << mouseWorldPos.y << std::endl;
+
         }
         updateView(window, mainView);
 }
