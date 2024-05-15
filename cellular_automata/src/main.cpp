@@ -168,8 +168,7 @@ void handleEvents(sf::RenderWindow& window, ViewState& viewState, GameState& gam
             sf::Vector2f mouseWindowPos(sf::Mouse::getPosition(window));
             sf::Vector2f mouseWorldPos = windowToWorldTransform(mouseWindowPos, window, mainView);
             std::cout << "rel x: " << mouseWorldPos.x << " " << mouseWorldPos.y << std::endl;
-            // unsigned int selected_x = mouseWorldPos.x/;
-            // std::cout << "x coord" << selected_x << std::endl;
+            unsigned int selected_x = mouseWorldPos.x/PIXEL_WIDTH;
             // cellGrid.set_color(selected_x, selected_y, 255);
             return;
         }

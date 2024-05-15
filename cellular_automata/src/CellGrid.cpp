@@ -1,6 +1,6 @@
 #include "CellGrid.hpp"
 
-CellGrid::CellGrid(const int window_width, const int window_height, const int pixelWidth){
+CellGrid::CellGrid(const int window_width, const int window_height, const unsigned int pixelWidth){
     virt_width = window_width/pixelWidth;
     virt_height = window_height/pixelWidth;
     m_vertices.setPrimitiveType(sf::Quads);

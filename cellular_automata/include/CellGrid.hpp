@@ -14,7 +14,7 @@ class CellGrid : public sf::Drawable, public sf::Transformable{
         std::vector<std::vector<int>> prev_grid_array;
 
         // constructor
-        CellGrid(const int window_width, const int window_height, const int pixelWidth);
+        CellGrid(const int window_width, const int window_height, const unsigned int pixelWidth);
 
         // methods
         void refresh_verts();
