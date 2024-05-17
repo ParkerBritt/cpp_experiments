@@ -32,6 +32,8 @@ struct GameState{
     unsigned int selected_x;
     unsigned int selected_y;
     std::vector<std::vector<int>> gridArrayDefaultState;
+    unsigned int prevSelectedX = 0;
+    unsigned int prevSelectedY = 0;
 };
 
 // declare functions
@@ -170,19 +172,17 @@ void handleEvents(sf::RenderWindow& window, ViewState& viewState, GameState& gam
             sf::Vector2f mouseWindowPos(sf::Mouse::getPosition(window));
             sf::Vector2f mouseWorldPos = windowToWorldTransform(mouseWindowPos, window, mainView);
             // guard against drawing outside bounds
-            if(0 < mouseWorldPos.x && mouseWorldPos.x < windowSize.x &&
-               0 < mouseWorldPos.y && mouseWorldPos.y < windowSize.y){
-                unsigned int selectedX = mouseWorldPos.x/PIXEL_WIDTH;
-                unsigned int selectedY = mouseWorldPos.y/PIXEL_WIDTH;
-                // cellGrid.set_color(selectedX-1, selectedY, 1);
-                cellGrid.set_color(selectedX, selectedY, 1);
-                // cellGrid.set_color(selectedX+1, selectedY, 1);
-                // cellGrid.set_color(selectedX, selectedY-1, 1);
-                // cellGrid.set_color(selectedX, selectedY+1, 1);
-                cellGrid.refresh_verts();
+            if(!(0 < mouseWorldPos.x && mouseWorldPos.x < windowSize.x &&
+               0 < mouseWorldPos.y && mouseWorldPos.y < windowSize.y)){
                 return;
             }
-
+            unsigned int selectedX = mouseWorldPos.x/PIXEL_WIDTH;
+            unsigned int selectedY = mouseWorldPos.y/PIXEL_WIDTH;
+            cellGrid.setValue(selectedX, selectedY, 1);
+            cellGrid.refresh_verts();
+            gameState.prevSelectedX = selectedX;
+            gameState.prevSelectedY = selectedY;
+            return;
         }
 }
 
@@ -190,7 +190,7 @@ void updateGameState(GameState& gameState, CellGrid& cellGrid){
     return;
     unsigned int& selected_x = gameState.selected_x;
     unsigned int& selected_y = gameState.selected_y;
-    cellGrid.set_color(selected_x, selected_y, 255);
+    cellGrid.setValue(selected_x, selected_y, 255);
     cellGrid.refresh_verts();
 
     // iterate

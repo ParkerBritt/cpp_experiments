@@ -19,8 +19,8 @@ class CellGrid : public sf::Drawable, public sf::Transformable{
 
         // methods
         void refresh_verts();
-        sf::Color get_color(const int x, const int y);
-        void set_color(const int x, const int y, int cell_value);
+        sf::Color getValue(const int x, const int y);
+        void setValue(const int x, const int y, int cell_value);
         void set_vert_color(const int x, const int y, sf::Color color);
 
         virtual ~CellGrid() {}
