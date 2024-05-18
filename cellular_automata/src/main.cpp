@@ -6,6 +6,7 @@
 #include <algorithm>
 #include "CellGrid.hpp"
 #include "Utils.hpp"
+#include "DrawLine.hpp"
 
 // constants and configuration
 const std::string WINDOW_TITLE = "Cells";
@@ -62,6 +63,7 @@ int main()
 
     // init cell grid
     CellGrid grid(WINDOW_HEIGHT, WINDOW_WIDTH, PIXEL_WIDTH);
+    plotLine(grid, 0, 1, 6, 4);
 
     // set initial gameState
     gameState.gridArrayDefaultState = grid.grid_array;
