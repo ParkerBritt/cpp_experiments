@@ -71,9 +71,10 @@ void CellGrid::refresh_verts(){
     prev_grid_array = grid_array;
 }
 
-sf::Color CellGrid::getValue(const int x, const int y){
-    int index = x*4+(y*virt_height*4);
-        return m_vertices[index].color;
+int CellGrid::getValue(const int x, const int y){
+    return grid_array[x][y];
+    // int index = x*4+(y*virt_height*4);
+        // return m_vertices[index].color;
 
 }
 void CellGrid::setValue(const int x, const int y, int cell_value){

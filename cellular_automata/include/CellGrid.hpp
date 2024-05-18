@@ -10,6 +10,8 @@ class CellGrid : public sf::Drawable, public sf::Transformable{
         // global vars
         int virt_height;
         int virt_width;
+        int& width = virt_width;
+        int& height = virt_height;
         sf::VertexArray m_vertices;
         std::vector<std::vector<int>> grid_array;
         std::vector<std::vector<int>> prev_grid_array;
@@ -19,7 +21,7 @@ class CellGrid : public sf::Drawable, public sf::Transformable{
 
         // methods
         void refresh_verts();
-        sf::Color getValue(const int x, const int y);
+        int getValue(const int x, const int y);
         void setValue(const int x, const int y, int cell_value);
         void set_vert_color(const int x, const int y, sf::Color color);
 

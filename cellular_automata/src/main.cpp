@@ -66,7 +66,6 @@ int main()
 
     // init cell grid
     CellGrid grid(WINDOW_HEIGHT, WINDOW_WIDTH, PIXEL_WIDTH);
-    // plotLine(grid, 4, 7, 20, 50);
 
     // set initial gameState
     gameState.gridArrayDefaultState = grid.grid_array;
@@ -200,18 +199,29 @@ void handleEvents(sf::RenderWindow& window, ViewState& viewState, GameState& gam
 }
 
 void updateGameState(GameState& gameState, CellGrid& cellGrid){
-    return;
-    unsigned int& selected_x = gameState.selected_x;
-    unsigned int& selected_y = gameState.selected_y;
-    cellGrid.setValue(selected_x, selected_y, 255);
-    cellGrid.refresh_verts();
+    CellGrid oldGrid = cellGrid;
+    for(int x=0; x<cellGrid.width; x++){
+        for(int y=1; y<cellGrid.height; y++){
 
-    // iterate
-    selected_x++;
-    if(selected_x > cellGrid.virt_width-1){
-        selected_x = 0;
-        selected_y = (selected_y + 1)%(cellGrid.virt_height);
+            if(y<cellGrid.height-1 && oldGrid.getValue(x,y)==1 && !oldGrid.getValue(x,y+1)==1){
+                cellGrid.setValue(x,y,0);
+                cellGrid.setValue(x,y+1,1);
+            }
+            // if(oldGrid.getValue(x,y)==1 && oldGrid.getValue(x,y+1)==1){
+            //     continue;
+            // }
+            // // go down
+            // if(y<cellGrid.height-1 && oldGrid.getValue(x,y)==1){
+            //     cellGrid.setValue(x,y,0);
+            // }
+            // // remove old pos 
+            // if(oldGrid.getValue(x,y-1)==1){
+            //     cellGrid.setValue(x,y,1);
+            // }
+            
+        }
     }
+    cellGrid.refresh_verts();
 }
 
 void renderFrame(sf::RenderWindow& window, std::vector<sf::Drawable*> renderBuffer){
