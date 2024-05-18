@@ -34,7 +34,7 @@ CellGrid::CellGrid(const int window_width, const int window_height, const unsign
     // CellGrid::refresh_verts();
 
 }
-sf::Color CellGrid::mapColor(int cellValue){
+sf::Color CellGrid::mapColor(int cellValue) const{
     int rgb[3];
     switch(cellValue){
         case 0:
@@ -58,6 +58,27 @@ sf::Color CellGrid::mapColor(int cellValue){
     return color;
 }
 void CellGrid::refresh_verts(){
+    doVertRefresh = true;
+}
+
+int CellGrid::getValue(const int x, const int y) const{
+    return grid_array[x][y];
+    // int index = x*4+(y*virt_height*4);
+        // return m_vertices[index].color;
+
+}
+void CellGrid::setValue(const int x, const int y, int cell_value){
+    grid_array[x][y] = cell_value;
+}
+void CellGrid::set_vert_color(const int x, const int y, sf::Color color) const{
+    int index = x*4+(y*virt_height*4);
+    for(int i=0; i<4; i++){
+        m_vertices[index+i].color = color;
+    }
+
+}
+void CellGrid::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
     for(int y=0; y<virt_height; y++){
         for(int x=0; x<virt_width; x++){
             if(prev_grid_array[x][y]==grid_array[x][y]){
@@ -69,26 +90,7 @@ void CellGrid::refresh_verts(){
         }
     }
     prev_grid_array = grid_array;
-}
-
-int CellGrid::getValue(const int x, const int y){
-    return grid_array[x][y];
-    // int index = x*4+(y*virt_height*4);
-        // return m_vertices[index].color;
-
-}
-void CellGrid::setValue(const int x, const int y, int cell_value){
-    grid_array[x][y] = cell_value;
-}
-void CellGrid::set_vert_color(const int x, const int y, sf::Color color){
-    int index = x*4+(y*virt_height*4);
-    for(int i=0; i<4; i++){
-        m_vertices[index+i].color = color;
-    }
-
-}
-void CellGrid::draw(sf::RenderTarget& target, sf::RenderStates states) const
-{
     target.draw(m_vertices, states);
+    doVertRefresh = false;
 }
 

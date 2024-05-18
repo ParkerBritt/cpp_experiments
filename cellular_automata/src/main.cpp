@@ -13,8 +13,10 @@ const std::string WINDOW_TITLE = "Cells";
 const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 800;
 const float SCROLL_SENSITIVITY = 0.06;
-const int PIXEL_WIDTH = 10;
+const int PIXEL_WIDTH = 3;
 const sf::Color BG_COLOR(18,18,18);
+bool uncapUpdateSpeed = false;
+bool displayUpdateTime = false;
 
 // non constants
 float viewWidth = 400.0f;
@@ -85,8 +87,6 @@ int main()
     sf::Time updateInterval = sf::seconds(0.01);
     sf::Time elapsedTimeSinceLastUpdate = sf::Time::Zero;
 
-    bool uncapUpdateSpeed = false;
-    bool displayUpdateTime = false;
     viewX=WINDOW_WIDTH/2;
     viewY=WINDOW_HEIGHT/2;
 
