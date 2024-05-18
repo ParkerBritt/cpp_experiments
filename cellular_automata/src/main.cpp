@@ -33,8 +33,11 @@ struct GameState{
     unsigned int selected_x;
     unsigned int selected_y;
     std::vector<std::vector<int>> gridArrayDefaultState;
+
+    // selection
     unsigned int prevSelectedX = 0;
     unsigned int prevSelectedY = 0;
+    bool mouseDown = false;
 };
 
 // declare functions
@@ -63,7 +66,7 @@ int main()
 
     // init cell grid
     CellGrid grid(WINDOW_HEIGHT, WINDOW_WIDTH, PIXEL_WIDTH);
-    plotLine(grid, 0, 1, 6, 4);
+    // plotLine(grid, 4, 7, 20, 50);
 
     // set initial gameState
     gameState.gridArrayDefaultState = grid.grid_array;
@@ -180,11 +183,19 @@ void handleEvents(sf::RenderWindow& window, ViewState& viewState, GameState& gam
             }
             unsigned int selectedX = mouseWorldPos.x/PIXEL_WIDTH;
             unsigned int selectedY = mouseWorldPos.y/PIXEL_WIDTH;
-            cellGrid.setValue(selectedX, selectedY, 1);
+            if(gameState.mouseDown){
+                plotLine(cellGrid, selectedX, selectedY, gameState.prevSelectedX, gameState.prevSelectedY);
+            }else{
+                cellGrid.setValue(selectedX, selectedY, 1);
+            }
             cellGrid.refresh_verts();
             gameState.prevSelectedX = selectedX;
             gameState.prevSelectedY = selectedY;
+            gameState.mouseDown=true;
             return;
+        }
+        else{
+            gameState.mouseDown=false;
         }
 }
 
