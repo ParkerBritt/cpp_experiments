@@ -196,6 +196,21 @@ void handleEvents(sf::RenderWindow& window, ViewState& viewState, GameState& gam
         else{
             gameState.mouseDown=false;
         }
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Right)){
+            sf::Vector2u windowSize = window.getSize();
+            sf::Vector2f mouseWindowPos(sf::Mouse::getPosition(window));
+            sf::Vector2f mouseWorldPos = windowToWorldTransform(mouseWindowPos, window, mainView);
+            // guard against drawing outside bounds
+            if(!(0 < mouseWorldPos.x && mouseWorldPos.x < windowSize.x &&
+               0 < mouseWorldPos.y && mouseWorldPos.y < windowSize.y)){
+                return;
+            }
+            unsigned int selectedX = mouseWorldPos.x/PIXEL_WIDTH;
+            unsigned int selectedY = mouseWorldPos.y/PIXEL_WIDTH;
+            cellGrid.setValue(selectedX, selectedY, 0);
+            cellGrid.refresh_verts();
+            return;
+        }
 }
 
 void updateGameState(GameState& gameState, CellGrid& cellGrid){
