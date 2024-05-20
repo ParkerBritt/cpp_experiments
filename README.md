@@ -7,4 +7,5 @@
     A collection of experimental C++ programs for the purpose of learning and personal exploration.
     <br><br>
     <img height="500em" src="screenshots/cellular_automata_demo.gif"/>
+    <img height="500em" src="screenshots/sand_sim_01.gif"/>
 </div>
