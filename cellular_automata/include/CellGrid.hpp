@@ -15,6 +15,7 @@ class CellGrid : public sf::Drawable, public sf::Transformable{
         mutable bool doVertRefresh = true;
         mutable sf::VertexArray m_vertices;
         std::vector<std::vector<int>> gridArray;
+        std::vector<std::vector<int>> defaultGridArray;
         mutable std::vector<std::vector<int>> prevGridArray;
 
         // constructor
@@ -25,6 +26,7 @@ class CellGrid : public sf::Drawable, public sf::Transformable{
         int getValue(const int x, const int y) const;
         void setValue(const int x, const int y, int cell_value);
         void set_vert_color(const int x, const int y, sf::Color color) const;
+        void resetGrid();
 
         virtual ~CellGrid() {}
 

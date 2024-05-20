@@ -171,10 +171,12 @@ void handleEvents(sf::RenderWindow& window, ViewState& viewState, GameState& gam
             isPanDown = false;
             return;
         }
+        // refresh canvas
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::R)){
             std::cout << "Reseting canvas" << std::endl;
-            // cellGrid.grid
+            cellGrid.resetGrid();
         }
+        // draw on canvas
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
             sf::Vector2u windowSize = window.getSize();
             sf::Vector2f mouseWindowPos(sf::Mouse::getPosition(window));

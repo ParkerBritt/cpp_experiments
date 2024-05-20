@@ -15,7 +15,9 @@ CellGrid::CellGrid(const int window_width, const int window_height, const unsign
             gridArray[x][y] = brightness;
         }
     }
+    // set initial states for prev and default grid array
     prevGridArray = gridArray;
+    defaultGridArray = gridArray;
 
     // init verts
     for(int y=0; y<virt_height; y++){
@@ -93,4 +95,6 @@ void CellGrid::draw(sf::RenderTarget& target, sf::RenderStates states) const
     target.draw(m_vertices, states);
     doVertRefresh = false;
 }
-
+void CellGrid::resetGrid(){
+    gridArray = defaultGridArray;
+}
