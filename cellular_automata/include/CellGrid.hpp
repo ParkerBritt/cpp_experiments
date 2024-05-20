@@ -14,8 +14,8 @@ class CellGrid : public sf::Drawable, public sf::Transformable{
         int& height = virt_height;
         mutable bool doVertRefresh = true;
         mutable sf::VertexArray m_vertices;
-        std::vector<std::vector<int>> grid_array;
-        mutable std::vector<std::vector<int>> prev_grid_array;
+        std::vector<std::vector<int>> gridArray;
+        mutable std::vector<std::vector<int>> prevGridArray;
 
         // constructor
         CellGrid(const int window_width, const int window_height, const unsigned int pixelWidth);

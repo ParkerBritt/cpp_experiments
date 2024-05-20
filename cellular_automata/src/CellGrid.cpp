@@ -4,7 +4,7 @@ CellGrid::CellGrid(const int window_width, const int window_height, const unsign
     virt_width = window_width/pixelWidth;
     virt_height = window_height/pixelWidth;
     m_vertices.setPrimitiveType(sf::Quads);
-    grid_array.resize(virt_width, std::vector<int>(virt_height));
+    gridArray.resize(virt_width, std::vector<int>(virt_height));
 
 
     // set initial grid values
@@ -12,15 +12,15 @@ CellGrid::CellGrid(const int window_width, const int window_height, const unsign
         for(int x=0; x<virt_width; x++){
             // float brightness = float(x+y)/(virt_width+virt_height)*255;
             float brightness = 0;
-            grid_array[x][y] = brightness;
+            gridArray[x][y] = brightness;
         }
     }
-    prev_grid_array = grid_array;
+    prevGridArray = gridArray;
 
     // init verts
     for(int y=0; y<virt_height; y++){
         for(int x=0; x<virt_width; x++){
-            float cellValue = grid_array[x][y];
+            float cellValue = gridArray[x][y];
             sf::Color color = mapColor(cellValue);
 
             int virt_x = x*pixelWidth;
@@ -62,13 +62,13 @@ void CellGrid::refresh_verts(){
 }
 
 int CellGrid::getValue(const int x, const int y) const{
-    return grid_array[x][y];
+    return gridArray[x][y];
     // int index = x*4+(y*virt_height*4);
         // return m_vertices[index].color;
 
 }
 void CellGrid::setValue(const int x, const int y, int cell_value){
-    grid_array[x][y] = cell_value;
+    gridArray[x][y] = cell_value;
 }
 void CellGrid::set_vert_color(const int x, const int y, sf::Color color) const{
     int index = x*4+(y*virt_height*4);
@@ -81,15 +81,15 @@ void CellGrid::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
     for(int y=0; y<virt_height; y++){
         for(int x=0; x<virt_width; x++){
-            if(prev_grid_array[x][y]==grid_array[x][y]){
+            if(prevGridArray[x][y]==gridArray[x][y]){
                 continue;
             }
-            int cellValue = grid_array[x][y];
+            int cellValue = gridArray[x][y];
 
             set_vert_color(x, y, mapColor(cellValue));
         }
     }
-    prev_grid_array = grid_array;
+    prevGridArray = gridArray;
     target.draw(m_vertices, states);
     doVertRefresh = false;
 }

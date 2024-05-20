@@ -70,7 +70,7 @@ int main()
     CellGrid grid(WINDOW_HEIGHT, WINDOW_WIDTH, PIXEL_WIDTH);
 
     // set initial gameState
-    gameState.gridArrayDefaultState = grid.grid_array;
+    gameState.gridArrayDefaultState = grid.gridArray;
 
     grid.refresh_verts();
 
@@ -170,6 +170,10 @@ void handleEvents(sf::RenderWindow& window, ViewState& viewState, GameState& gam
         else if(isPanDown){
             isPanDown = false;
             return;
+        }
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::R)){
+            std::cout << "Reseting canvas" << std::endl;
+            // cellGrid.grid
         }
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
             sf::Vector2u windowSize = window.getSize();
