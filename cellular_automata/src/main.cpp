@@ -218,22 +218,20 @@ void updateGameState(GameState& gameState, CellGrid& cellGrid){
     for(int x=0; x<cellGrid.width; x++){
         for(int y=1; y<cellGrid.height; y++){
 
-            if(y<cellGrid.height-1 && oldGrid.getValue(x,y)==1 && !oldGrid.getValue(x,y+1)==1){
-                cellGrid.setValue(x,y,0);
-                cellGrid.setValue(x,y+1,1);
+            if(y<cellGrid.height-1 && oldGrid.getValue(x,y)==1){
+                if(!oldGrid.getValue(x,y+1)==1){
+                    cellGrid.setValue(x,y,0);
+                    cellGrid.setValue(x,y+1,1);
+                }
+                else if(!oldGrid.getValue(x-1,y+1)==1){
+                    cellGrid.setValue(x,y,0);
+                    cellGrid.setValue(x-1,y+1,1);
+                }
+                else if(!oldGrid.getValue(x+1,y+1)==1){
+                    cellGrid.setValue(x,y,0);
+                    cellGrid.setValue(x+1,y+1,1);
+                }
             }
-            // if(oldGrid.getValue(x,y)==1 && oldGrid.getValue(x,y+1)==1){
-            //     continue;
-            // }
-            // // go down
-            // if(y<cellGrid.height-1 && oldGrid.getValue(x,y)==1){
-            //     cellGrid.setValue(x,y,0);
-            // }
-            // // remove old pos 
-            // if(oldGrid.getValue(x,y-1)==1){
-            //     cellGrid.setValue(x,y,1);
-            // }
-            
         }
     }
     cellGrid.refresh_verts();
