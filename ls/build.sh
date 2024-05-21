@@ -2,4 +2,5 @@
 cd build
 cmake .. && \
     make && \
-    ./pls
+    cd .. && \
+    ./build/pls
