@@ -1,21 +1,15 @@
 #include <iostream>
 #include <filesystem>
+#include <vector>
 namespace fs = std::filesystem;
-
-size_t countDirSize(fs::path dirPath){
-    size_t counter = 0;
-    for (auto const& dir_entry : std::filesystem::directory_iterator(dirPath)){
-        counter++;
-    }
-    return counter;
+std::string ansiColor(int r, int g, int b){
+    return "\e[38;2;"+std::to_string(r)+";"+std::to_string(g)+";"+std::to_string(g)+"m";
 }
 
 int main(){
     std::filesystem::path wd = std::filesystem::current_path();
-    size_t dirSize = countDirSize(wd);
-    char sep = dirSize > 10 ? '\n' : ' ';
-    std::cout << dirSize << std::endl;
     bool showHidden = false;
+    std::vector<std::string> formattedFiles;
     for (std::filesystem::directory_entry const& dir_entry : std::filesystem::directory_iterator(wd)){
         const std::filesystem::path curPath = dir_entry.path();
         std::string icon;
@@ -25,7 +19,7 @@ int main(){
             if(std::filesystem::is_empty(curPath)){
                 icon = "";
             }else{
-                icon = "";
+                icon = ansiColor(255,0,0)+""+ansiColor(200,0,0);
             }
         }
         else{ // is not dir
@@ -36,8 +30,16 @@ int main(){
                 icon = "";
             }
         }
-        std::cout << icon << " " << fileName << sep;
+        formattedFiles.push_back(icon+" "+fileName);
+        // std::cout << icon << " " << fileName << sep;
     }
+    size_t filesC = formattedFiles.size();
+    char sep = filesC > 10 ? '\n' : ' ';
+    std::string allFiles;
+    for(int i=0; i<filesC; i++){
+        allFiles+=formattedFiles[i]+sep;
+    }
+    std::cout << allFiles;
     return 0;
 
 }
