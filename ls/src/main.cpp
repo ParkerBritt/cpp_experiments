@@ -2,11 +2,21 @@
 #include <filesystem>
 #include <vector>
 namespace fs = std::filesystem;
+
+using termColor = int[3];
+
 std::string ansiColor(int r, int g, int b){
-    return "\e[38;2;"+std::to_string(r)+";"+std::to_string(g)+";"+std::to_string(g)+"m";
+    return "\e[38;2;"+std::to_string(r)+";"+std::to_string(g)+";"+std::to_string(b)+"m";
+}
+
+std::string ansiColor(const termColor& color){
+    return ansiColor(color[0], color[1], color[2]);
 }
 
 int main(){
+    // def colors
+    const termColor red = {255,0,0};
+
     std::filesystem::path wd = std::filesystem::current_path();
     bool showHidden = false;
     std::vector<std::string> formattedFiles;
@@ -19,7 +29,7 @@ int main(){
             if(std::filesystem::is_empty(curPath)){
                 icon = "";
             }else{
-                icon = ansiColor(255,0,0)+""+ansiColor(200,0,0);
+                icon = ansiColor(red)+""+ansiColor(red);
             }
         }
         else{ // is not dir
