@@ -14,7 +14,9 @@ std::string ansiColor(const termColor& color){
     return ansiColor(color[0], color[1], color[2]);
 }
 
-std::string getIcon(const std::unordered_map<std::string, std::string> iconNameMap, const fs::path& curPath){
+std::string getIcon(const std::unordered_map<std::string, std::string> iconNameMap,
+        const std::unordered_map<std::string, std::string> extMap,
+        const fs::path& curPath){
     std::string icon;
     std::string fileName = curPath.filename().string();
     if(std::filesystem::is_directory(curPath)){ // is dir
@@ -23,15 +25,23 @@ std::string getIcon(const std::unordered_map<std::string, std::string> iconNameM
         }else{
             icon = "";
         }
+        return icon;
     }
-    else{ // is not dir
-        if(iconNameMap.count(fileName) > 0){
-            icon = iconNameMap.at(fileName);
-        }
-        else{
-            icon = "";
+    if(iconNameMap.count(fileName) > 0){
+        icon = iconNameMap.at(fileName);
+        return icon;
+    }
+    std::string fileExt = curPath.extension().string();
+    // check if file extension exists
+    if(fileExt.length() > 0){
+        fileExt = fileExt.substr(1);
+        // check if match found in map
+        if(extMap.count(fileExt) > 0){
+            icon = extMap.at(fileExt);
+            return icon;
         }
     }
+    icon = "";
     return icon;
 }
 
@@ -43,13 +53,18 @@ int main(){
     std::unordered_map<std::string, std::string> iconNameMap;
     iconNameMap["CMakeLists.txt"] = "";
 
+    // file extension map
+    std::unordered_map<std::string, std::string> extMap;
+    extMap["txt"] = "";
+    extMap["sh"] = " ";
+
     std::filesystem::path wd = std::filesystem::current_path();
     bool showHidden = false;
     std::vector<std::string> formattedFiles;
     for (std::filesystem::directory_entry const& dir_entry : std::filesystem::directory_iterator(wd)){
         const std::filesystem::path curPath = dir_entry.path();
         std::string fileName = curPath.filename().string();
-        std::string icon = getIcon(iconNameMap, curPath);
+        std::string icon = getIcon(iconNameMap, extMap, curPath);
         if(fileName.substr(0,1)=="."){ continue; }
         formattedFiles.push_back(icon+" "+fileName);
         // std::cout << icon << " " << fileName << sep;
