@@ -19,16 +19,16 @@ std::string getIcon(const std::unordered_map<std::string, std::string> iconNameM
         const fs::path& curPath){
     std::string icon;
     std::string fileName = curPath.filename().string();
+    if(iconNameMap.count(fileName) > 0){
+        icon = iconNameMap.at(fileName);
+        return icon;
+    }
     if(std::filesystem::is_directory(curPath)){ // is dir
         if(std::filesystem::is_empty(curPath)){
             icon = "";
         }else{
             icon = "";
         }
-        return icon;
-    }
-    if(iconNameMap.count(fileName) > 0){
-        icon = iconNameMap.at(fileName);
         return icon;
     }
     std::string fileExt = curPath.extension().string();
@@ -52,6 +52,11 @@ int main(){
     // icon name map
     std::unordered_map<std::string, std::string> iconNameMap;
     iconNameMap["CMakeLists.txt"] = "";
+    iconNameMap["Desktop"] = " ";
+    iconNameMap["Pictures"] = "󰉏 ";
+    iconNameMap["Videos"] = " ";
+    iconNameMap["Games"] = "󰮂 ";
+    iconNameMap["bin"] = " ";
 
     // file extension map
     std::unordered_map<std::string, std::string> extMap;
