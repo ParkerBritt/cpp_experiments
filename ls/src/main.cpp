@@ -2,6 +2,12 @@
 #include <filesystem>
 #include <vector>
 #include <unordered_map>
+
+#include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
 namespace fs = std::filesystem;
 
 using termColor = int[3];
@@ -13,6 +19,7 @@ std::string ansiColor(int r, int g, int b){
 std::string ansiColor(const termColor& color){
     return ansiColor(color[0], color[1], color[2]);
 }
+
 
 std::string getIcon(const std::unordered_map<std::string, std::string> iconNameMap,
         const std::unordered_map<std::string, std::string> extMap,
@@ -45,23 +52,35 @@ std::string getIcon(const std::unordered_map<std::string, std::string> iconNameM
     return icon;
 }
 
-int main(){
+int main(int argc, char* argv[]){
     // def colors
     const termColor red = {255,0,0};
+
+    int opt;
+
+      while ((opt = getopt(argc, argv, "l")) != -1) {
+        if (opt == 'l') {
+            std::cout << "long mode" << std::endl;
+        } else if (opt == ':') {
+            std::cout << "Option requires a value" << std::endl;
+        } else if (opt == '?') {
+            std::cout<< "Unknown option: " << optopt << std::endl;
+        }
+      }
 
     // icon name map
     std::unordered_map<std::string, std::string> iconNameMap;
     iconNameMap["CMakeLists.txt"] = "";
-    iconNameMap["Desktop"] = " ";
-    iconNameMap["Pictures"] = "󰉏 ";
-    iconNameMap["Videos"] = " ";
-    iconNameMap["Games"] = "󰮂 ";
-    iconNameMap["bin"] = " ";
+    iconNameMap["Desktop"] = "";
+    iconNameMap["Pictures"] = "󰉏";
+    iconNameMap["Videos"] = "";
+    iconNameMap["Games"] = "󰮂";
+    iconNameMap["bin"] = "";
 
     // file extension map
     std::unordered_map<std::string, std::string> extMap;
     extMap["txt"] = "";
-    extMap["sh"] = " ";
+    extMap["sh"] = "";
 
     std::filesystem::path wd = std::filesystem::current_path();
     bool showHidden = false;
