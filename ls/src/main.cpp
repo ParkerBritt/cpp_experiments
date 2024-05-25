@@ -57,10 +57,12 @@ int main(int argc, char* argv[]){
     const termColor red = {255,0,0};
 
     int opt;
+    bool long_flag = false;
 
       while ((opt = getopt(argc, argv, "l")) != -1) {
         if (opt == 'l') {
-            std::cout << "long mode" << std::endl;
+            // std::cout << "long mode" << std::endl;
+            long_flag = true;
         } else if (opt == ':') {
             std::cout << "Option requires a value" << std::endl;
         } else if (opt == '?') {
@@ -94,7 +96,8 @@ int main(int argc, char* argv[]){
         // std::cout << icon << " " << fileName << sep;
     }
     size_t filesC = formattedFiles.size();
-    char sep = filesC > 10 ? '\n' : ' ';
+    int long_mode = filesC > 10 || long_flag;
+    char sep = long_mode ? '\n' : ' ';
     std::string allFiles;
     for(int i=0; i<filesC; i++){
         allFiles+=formattedFiles[i]+sep;
