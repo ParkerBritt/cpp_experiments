@@ -3,9 +3,6 @@
 #include <vector>
 #include <unordered_map>
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
 
 namespace fs = std::filesystem;
