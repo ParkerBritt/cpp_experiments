@@ -17,6 +17,8 @@ std::string ansiColor(const termColor& color){
     return ansiColor(color[0], color[1], color[2]);
 }
 
+std::string ansiReset();
+
 
 std::string getIcon(const std::unordered_map<std::string, std::string> iconNameMap,
         const std::unordered_map<std::string, std::string> extMap,
@@ -56,7 +58,7 @@ int main(int argc, char* argv[]){
     int opt;
     bool long_flag = false;
 
-      while ((opt = getopt(argc, argv, "l")) != -1) {
+    while ((opt = getopt(argc, argv, "l")) != -1) {
         if (opt == 'l') {
             // std::cout << "long mode" << std::endl;
             long_flag = true;
@@ -65,8 +67,17 @@ int main(int argc, char* argv[]){
         } else if (opt == '?') {
             std::cout<< "Unknown option: " << optopt << std::endl;
         }
-      }
+    }
 
+    std::string file_path;
+    if (optind < argc) {
+        // check if file exists
+        file_path = argv[optind];
+        if(!fs::exists(file_path)){
+            std::cout << ansiColor(255,0,0) << '"' << file_path << '"' << ": No such file or directory";
+            return 0;
+        }
+    }
     // icon name map
     std::unordered_map<std::string, std::string> iconNameMap;
     iconNameMap["CMakeLists.txt"] = "";
@@ -81,7 +92,13 @@ int main(int argc, char* argv[]){
     extMap["txt"] = "";
     extMap["sh"] = "";
 
-    std::filesystem::path wd = std::filesystem::current_path();
+    std::filesystem::path wd;
+    if(file_path.empty()){
+        wd = fs::current_path();
+    }else{
+        wd = fs::path(file_path);
+    }
+
     bool showHidden = false;
     std::vector<std::string> formattedFiles;
     for (std::filesystem::directory_entry const& dir_entry : std::filesystem::directory_iterator(wd)){
