@@ -3,8 +3,6 @@
 #include <vector>
 #include <unordered_map>
 
-#include <unistd.h>
-
 namespace fs = std::filesystem;
 
 using termColor = int[3];
@@ -55,17 +53,28 @@ int main(int argc, char* argv[]){
     // def colors
     const termColor red = {255,0,0};
 
-    int opt;
     bool long_flag = false;
 
-    while ((opt = getopt(argc, argv, "l")) != -1) {
-        if (opt == 'l') {
-            // std::cout << "long mode" << std::endl;
+    int optind = 1;
+    for(optind; optind<argc; optind++){
+        const std::string opt = argv[optind];
+        if(opt.substr(0,1) !="-"){ // break if no flag detected
+            // std::cout << "break " << argc << opt << std::endl;
+            // std::cout << opt.substr(1,0) << std::endl;
+            break;
+        }
+        else if (opt == "-l") {
+            std::cout << "long mode" << std::endl;
             long_flag = true;
-        } else if (opt == ':') {
-            std::cout << "Option requires a value" << std::endl;
-        } else if (opt == '?') {
-            std::cout<< "Unknown option: " << optopt << std::endl;
+        }
+        else if(opt == "--columns"){
+            int column_cnt = atoi(argv[optind+1]); 
+            std::cout << "COLUMNS " << column_cnt << std::endl;
+            optind++;
+        }
+        else{
+            std::cout << ansiColor(255,0,0) << "Unkown option: " << opt << std::endl;
+            return 0;
         }
     }
 
@@ -74,10 +83,11 @@ int main(int argc, char* argv[]){
         // check if file exists
         file_path = argv[optind];
         if(!fs::exists(file_path)){
-            std::cout << ansiColor(255,0,0) << '"' << file_path << '"' << ": No such file or directory";
+            std::cout << ansiColor(255,0,0) << '"' << file_path << '"' << ": No such file or directory" << std::endl;
             return 0;
         }
     }
+    // std::cout << "file path:" << file_path << std::endl;
     // icon name map
     std::unordered_map<std::string, std::string> iconNameMap;
     iconNameMap["CMakeLists.txt"] = "";
