@@ -58,19 +58,34 @@ int main(int argc, char* argv[]){
     int optind = 1;
     for(optind; optind<argc; optind++){
         const std::string opt = argv[optind];
-        if(opt.substr(0,1) !="-"){ // break if no flag detected
+        if(opt[0]!='-'){ // break if no flag detected
             // std::cout << "break " << argc << opt << std::endl;
             // std::cout << opt.substr(1,0) << std::endl;
             break;
         }
-        else if (opt == "-l") {
-            std::cout << "long mode" << std::endl;
-            long_flag = true;
+        else if(opt[0]=='-' && opt[1]!='-'){
+            for(int i=1; i<opt.size(); i++){
+                switch(opt[i]){
+                    case 'l':
+                        std::cout << "long mode" << std::endl;
+                        long_flag = true;
+                        break;
+                    case 'h':
+                        std::cout << "help" << std::endl;
+                }
+            }
         }
         else if(opt == "--columns"){
             int column_cnt = atoi(argv[optind+1]); 
-            std::cout << "COLUMNS " << column_cnt << std::endl;
+            std::cout << "COLUMNS: " << column_cnt << std::endl;
             optind++;
+            continue;
+        }
+        else if(opt == "--rows"){
+            int row_cnt = atoi(argv[optind+1]);
+            std::cout << "ROWS: " << row_cnt << std::endl;
+            optind++;
+            continue;
         }
         else{
             std::cout << ansiColor(255,0,0) << "Unkown option: " << opt << std::endl;
