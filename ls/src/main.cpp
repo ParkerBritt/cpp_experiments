@@ -15,7 +15,9 @@ std::string ansiColor(const termColor& color){
     return ansiColor(color[0], color[1], color[2]);
 }
 
-std::string ansiReset();
+std::string ansiReset(){
+    return "\e[m";
+}
 
 
 std::string getIcon(const std::unordered_map<std::string, std::string> iconNameMap,
@@ -50,7 +52,7 @@ std::string getIcon(const std::unordered_map<std::string, std::string> iconNameM
 }
 
 void displayHelp(){
-
+    std::cout << "Help Placeholder" << std::endl;
 }
 
 int main(int argc, char* argv[]){
@@ -77,13 +79,18 @@ int main(int argc, char* argv[]){
         }
         if(opt[0]=='-' && opt[1]!='-'){
             for(int i=1; i<optSize; i++){
-                switch(opt[i]){
+                const char flag = opt[i];
+                switch(flag){
                     case 'l':
                         std::cout << "long mode" << std::endl;
                         long_flag = true;
                         break;
                     case 'h':
-                        std::cout << "help" << std::endl;
+                        displayHelp();
+                        break;
+                    default:
+                        std::cout << ansiColor(255,0,0) << "Invalid flag: " << flag << ansiReset() << std::endl;
+                        displayHelp();
                         break;
                 }
             }
@@ -109,6 +116,7 @@ int main(int argc, char* argv[]){
         }
         else{
             std::cout << ansiColor(255,0,0) << "Unkown option: " << opt << std::endl;
+            displayHelp();
             return 0;
         }
     }
