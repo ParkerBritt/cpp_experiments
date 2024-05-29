@@ -2,8 +2,10 @@
 #include <filesystem>
 #include <vector>
 #include <unordered_map>
+#include "ArgParsing.hpp"
 
 namespace fs = std::filesystem;
+
 
 using termColor = int[3];
 
@@ -51,6 +53,7 @@ std::string getIcon(const std::unordered_map<std::string, std::string> iconNameM
     return icon;
 }
 
+
 void displayHelp(){
     std::cout << "Help Placeholder" << std::endl;
 }
@@ -59,8 +62,9 @@ int main(int argc, char* argv[]){
     // def colors
     const termColor red = {255,0,0};
 
-    bool long_flag = false;
+    ArgumentParser argParser = ArgumentParser();
 
+    bool long_flag = false;
     int optind = 1;
     int column_cnt = -1;
     int row_cnt = -1;
@@ -91,7 +95,7 @@ int main(int argc, char* argv[]){
                     default:
                         std::cout << ansiColor(255,0,0) << "Invalid flag: " << flag << ansiReset() << std::endl;
                         displayHelp();
-                        break;
+                        return 0;
                 }
             }
             continue;
