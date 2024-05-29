@@ -63,8 +63,13 @@ int main(int argc, char* argv[]){
     const termColor red = {255,0,0};
 
     ArgumentParser argParser = ArgumentParser();
-
+    std::string foo = "NOT SET";
+    argParser.addArgument<std::string>("foo", foo);
     bool long_flag = false;
+    argParser.parseArgs(argc, argv);
+    // argParser.addArgument<bool>('l', long_flag);
+    std::cout << foo << std::endl;
+
     int optind = 1;
     int column_cnt = -1;
     int row_cnt = -1;
