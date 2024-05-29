@@ -49,6 +49,10 @@ std::string getIcon(const std::unordered_map<std::string, std::string> iconNameM
     return icon;
 }
 
+void displayHelp(){
+
+}
+
 int main(int argc, char* argv[]){
     // def colors
     const termColor red = {255,0,0};
@@ -56,15 +60,23 @@ int main(int argc, char* argv[]){
     bool long_flag = false;
 
     int optind = 1;
+    int column_cnt = -1;
+    int row_cnt = -1;
     for(optind; optind<argc; optind++){
         const std::string opt = argv[optind];
         if(opt[0]!='-'){ // break if no flag detected
             // std::cout << "break " << argc << opt << std::endl;
             // std::cout << opt.substr(1,0) << std::endl;
-            break;
+            continue;
         }
-        else if(opt[0]=='-' && opt[1]!='-'){
-            for(int i=1; i<opt.size(); i++){
+
+        // -- start short op handling --
+        unsigned int optSize= opt.size();
+        if(optSize<2){ // guard against short arg with no char
+            continue;
+        }
+        if(opt[0]=='-' && opt[1]!='-'){
+            for(int i=1; i<optSize; i++){
                 switch(opt[i]){
                     case 'l':
                         std::cout << "long mode" << std::endl;
@@ -72,17 +84,25 @@ int main(int argc, char* argv[]){
                         break;
                     case 'h':
                         std::cout << "help" << std::endl;
+                        break;
                 }
             }
+            continue;
+        }
+        // -- end short op handling --
+
+        // start long opt handling
+        if(optSize<3 || opt.substr(0,2)!="--"){ // guard against long arg with no name
+           continue;
         }
         else if(opt == "--columns"){
-            int column_cnt = atoi(argv[optind+1]); 
+            column_cnt = atoi(argv[optind+1]); 
             std::cout << "COLUMNS: " << column_cnt << std::endl;
             optind++;
             continue;
         }
         else if(opt == "--rows"){
-            int row_cnt = atoi(argv[optind+1]);
+            row_cnt = atoi(argv[optind+1]);
             std::cout << "ROWS: " << row_cnt << std::endl;
             optind++;
             continue;
