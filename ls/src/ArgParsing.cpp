@@ -25,22 +25,22 @@ void ArgumentParser::parseArgs(int argc, char* argv[]){
             continue;
         }
         if(opt[0]=='-' && opt[1]!='-'){
-            size_t flagInd = 1;
-            char flag;
+            size_t shortArgInd = 1;
+            char shortArg;
             if(optSize>2){
-                // handle boolean flags
-                for(flagInd; flagInd<optSize-1; flagInd++){
-                    flag = opt[flagInd];
-                    shortArgs[flag] = "true";
+                // handle boolean shortArgs
+                for(shortArgInd; shortArgInd<optSize-1; shortArgInd++){
+                    shortArg = opt[shortArgInd];
+                    shortArgs[shortArg] = "true";
                 }
             }
-            flag = opt[flagInd];
-            // handle setable flags
+            shortArg = opt[shortArgInd];
+            // handle setable shortArgs
             if(optind<argc-1 && argv[optind+1][0]!='-'){
-                shortArgs[flag] = argv[optind+1];
+                shortArgs[shortArg] = argv[optind+1];
             }
             else{
-                shortArgs[flag] = "true";
+                shortArgs[shortArg] = "true";
             }
         }
         std::cout << "SHORT ARG VALUES" << std::endl;
