@@ -65,9 +65,10 @@ int main(int argc, char* argv[]){
     ArgumentParser argParser = ArgumentParser();
     std::string foo = "NOT SET";
     bool long_flag = false;
+    argParser.addArgument('l', argParser.Bool);
     argParser.parseArgs(argc, argv);
     // argParser.getArgument<std::string>("foo", foo);
-    argParser.getArgument<bool>('l', long_flag);
+    argParser.getArgument('l', long_flag);
     std::cout << "FLAG: " << long_flag << std::endl;
     return 0;
     // argParser.addArgument<bool>('l', long_flag);
