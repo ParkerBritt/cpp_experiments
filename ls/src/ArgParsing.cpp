@@ -28,23 +28,23 @@ void ArgumentParser::parseArgs(int argc, char* argv[]){
             size_t shortArgInd = 1;
             char shortArg;
             if(optSize>2){
-                // handle boolean shortArgs
+                // handle boolean shortArgMapping
                 for(shortArgInd; shortArgInd<optSize-1; shortArgInd++){
                     shortArg = opt[shortArgInd];
-                    shortArgs[shortArg] = "true";
+                    shortArgMapping[shortArg] = "true";
                 }
             }
             shortArg = opt[shortArgInd];
-            // handle setable shortArgs
+            // handle setable shortArgMapping
             if(optind<argc-1 && argv[optind+1][0]!='-'){
-                shortArgs[shortArg] = argv[optind+1];
+                shortArgMapping[shortArg] = argv[optind+1];
             }
             else{
-                shortArgs[shortArg] = "true";
+                shortArgMapping[shortArg] = "true";
             }
         }
         std::cout << "SHORT ARG VALUES" << std::endl;
-        for (const auto& pair : shortArgs) {
+        for (const auto& pair : shortArgMapping) {
                 std::cout << "Key: " << pair.first << ", Value: " << pair.second << std::endl;
         }
     }

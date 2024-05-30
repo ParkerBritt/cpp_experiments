@@ -12,7 +12,8 @@ class ArgumentParser{
         // template <typename T>
         // T getArgVal();
 
-        std::unordered_map<char, std::string> shortArgs; 
+        std::unordered_map<char, std::string> shortArgMapping; 
+        std::unordered_map<std::string, std::string> longArgMapping; 
 
         // long args
         template <typename T>
@@ -33,11 +34,14 @@ class ArgumentParser{
                 std::cout << "is int" << std::endl;
             }
             else if(std::is_same<T, bool>::value){
-                if(shortArgs.find(name)==shortArgs.end()){
-                    var = shortArgs[name]=="true";
+                if(shortArgMapping.find(name)==shortArgMapping.end()){
+                    var = shortArgMapping[name]=="true";
                 }
             }
         }
+
+        template <typename T>
+        void addArgument();
 };
 
 
