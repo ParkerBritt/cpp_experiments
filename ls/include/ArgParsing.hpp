@@ -16,7 +16,7 @@ class ArgumentParser{
 
         // long args
         template <typename T>
-        void addArgument(std::string name, T& var){
+        void getArgument(std::string name, T& var){
             if(std::is_same<T, int>::value){
                 std::cout << "is int" << std::endl;
             }
@@ -28,9 +28,14 @@ class ArgumentParser{
 
         // short args
         template <typename T>
-        void addArgument(char name, T& var){
+        void getArgument(char name, T& var){
             if(std::is_same<T, int>::value){
                 std::cout << "is int" << std::endl;
+            }
+            else if(std::is_same<T, bool>::value){
+                if(shortArgs.find(name)==shortArgs.end()){
+                    var = shortArgs[name]=="true";
+                }
             }
         }
 };
