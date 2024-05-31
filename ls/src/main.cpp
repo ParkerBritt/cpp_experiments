@@ -63,86 +63,23 @@ int main(int argc, char* argv[]){
     const termColor red = {255,0,0};
 
     ArgumentParser argParser = ArgumentParser();
-    std::string foo = "NOT SET";
     bool long_flag = false;
     argParser.addArgument('l', argParser.Bool);
     argParser.parseArgs(argc, argv);
-    // argParser.getArgument<std::string>("foo", foo);
     argParser.getArgument('l', long_flag);
     std::cout << "FLAG: " << long_flag << std::endl;
-    return 0;
+    // return 0;
     // argParser.addArgument<bool>('l', long_flag);
-    std::cout << foo << std::endl;
-
-    int optind = 1;
-    int column_cnt = -1;
-    int row_cnt = -1;
-    for(optind; optind<argc; optind++){
-        const std::string opt = argv[optind];
-        if(opt[0]!='-'){ // break if no flag detected
-            // std::cout << "break " << argc << opt << std::endl;
-            // std::cout << opt.substr(1,0) << std::endl;
-            continue;
-        }
-
-        // -- start short op handling --
-        unsigned int optSize= opt.size();
-        if(optSize<2){ // guard against short arg with no char
-            continue;
-        }
-        if(opt[0]=='-' && opt[1]!='-'){
-            for(int i=1; i<optSize; i++){
-                const char flag = opt[i];
-                switch(flag){
-                    case 'l':
-                        std::cout << "long mode" << std::endl;
-                        long_flag = true;
-                        break;
-                    case 'h':
-                        displayHelp();
-                        break;
-                    default:
-                        std::cout << ansiColor(255,0,0) << "Invalid flag: " << flag << ansiReset() << std::endl;
-                        displayHelp();
-                        return 0;
-                }
-            }
-            continue;
-        }
-        // -- end short op handling --
-
-        // start long opt handling
-        if(optSize<3 || opt.substr(0,2)!="--"){ // guard against long arg with no name
-           continue;
-        }
-        else if(opt == "--columns"){
-            column_cnt = atoi(argv[optind+1]); 
-            std::cout << "COLUMNS: " << column_cnt << std::endl;
-            optind++;
-            continue;
-        }
-        else if(opt == "--rows"){
-            row_cnt = atoi(argv[optind+1]);
-            std::cout << "ROWS: " << row_cnt << std::endl;
-            optind++;
-            continue;
-        }
-        else{
-            std::cout << ansiColor(255,0,0) << "Unkown option: " << opt << std::endl;
-            displayHelp();
-            return 0;
-        }
-    }
 
     std::string file_path;
-    if (optind < argc) {
-        // check if file exists
-        file_path = argv[optind];
-        if(!fs::exists(file_path)){
-            std::cout << ansiColor(255,0,0) << '"' << file_path << '"' << ": No such file or directory" << std::endl;
-            return 0;
-        }
-    }
+    // if (optind < argc) {
+    //     // check if file exists
+    //     file_path = argv[optind];
+    //     if(!fs::exists(file_path)){
+    //         std::cout << ansiColor(255,0,0) << '"' << file_path << '"' << ": No such file or directory" << std::endl;
+    //         return 0;
+    //     }
+    // }
     // std::cout << "file path:" << file_path << std::endl;
     // icon name map
     std::unordered_map<std::string, std::string> iconNameMap;
@@ -152,6 +89,7 @@ int main(int argc, char* argv[]){
     iconNameMap["Videos"] = "";
     iconNameMap["Games"] = "󰮂";
     iconNameMap["bin"] = "";
+    iconNameMap["Projects"] = "";
 
     // file extension map
     std::unordered_map<std::string, std::string> extMap;
