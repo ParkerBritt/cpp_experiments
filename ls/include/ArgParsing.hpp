@@ -53,7 +53,9 @@ class ArgumentParser{
                 std::cout << "is int" << std::endl;
             }
             else if(std::is_same<T, bool>::value){
-                if(shortArgValMap.find(name)==shortArgValMap.end()){
+                std::cout << "fetching bool value for getArgument" << std::endl;
+                if(shortArgValMap.find(name)!=shortArgValMap.end()){ // if value is present
+                    std::cout << "passed" << std::endl;
                     var = shortArgValMap[name]=="true";
                 }
             }
