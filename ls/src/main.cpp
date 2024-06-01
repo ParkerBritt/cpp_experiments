@@ -65,7 +65,9 @@ int main(int argc, char* argv[]){
     ArgumentParser argParser = ArgumentParser();
     bool long_flag = false;
     argParser.addArgument('l', argParser.Bool);
-    argParser.parseArgs(argc, argv);
+    if(!argParser.parseArgs(argc, argv)){
+        return -1;
+    }
     long_flag = argParser.getArgVal('l');
     std::cout << "FLAG: " << long_flag << std::endl;
     return 0;

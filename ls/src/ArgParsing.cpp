@@ -6,7 +6,7 @@ ArgumentParser::ArgumentParser(){
 
 
 
-void ArgumentParser::parseArgs(int argc, char* argv[]){
+bool ArgumentParser::parseArgs(int argc, char* argv[]){
     std::cout << "PARSTING ARGS" << std::endl;
     int optind = 1;
     int column_cnt = -1;
@@ -31,13 +31,19 @@ void ArgumentParser::parseArgs(int argc, char* argv[]){
                 // handle boolean shortArgValMap
                 for(shortArgInd; shortArgInd<optSize-1; shortArgInd++){
                     shortArg = opt[shortArgInd];
+                    // if flag cannot be found in typemap then don't save it's value
+                    // not in typeMap means invalid flag
+                    if(shortArgTypeMap.find(shortArg)==shortArgTypeMap.end()){
+                        unkownArg(shortArg);
+                        return false;
+                    }
                     shortArgValMap[shortArg] = "true";
                 }
             }
             shortArg = opt[shortArgInd];
             // handle setable shortArgValMap
             if(optind<argc-1 && argv[optind+1][0]!='-'){
-                shortArgValMap[shortArg] = argv[optind+1];
+                shortArgValMap[shortArg] = argv[optind+1]; 
             }
             else{
                 shortArgValMap[shortArg] = "true";
@@ -48,12 +54,13 @@ void ArgumentParser::parseArgs(int argc, char* argv[]){
                 std::cout << "Key: " << pair.first << ", Value: " << pair.second << std::endl;
         }
     }
+    return true;
 }
 
 void ArgumentParser::unkownArg(const char name){
-    std::cout << "UnkownArg: " << name << std::endl;
+    std::cerr << "UnkownArg: " << name << std::endl;
 }
 void ArgumentParser::unkownArg(const std::string name){
-    std::cout << "UnkownArg: " << name << std::endl;
+    std::cerr << "UnkownArg: " << name << std::endl;
 }
 

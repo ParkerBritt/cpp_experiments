@@ -16,7 +16,7 @@ class ArgumentParser{
         };
 
         ArgumentParser();
-        void parseArgs(int argc, char* argv[]);
+        bool parseArgs(int argc, char* argv[]);
         // template <typename T>
         // T getArgVal();
 
