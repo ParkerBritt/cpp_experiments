@@ -66,9 +66,9 @@ int main(int argc, char* argv[]){
     bool long_flag = false;
     argParser.addArgument('l', argParser.Bool);
     argParser.parseArgs(argc, argv);
-    argParser.getArgument('l', long_flag);
+    long_flag = argParser.getArgVal('l');
     std::cout << "FLAG: " << long_flag << std::endl;
-    // return 0;
+    return 0;
     // argParser.addArgument<bool>('l', long_flag);
 
     std::string file_path;

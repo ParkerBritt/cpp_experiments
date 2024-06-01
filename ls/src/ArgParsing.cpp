@@ -49,3 +49,11 @@ void ArgumentParser::parseArgs(int argc, char* argv[]){
         }
     }
 }
+
+void ArgumentParser::unkownArg(const char name){
+    std::cout << "UnkownArg: " << name << std::endl;
+}
+void ArgumentParser::unkownArg(const std::string name){
+    std::cout << "UnkownArg: " << name << std::endl;
+}
+
