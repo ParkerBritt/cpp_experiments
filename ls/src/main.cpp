@@ -3,23 +3,12 @@
 #include <vector>
 #include <unordered_map>
 #include "ArgParsing.hpp"
+#include "AnsiUtils.hpp"
 
 namespace fs = std::filesystem;
 
 
-using termColor = int[3];
 
-std::string ansiColor(int r, int g, int b){
-    return "\e[38;2;"+std::to_string(r)+";"+std::to_string(g)+";"+std::to_string(b)+"m";
-}
-
-std::string ansiColor(const termColor& color){
-    return ansiColor(color[0], color[1], color[2]);
-}
-
-std::string ansiReset(){
-    return "\e[m";
-}
 
 
 std::string getIcon(const std::unordered_map<std::string, std::string> iconNameMap,
@@ -60,7 +49,7 @@ void displayHelp(){
 
 int main(int argc, char* argv[]){
     // def colors
-    const termColor red = {255,0,0};
+    const AnsiUtils::colorVector red = {255,0,0};
 
     ArgumentParser argParser = ArgumentParser();
     bool long_flag = false;
@@ -69,7 +58,7 @@ int main(int argc, char* argv[]){
         return -1;
     }
     long_flag = argParser.getArgVal('l');
-    std::cout << "FLAG: " << long_flag << std::endl;
+    std::cout << AnsiUtils::color(red) << "FLAG: " << long_flag << std::endl;
     return 0;
     // argParser.addArgument<bool>('l', long_flag);
 
