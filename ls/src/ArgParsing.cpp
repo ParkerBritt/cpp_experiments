@@ -1,4 +1,5 @@
 #include "ArgParsing.hpp"
+#include "AnsiUtils.hpp"
 
 ArgumentParser::ArgumentParser(){
     std::cout << "constructor successful" << std::endl;
@@ -58,7 +59,7 @@ bool ArgumentParser::parseArgs(int argc, char* argv[]){
 }
 
 void ArgumentParser::unkownArg(const char name){
-    std::cerr << "UnkownArg: " << name << std::endl;
+    std::cerr << AnsiUtils::color(255,0,0) << "UnkownArg: " << AnsiUtils::bold() << name << std::endl;
 }
 void ArgumentParser::unkownArg(const std::string name){
     std::cerr << "UnkownArg: " << name << std::endl;
