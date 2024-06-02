@@ -8,7 +8,6 @@ ArgumentParser::ArgumentParser(){
 
 
 bool ArgumentParser::parseArgs(int argc, char* argv[]){
-    std::cout << "PARSING ARGS" << std::endl;
     int optind = 1;
     int column_cnt = -1;
     int row_cnt = -1;
@@ -74,5 +73,14 @@ void ArgumentParser::unkownArg(const std::string name){
 }
 
 void ArgumentParser::errNoTokenFound(const char argName, const ArgumentParser::Type tokenType){
-    std::cerr << AnsiUtils::color(255,0,0) << "Expected token of type: " << tokenType << " for arg: " << AnsiUtils::bold() << argName << std::endl;
+    std::string typeString;
+    switch(tokenType){
+        case(2):
+            typeString = "string";
+            break;
+        default:
+            typeString = "unkown";
+            break;
+    }
+    std::cerr << AnsiUtils::color(255,0,0) << "Error: No token found. Expected token of type: " << typeString << " for arg: " << AnsiUtils::bold() << argName << std::endl;
 }

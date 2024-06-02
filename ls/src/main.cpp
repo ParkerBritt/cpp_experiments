@@ -53,9 +53,11 @@ int main(int argc, char* argv[]){
 
     ArgumentParser argParser = ArgumentParser();
     bool long_flag = false;
+    std::cout << "ADDING ARGUMENTS" << std::endl;
     argParser.addArgument('l', argParser.Bool);
     argParser.addArgument('a', argParser.Bool);
-    // argParser.addArgument('f', argParser.String);
+    argParser.addArgument('f', argParser.String);
+    std::cout << "PARSING ARGS" << std::endl;
     if(!argParser.parseArgs(argc, argv)){
         return -1;
     }
