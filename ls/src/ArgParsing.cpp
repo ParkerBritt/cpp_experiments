@@ -8,7 +8,7 @@ ArgumentParser::ArgumentParser(){
 
 
 bool ArgumentParser::parseArgs(int argc, char* argv[]){
-    std::cout << "PARSTING ARGS" << std::endl;
+    std::cout << "PARSING ARGS" << std::endl;
     int optind = 1;
     int column_cnt = -1;
     int row_cnt = -1;
@@ -41,14 +41,22 @@ bool ArgumentParser::parseArgs(int argc, char* argv[]){
                     shortArgValMap[shortArg] = "true";
                 }
             }
+
+            // -- start handling last char --
+            // handle last char differently to accomodate to allow for setting a custom value
             shortArg = opt[shortArgInd];
-            // handle setable shortArgValMap
+            if(shortArgTypeMap.find(shortArg)==shortArgTypeMap.end()){
+                unkownArg(shortArg);
+                return false;
+            }
+            // if there is an argument after the current one and that argumen is a token
             if(optind<argc-1 && argv[optind+1][0]!='-'){
-                shortArgValMap[shortArg] = argv[optind+1]; 
+                shortArgValMap[shortArg] = argv[optind+1]; // set value to the token if present
             }
             else{
-                shortArgValMap[shortArg] = "true";
+                shortArgValMap[shortArg] = "true"; // if no token is present set value to true
             }
+            // -- finish handling last char --
         }
         std::cout << "SHORT ARG VALUES" << std::endl;
         for (const auto& pair : shortArgValMap) {

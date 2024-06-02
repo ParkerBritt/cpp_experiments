@@ -58,9 +58,7 @@ int main(int argc, char* argv[]){
         return -1;
     }
     long_flag = argParser.getArgVal('l');
-    std::cout << AnsiUtils::color(red) << "FLAG: " << long_flag << std::endl;
-    return 0;
-    // argParser.addArgument<bool>('l', long_flag);
+    std::cout << "FLAG: " << long_flag << std::endl;
 
     std::string file_path;
     // if (optind < argc) {
