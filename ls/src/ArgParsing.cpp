@@ -21,41 +21,39 @@ bool ArgumentParser::parseArgs(int argc, char* argv[]){
         }
 
         // -- start short op handling --
-        unsigned int optSize= opt.size();
+        size_t optSize= opt.size();
         if(optSize<2){ // guard against short arg with no char
             continue;
         }
         if(opt[0]=='-' && opt[1]!='-'){
-            size_t shortArgInd = 1;
             char shortArg;
-            if(optSize>2){
-                // handle boolean shortArgValMap
-                for(shortArgInd; shortArgInd<optSize; shortArgInd++){
-                    shortArg = opt[shortArgInd];
-                    // if flag cannot be found in typemap then don't save it's value
-                    // not in typeMap means invalid flag
-                    if(shortArgTypeMap.find(shortArg)==shortArgTypeMap.end()){
-                        unkownArg(shortArg);
+            // handle boolean shortArgValMap
+            for(size_t shortArgInd=1; shortArgInd<optSize; shortArgInd++){
+                shortArg = opt[shortArgInd];
+                // if flag cannot be found in typemap then don't save it's value
+                // not in typeMap means invalid flag
+                if(shortArgTypeMap.find(shortArg)==shortArgTypeMap.end()){
+                    unkownArg(shortArg);
+                    return false;
+                }
+                Type argType = shortArgTypeMap[shortArg];
+
+                // if flag is bool set arg value to true
+                if(argType == Bool){
+                    std::cout << "setting: " << shortArg << " to true" << std::endl;
+                    shortArgBoolMap[shortArg] = true;
+                    continue;
+                }
+
+                // for other types check if there is a token
+                if(shortArgInd==optSize-1){ // if last char
+                    // if there is an argument after the current one and that argumen is a token
+                    if(optind<argc-1 && argv[optind+1][0]!='-'){
+                        shortArgValMap[shortArg] = argv[optind+1]; // set value to the token if present
+                    }
+                    else{ // if no token is present set raise error
+                        errNoTokenFound(shortArg, argType);
                         return false;
-                    }
-                    Type argType = shortArgTypeMap[shortArg];
-
-                    // if flag is bool set arg value to true
-                    if(argType == Bool){
-                        shortArgBoolMap[shortArg] = true;
-                        continue;
-                    }
-
-                    // for other types check if there is a token
-                    if(shortArgInd==optSize-1){ // if last char
-                        // if there is an argument after the current one and that argumen is a token
-                        if(optind<argc-1 && argv[optind+1][0]!='-'){
-                            shortArgValMap[shortArg] = argv[optind+1]; // set value to the token if present
-                        }
-                        else{ // if no token is present set raise error
-                            errNoTokenFound(shortArg, argType);
-                            return false;
-                        }
                     }
                 }
             }

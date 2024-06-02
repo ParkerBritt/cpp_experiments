@@ -54,12 +54,15 @@ int main(int argc, char* argv[]){
     ArgumentParser argParser = ArgumentParser();
     bool long_flag = false;
     argParser.addArgument('l', argParser.Bool);
+    argParser.addArgument('a', argParser.Bool);
     // argParser.addArgument('f', argParser.String);
     if(!argParser.parseArgs(argc, argv)){
         return -1;
     }
     long_flag = argParser.getArgVal('l');
-    std::cout << "FLAG: " << long_flag << std::endl;
+    bool a_flag = argParser.getArgVal('a');
+    std::cout << "FLAG L: " << long_flag << std::endl;
+    std::cout << "FLAG A: " << a_flag << std::endl;
 
     std::string file_path;
     // if (optind < argc) {
