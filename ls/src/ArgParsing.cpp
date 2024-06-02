@@ -30,7 +30,7 @@ bool ArgumentParser::parseArgs(int argc, char* argv[]){
             char shortArg;
             if(optSize>2){
                 // handle boolean shortArgValMap
-                for(shortArgInd; shortArgInd<optSize-1; shortArgInd++){
+                for(shortArgInd; shortArgInd<optSize; shortArgInd++){
                     shortArg = opt[shortArgInd];
                     // if flag cannot be found in typemap then don't save it's value
                     // not in typeMap means invalid flag
@@ -38,25 +38,27 @@ bool ArgumentParser::parseArgs(int argc, char* argv[]){
                         unkownArg(shortArg);
                         return false;
                     }
-                    shortArgValMap[shortArg] = "true";
+                    Type argType = shortArgTypeMap[shortArg];
+
+                    // if flag is bool set arg value to true
+                    if(argType == Bool){
+                        shortArgBoolMap[shortArg] = true;
+                        continue;
+                    }
+
+                    // for other types check if there is a token
+                    if(shortArgInd==optSize-1){ // if last char
+                        // if there is an argument after the current one and that argumen is a token
+                        if(optind<argc-1 && argv[optind+1][0]!='-'){
+                            shortArgValMap[shortArg] = argv[optind+1]; // set value to the token if present
+                        }
+                        else{ // if no token is present set raise error
+                            errNoTokenFound(shortArg, argType);
+                            return false;
+                        }
+                    }
                 }
             }
-
-            // -- start handling last char --
-            // handle last char differently to accomodate to allow for setting a custom value
-            shortArg = opt[shortArgInd];
-            if(shortArgTypeMap.find(shortArg)==shortArgTypeMap.end()){
-                unkownArg(shortArg);
-                return false;
-            }
-            // if there is an argument after the current one and that argumen is a token
-            if(optind<argc-1 && argv[optind+1][0]!='-'){
-                shortArgValMap[shortArg] = argv[optind+1]; // set value to the token if present
-            }
-            else{
-                shortArgValMap[shortArg] = "true"; // if no token is present set value to true
-            }
-            // -- finish handling last char --
         }
         std::cout << "SHORT ARG VALUES" << std::endl;
         for (const auto& pair : shortArgValMap) {
@@ -73,3 +75,6 @@ void ArgumentParser::unkownArg(const std::string name){
     std::cerr << "UnkownArg: " << name << std::endl;
 }
 
+void ArgumentParser::errNoTokenFound(const char argName, const ArgumentParser::Type tokenType){
+    std::cerr << AnsiUtils::color(255,0,0) << "Expected token of type: " << tokenType << " for arg: " << AnsiUtils::bold() << argName << std::endl;
+}

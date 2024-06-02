@@ -54,6 +54,7 @@ int main(int argc, char* argv[]){
     ArgumentParser argParser = ArgumentParser();
     bool long_flag = false;
     argParser.addArgument('l', argParser.Bool);
+    // argParser.addArgument('f', argParser.String);
     if(!argParser.parseArgs(argc, argv)){
         return -1;
     }
