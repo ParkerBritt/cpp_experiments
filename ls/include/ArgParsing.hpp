@@ -23,6 +23,7 @@ class ArgumentParser{
 
         std::unordered_map<char, std::string> shortArgValMap; 
         std::unordered_map<char, bool> shortArgBoolMap; 
+        std::unordered_map<std::string, bool> longArgBoolMap; 
         std::unordered_map<std::string, std::string> longArgValMap; 
         std::vector<std::string> positionalArgs;
 
@@ -76,26 +77,21 @@ class ArgumentParser{
     //     std::string argVal = shortArgValMap[name];
     //     return argVal=="true";
     // }
-    bool getArgVal(const char flagName){
-        return getArgVal(flagName, false);
-    }
-    bool getArgVal(const char flagName, bool defaultVal){
-        bool argVal = shortArgBoolMap[flagName];
-        if(argVal){
-            return argVal;
-        }
-        else{
-            return defaultVal;
-        }
-    }
-    std::string getArgVal(const std::string flagName){
-        return longArgValMap[flagName];
-    }
+    bool getArgVal(const char flagName);
+    bool getArgVal(const char flagName, bool defaultVal);
+
+    template <typename T>
+    T getArgVal(const std::string);
+
+    template <typename T>
+    T getArgVal(const std::string, T defaultVal);
+
 
     private:
         void unkownArg(const char name);
         void unkownArg(const std::string name);
         void errNoTokenFound(const char argName, const ArgumentParser::Type tokenType);
+        void errNoTokenFound(const std::string argName, const ArgumentParser::Type tokenType);
 };
 
 

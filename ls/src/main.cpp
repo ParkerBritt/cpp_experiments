@@ -57,6 +57,8 @@ int main(int argc, char* argv[]){
     argParser.addArgument('l', argParser.Bool);
     argParser.addArgument('a', argParser.Bool);
     argParser.addArgument('f', argParser.String);
+    argParser.addArgument("test", argParser.String);
+    argParser.addArgument("testLongBool", argParser.Bool);
     argParser.addArgument("path1", argParser.Positional);
     argParser.addArgument("path2", argParser.Positional);
     std::cout << "PARSING ARGS" << std::endl;
@@ -65,12 +67,16 @@ int main(int argc, char* argv[]){
     }
     long_flag = argParser.getArgVal('l');
     bool a_flag = argParser.getArgVal('a');
-    std::string positionalArg1 = argParser.getArgVal("path1");
-    std::string positionalArg2 = argParser.getArgVal("path2");
+    std::string positionalArg1 = argParser.getArgVal<std::string>("path1");
+    std::string positionalArg2 = argParser.getArgVal<std::string>("path2");
+    std::string longArgTest = argParser.getArgVal<std::string>("test");
+    bool longBoolTest = argParser.getArgVal<bool>("testLongBool");
     std::cout << "FLAG L: " << long_flag << std::endl;
     std::cout << "FLAG A: " << a_flag << std::endl;
     std::cout << "positional1: " << positionalArg1 << std::endl;
     std::cout << "positional2: " << positionalArg2 << std::endl;
+    std::cout << "long arg test: " << longArgTest << std::endl;
+    std::cout << "long arg test bool: " << longBoolTest << std::endl;
 
     std::string file_path;
     // if (optind < argc) {
@@ -121,7 +127,7 @@ int main(int argc, char* argv[]){
     for(int i=0; i<filesC; i++){
         allFiles+=formattedFiles[i]+sep;
     }
-    std::cout << allFiles;
+    std::cout << allFiles << std::endl;
     return 0;
 
 }

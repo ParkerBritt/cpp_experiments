@@ -7,7 +7,6 @@ ArgumentParser::ArgumentParser(){
 
 
 void ArgumentParser::addArgument(const char name, Type type){
-    // Type type = Bool;
     shortArgTypeMap[name] = type;
     std::cout << "adding: " << name << " as type: " << type << std::endl;
     for (const auto& pair : shortArgValMap) {
@@ -38,15 +37,6 @@ bool ArgumentParser::parseArgs(int argc, char* argv[]){
             if(positionalIndex<positionalArgs.size()-1){
                 positionalIndex++;
             }
-            // handle positional arguments
-            // if(longArgTypeMap.find(opt)==longArgTypeMap.end()){
-            //     continue;
-            // }
-            // Type type = longArgTypeMap[opt];
-            // if(type==Positional){
-                // do positional argument handling here
-                // add each positional argument to longArgValMap if the previous positional entry has been filled
-            // }
             
         }
 
@@ -89,11 +79,34 @@ bool ArgumentParser::parseArgs(int argc, char* argv[]){
                 }
             }
         }
-        // -- start long arg handling --
 
-        std::cout << "SHORT ARG VALUES" << std::endl;
-        for (const auto& pair : shortArgValMap) {
-                std::cout << "Key: " << pair.first << ", Value: " << pair.second << std::endl;
+        // -- start long arg handling --
+        if(opt.substr(0,2)=="--"){
+            std::string longArg = opt.substr(2,optSize-2);
+            std::cout << "parsing longarg: " << longArg << std::endl;
+
+
+            // check if arg has been registed with addArgument
+            if(longArgTypeMap.find(longArg)==longArgTypeMap.end()){
+                unkownArg(longArg);
+                return false;
+            }
+            Type argType = longArgTypeMap[longArg];
+
+            if(argType == Bool){
+                std::cout << "setting: " << longArg << " to true" << std::endl;
+                longArgBoolMap[longArg] = true;
+                continue;
+            }
+
+            if(optind<argc-1 && argv[optind+1][0]!='-'){
+                longArgValMap[longArg] = argv[optind+1]; // set value to the token if present
+                optind++;
+            }
+            else{ // if no token is present set raise error
+                errNoTokenFound(longArg, argType);
+                return false;
+            }
         }
     }
     return true;
@@ -106,6 +119,36 @@ void ArgumentParser::unkownArg(const std::string name){
     std::cerr << "UnkownArg: " << name << std::endl;
 }
 
+bool ArgumentParser::getArgVal(const char flagName){
+    return getArgVal(flagName, false);
+}
+
+bool ArgumentParser::getArgVal(const char flagName, bool defaultVal){
+    bool argVal = shortArgBoolMap[flagName];
+    if(argVal){
+        return argVal;
+    }
+    else{
+        return defaultVal;
+    }
+}
+
+
+template <>
+bool ArgumentParser::getArgVal<bool>(const std::string flagName, bool defaultVal){
+    return longArgBoolMap[flagName];
+}
+
+template <>
+bool ArgumentParser::getArgVal<bool>(const std::string flagName){
+    return getArgVal<bool>(flagName, false);
+}
+
+template <>
+std::string ArgumentParser::getArgVal<std::string>(const std::string flagName){
+    return longArgValMap[flagName];
+}
+
 void ArgumentParser::errNoTokenFound(const char argName, const ArgumentParser::Type tokenType){
     std::string typeString;
     switch(tokenType){
@@ -113,7 +156,19 @@ void ArgumentParser::errNoTokenFound(const char argName, const ArgumentParser::T
             typeString = "string";
             break;
         default:
-            typeString = "unkown";
+            typeString = "unknown";
+            break;
+    }
+    std::cerr << AnsiUtils::color(255,0,0) << "Error: No token found. Expected token of type: " << typeString << " for arg: " << AnsiUtils::bold() << argName << std::endl;
+}
+void ArgumentParser::errNoTokenFound(const std::string argName, const ArgumentParser::Type tokenType){
+    std::string typeString;
+    switch(tokenType){
+        case(2):
+            typeString = "string";
+            break;
+        default:
+            typeString = "unknown";
             break;
     }
     std::cerr << AnsiUtils::color(255,0,0) << "Error: No token found. Expected token of type: " << typeString << " for arg: " << AnsiUtils::bold() << argName << std::endl;
