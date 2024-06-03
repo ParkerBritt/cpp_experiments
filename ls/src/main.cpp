@@ -57,15 +57,20 @@ int main(int argc, char* argv[]){
     argParser.addArgument('l', argParser.Bool);
     argParser.addArgument('a', argParser.Bool);
     argParser.addArgument('f', argParser.String);
-    argParser.addArgument("path", argParser.Positional);
+    argParser.addArgument("path1", argParser.Positional);
+    argParser.addArgument("path2", argParser.Positional);
     std::cout << "PARSING ARGS" << std::endl;
     if(!argParser.parseArgs(argc, argv)){
         return -1;
     }
     long_flag = argParser.getArgVal('l');
     bool a_flag = argParser.getArgVal('a');
+    std::string positionalArg1 = argParser.getArgVal("path1");
+    std::string positionalArg2 = argParser.getArgVal("path2");
     std::cout << "FLAG L: " << long_flag << std::endl;
     std::cout << "FLAG A: " << a_flag << std::endl;
+    std::cout << "positional1: " << positionalArg1 << std::endl;
+    std::cout << "positional2: " << positionalArg2 << std::endl;
 
     std::string file_path;
     // if (optind < argc) {

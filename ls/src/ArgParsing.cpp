@@ -17,6 +17,11 @@ void ArgumentParser::addArgument(const char name, Type type){
 
 void ArgumentParser::addArgument(const std::string name, Type type){
     longArgTypeMap[name] = type;
+
+    // add to positional argument vector
+    if(type == ArgumentParser::Positional){
+        positionalArgs.push_back(name);
+    }
     std::cout << "adding: " << name << " as type: " << type << std::endl;
 }
 
@@ -24,17 +29,24 @@ bool ArgumentParser::parseArgs(int argc, char* argv[]){
     int optind = 1;
     int column_cnt = -1;
     int row_cnt = -1;
+    int positionalIndex = 0;
     for(optind; optind<argc; optind++){
         const std::string opt = argv[optind];
         if(opt[0]!='-'){ // break if no flag detected
-            // handle positional arguments
-            if(longArgTypeMap.find(opt)==longArgTypeMap.end()){
-                continue;
+            std::string argName = positionalArgs[positionalIndex];
+            longArgValMap[argName] = opt;
+            if(positionalIndex<positionalArgs.size()-1){
+                positionalIndex++;
             }
-            Type type = longArgTypeMap[opt];
-            if(type!=Positional){ continue; }
-            // do positional argument handling here
-            // add each positional argument to longArgValMap if the previous positional entry has been filled
+            // handle positional arguments
+            // if(longArgTypeMap.find(opt)==longArgTypeMap.end()){
+            //     continue;
+            // }
+            // Type type = longArgTypeMap[opt];
+            // if(type==Positional){
+                // do positional argument handling here
+                // add each positional argument to longArgValMap if the previous positional entry has been filled
+            // }
             
         }
 
@@ -68,6 +80,7 @@ bool ArgumentParser::parseArgs(int argc, char* argv[]){
                     // if there is an argument after the current one and that argumen is a token
                     if(optind<argc-1 && argv[optind+1][0]!='-'){
                         shortArgValMap[shortArg] = argv[optind+1]; // set value to the token if present
+                        optind++;
                     }
                     else{ // if no token is present set raise error
                         errNoTokenFound(shortArg, argType);

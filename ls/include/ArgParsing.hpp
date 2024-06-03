@@ -24,8 +24,7 @@ class ArgumentParser{
         std::unordered_map<char, std::string> shortArgValMap; 
         std::unordered_map<char, bool> shortArgBoolMap; 
         std::unordered_map<std::string, std::string> longArgValMap; 
-
-        std::unordered_map<std::string, std::string> positionalArgValMap; 
+        std::vector<std::string> positionalArgs;
 
         std::unordered_map<char, Type> shortArgTypeMap;
         std::unordered_map<std::string, Type> longArgTypeMap;
@@ -88,6 +87,9 @@ class ArgumentParser{
         else{
             return defaultVal;
         }
+    }
+    std::string getArgVal(const std::string flagName){
+        return longArgValMap[flagName];
     }
 
     private:
