@@ -12,7 +12,8 @@ class ArgumentParser{
             Int,
             Bool,
             String,
-            Float
+            Float,
+            Positional
         };
 
         ArgumentParser();
@@ -24,17 +25,14 @@ class ArgumentParser{
         std::unordered_map<char, bool> shortArgBoolMap; 
         std::unordered_map<std::string, std::string> longArgValMap; 
 
+        std::unordered_map<std::string, std::string> positionalArgValMap; 
+
         std::unordered_map<char, Type> shortArgTypeMap;
+        std::unordered_map<std::string, Type> longArgTypeMap;
     
 
-        void addArgument(const char name, Type type){
-            // Type type = Bool;
-            shortArgTypeMap[name] = type;
-            std::cout << "adding: " << name << " as type: " << type << std::endl;
-            for (const auto& pair : shortArgValMap) {
-                    std::cout << "Key: " << pair.first << ", Value: " << pair.second << std::endl;
-            }
-        }
+        void addArgument(const char name, Type type);
+        void addArgument(const std::string name, Type type);
 
         // long args
         template <typename T>

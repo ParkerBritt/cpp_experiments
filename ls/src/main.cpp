@@ -57,6 +57,7 @@ int main(int argc, char* argv[]){
     argParser.addArgument('l', argParser.Bool);
     argParser.addArgument('a', argParser.Bool);
     argParser.addArgument('f', argParser.String);
+    argParser.addArgument("path", argParser.Positional);
     std::cout << "PARSING ARGS" << std::endl;
     if(!argParser.parseArgs(argc, argv)){
         return -1;

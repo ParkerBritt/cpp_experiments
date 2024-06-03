@@ -6,6 +6,19 @@ ArgumentParser::ArgumentParser(){
 }
 
 
+void ArgumentParser::addArgument(const char name, Type type){
+    // Type type = Bool;
+    shortArgTypeMap[name] = type;
+    std::cout << "adding: " << name << " as type: " << type << std::endl;
+    for (const auto& pair : shortArgValMap) {
+            std::cout << "Key: " << pair.first << ", Value: " << pair.second << std::endl;
+    }
+}
+
+void ArgumentParser::addArgument(const std::string name, Type type){
+    longArgTypeMap[name] = type;
+    std::cout << "adding: " << name << " as type: " << type << std::endl;
+}
 
 bool ArgumentParser::parseArgs(int argc, char* argv[]){
     int optind = 1;
@@ -14,16 +27,22 @@ bool ArgumentParser::parseArgs(int argc, char* argv[]){
     for(optind; optind<argc; optind++){
         const std::string opt = argv[optind];
         if(opt[0]!='-'){ // break if no flag detected
-            // std::cout << "break " << argc << opt << std::endl;
-            // std::cout << opt.substr(1,0) << std::endl;
-            continue;
+            // handle positional arguments
+            if(longArgTypeMap.find(opt)==longArgTypeMap.end()){
+                continue;
+            }
+            Type type = longArgTypeMap[opt];
+            if(type!=Positional){ continue; }
+            // do positional argument handling here
+            // add each positional argument to longArgValMap if the previous positional entry has been filled
+            
         }
 
-        // -- start short op handling --
         size_t optSize= opt.size();
         if(optSize<2){ // guard against short arg with no char
             continue;
         }
+        // -- start short op handling --
         if(opt[0]=='-' && opt[1]!='-'){
             char shortArg;
             // handle boolean shortArgValMap
@@ -57,6 +76,8 @@ bool ArgumentParser::parseArgs(int argc, char* argv[]){
                 }
             }
         }
+        // -- start long arg handling --
+
         std::cout << "SHORT ARG VALUES" << std::endl;
         for (const auto& pair : shortArgValMap) {
                 std::cout << "Key: " << pair.first << ", Value: " << pair.second << std::endl;
