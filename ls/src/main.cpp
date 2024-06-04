@@ -52,41 +52,19 @@ int main(int argc, char* argv[]){
     const AnsiUtils::colorVector red = {255,0,0};
 
     ArgumentParser argParser = ArgumentParser();
-    bool long_flag = false;
+
     std::cout << "ADDING ARGUMENTS" << std::endl;
     argParser.addArgument('l', argParser.Bool);
     argParser.addArgument('a', argParser.Bool);
-    argParser.addArgument('f', argParser.String);
-    argParser.addArgument("test", argParser.String);
-    argParser.addArgument("testLongBool", argParser.Bool);
-    argParser.addArgument("path1", argParser.Positional);
-    argParser.addArgument("path2", argParser.Positional);
-    std::cout << "PARSING ARGS" << std::endl;
+    argParser.addArgument("dirPath", argParser.Positional);
+
     if(!argParser.parseArgs(argc, argv)){
         return -1;
     }
-    long_flag = argParser.getArgVal('l');
-    bool a_flag = argParser.getArgVal('a');
-    std::string positionalArg1 = argParser.getArgVal<std::string>("path1");
-    std::string positionalArg2 = argParser.getArgVal<std::string>("path2");
-    std::string longArgTest = argParser.getArgVal<std::string>("test");
-    bool longBoolTest = argParser.getArgVal<bool>("testLongBool");
-    std::cout << "FLAG L: " << long_flag << std::endl;
-    std::cout << "FLAG A: " << a_flag << std::endl;
-    std::cout << "positional1: " << positionalArg1 << std::endl;
-    std::cout << "positional2: " << positionalArg2 << std::endl;
-    std::cout << "long arg test: " << longArgTest << std::endl;
-    std::cout << "long arg test bool: " << longBoolTest << std::endl;
+    bool flagLong = argParser.getArgVal('l');
+    bool flagShowAll = argParser.getArgVal('a');
 
-    std::string file_path;
-    // if (optind < argc) {
-    //     // check if file exists
-    //     file_path = argv[optind];
-    //     if(!fs::exists(file_path)){
-    //         std::cout << ansiColor(255,0,0) << '"' << file_path << '"' << ": No such file or directory" << std::endl;
-    //         return 0;
-    //     }
-    // }
+    std::optional<std::string> filePath = argParser.getArgVal<std::string>("dirPath");
     // std::cout << "file path:" << file_path << std::endl;
     // icon name map
     std::unordered_map<std::string, std::string> iconNameMap;
@@ -104,10 +82,14 @@ int main(int argc, char* argv[]){
     extMap["sh"] = "";
 
     std::filesystem::path wd;
-    if(file_path.empty()){
+    if(!filePath){
         wd = fs::current_path();
     }else{
-        wd = fs::path(file_path);
+        if(!fs::exists(*filePath)){
+            std::cout << AnsiUtils::color(255,0,0) << '"' << *filePath << '"' << ": No such file or directory" << std::endl;
+            return -1;
+        }
+        wd = fs::path(*filePath);
     }
 
     bool showHidden = false;
@@ -121,12 +103,19 @@ int main(int argc, char* argv[]){
         // std::cout << icon << " " << fileName << sep;
     }
     size_t filesC = formattedFiles.size();
-    int long_mode = filesC > 10 || long_flag;
+    int long_mode = filesC > 10 || flagLong;
     char sep = long_mode ? '\n' : ' ';
     std::string allFiles;
-    for(int i=0; i<filesC; i++){
-        allFiles+=formattedFiles[i]+sep;
+
+    {
+        int i=0;
+        for(i; i<filesC-1; i++){
+            allFiles+=formattedFiles[i]+sep;
+        }
+        // last file without sep
+        allFiles+=formattedFiles[i];
     }
+
     std::cout << allFiles << std::endl;
     return 0;
 

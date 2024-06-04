@@ -4,6 +4,8 @@
 #include <iostream>
 #include <unordered_map>
 #include <vector>
+#include "AnsiUtils.hpp"
+#include <optional>
 
 class ArgumentParser{
     // constructor
@@ -81,10 +83,10 @@ class ArgumentParser{
     bool getArgVal(const char flagName, bool defaultVal);
 
     template <typename T>
-    T getArgVal(const std::string);
+    std::optional<T> getArgVal(const std::string);
 
     template <typename T>
-    T getArgVal(const std::string, T defaultVal);
+    std::optional<T> getArgVal(const std::string, T defaultVal);
 
 
     private:

@@ -1,5 +1,4 @@
 #include "ArgParsing.hpp"
-#include "AnsiUtils.hpp"
 
 ArgumentParser::ArgumentParser(){
     std::cout << "constructor successful" << std::endl;
@@ -135,18 +134,22 @@ bool ArgumentParser::getArgVal(const char flagName, bool defaultVal){
 
 
 template <>
-bool ArgumentParser::getArgVal<bool>(const std::string flagName, bool defaultVal){
+std::optional<bool> ArgumentParser::getArgVal<bool>(const std::string flagName, bool defaultVal){
     return longArgBoolMap[flagName];
 }
 
 template <>
-bool ArgumentParser::getArgVal<bool>(const std::string flagName){
+std::optional<bool> ArgumentParser::getArgVal<bool>(const std::string flagName){
     return getArgVal<bool>(flagName, false);
 }
 
 template <>
-std::string ArgumentParser::getArgVal<std::string>(const std::string flagName){
-    return longArgValMap[flagName];
+std::optional<std::string> ArgumentParser::getArgVal<std::string>(const std::string flagName){
+    if(longArgValMap.find(flagName)!=longArgValMap.end()){
+        return longArgValMap[flagName];
+    }else{
+        return std::nullopt;
+    }
 }
 
 void ArgumentParser::errNoTokenFound(const char argName, const ArgumentParser::Type tokenType){
