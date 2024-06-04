@@ -47,7 +47,8 @@ void displayHelp(){
 
 int main(int argc, char* argv[]){
     ConfigParser configParser = ConfigParser("pls.config");
-    configParser.getSectionContents("foo");
+    auto iconNameMapTest = configParser.getSectionContents("foo");
+    std::cout << iconNameMapTest["CMakeLists.txt"] << std::endl;
     return 0;
     // def colors
     const AnsiUtils::colorVector red = {255,0,0};

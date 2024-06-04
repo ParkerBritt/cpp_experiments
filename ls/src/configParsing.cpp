@@ -18,7 +18,14 @@ std::unordered_map<std::string, std::string> ConfigParser::getSectionContents(st
     std::string lineBuffer;
     if(configFile.is_open()){
         while(getline(configFile, lineBuffer)){
-            std::cout << lineBuffer << std::endl;
+            const std::string delimeter = " ";
+            const int delimeterIndx = lineBuffer.find(delimeter);
+            const std::string key = lineBuffer.substr(0, delimeterIndx);
+            const std::string value = lineBuffer.substr(delimeterIndx+1, lineBuffer.size()-delimeterIndx-1);
+            std::cout << "Line:" << lineBuffer << std::endl;
+            std::cout << "Key:" << key << std::endl;
+            std::cout << "Value:" << value << std::endl;
+            dataMap[key] = value;
         }
         configFile.close();
     }
