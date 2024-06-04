@@ -2,14 +2,12 @@
 #include <filesystem>
 #include <vector>
 #include <unordered_map>
+#include <regex>
 #include "ArgParsing.hpp"
 #include "AnsiUtils.hpp"
+#include "configParsing.hpp"
 
 namespace fs = std::filesystem;
-
-
-
-
 
 std::string getIcon(const std::unordered_map<std::string, std::string> iconNameMap,
         const std::unordered_map<std::string, std::string> extMap,
@@ -48,12 +46,14 @@ void displayHelp(){
 }
 
 int main(int argc, char* argv[]){
+    ConfigParser configParser = ConfigParser("pls.config");
+    configParser.getSectionContents("foo");
+    return 0;
     // def colors
     const AnsiUtils::colorVector red = {255,0,0};
 
     ArgumentParser argParser = ArgumentParser();
 
-    std::cout << "ADDING ARGUMENTS" << std::endl;
     argParser.addArgument('l', argParser.Bool);
     argParser.addArgument('a', argParser.Bool);
     argParser.addArgument("dirPath", argParser.Positional);

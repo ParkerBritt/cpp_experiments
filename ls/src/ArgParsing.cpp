@@ -1,16 +1,13 @@
 #include "ArgParsing.hpp"
 
 ArgumentParser::ArgumentParser(){
-    std::cout << "constructor successful" << std::endl;
+    // std::cout << "constructor successful" << std::endl;
 }
 
 
 void ArgumentParser::addArgument(const char name, Type type){
     shortArgTypeMap[name] = type;
-    std::cout << "adding: " << name << " as type: " << type << std::endl;
-    for (const auto& pair : shortArgValMap) {
-            std::cout << "Key: " << pair.first << ", Value: " << pair.second << std::endl;
-    }
+    // std::cout << "adding: " << name << " as type: " << type << std::endl;
 }
 
 void ArgumentParser::addArgument(const std::string name, Type type){
@@ -20,7 +17,7 @@ void ArgumentParser::addArgument(const std::string name, Type type){
     if(type == ArgumentParser::Positional){
         positionalArgs.push_back(name);
     }
-    std::cout << "adding: " << name << " as type: " << type << std::endl;
+    // std::cout << "adding: " << name << " as type: " << type << std::endl;
 }
 
 bool ArgumentParser::parseArgs(int argc, char* argv[]){
@@ -59,7 +56,7 @@ bool ArgumentParser::parseArgs(int argc, char* argv[]){
 
                 // if flag is bool set arg value to true
                 if(argType == Bool){
-                    std::cout << "setting: " << shortArg << " to true" << std::endl;
+                    // std::cout << "setting: " << shortArg << " to true" << std::endl;
                     shortArgBoolMap[shortArg] = true;
                     continue;
                 }
@@ -82,7 +79,7 @@ bool ArgumentParser::parseArgs(int argc, char* argv[]){
         // -- start long arg handling --
         if(opt.substr(0,2)=="--"){
             std::string longArg = opt.substr(2,optSize-2);
-            std::cout << "parsing longarg: " << longArg << std::endl;
+            // std::cout << "parsing longarg: " << longArg << std::endl;
 
 
             // check if arg has been registed with addArgument
