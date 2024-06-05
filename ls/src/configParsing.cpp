@@ -46,9 +46,15 @@ ConfigParser::ConfigParser(std::string configFilePath){
             std::cout << "Line:" << lineBuffer << std::endl;
             std::cout << "Key:" << key << std::endl;
             std::cout << "Value:" << value << std::endl;
-            (*keyValueBuffer)[key] = value;
+            keyValueBuffer->insert_or_assign(key, value);
         }
         configFile.close();
+        for( const auto sections : sectionMap){
+            std::cout << "section: " << sections.first << std::endl;
+            for( const auto kvPair : sections.second){
+                std::cout << "key: " << kvPair.first << " value: " << kvPair.second << std::endl;
+            }
+        }
     }
     else{
         throw std::ios_base::failure("Couldn't open file: " + configFilePath);
