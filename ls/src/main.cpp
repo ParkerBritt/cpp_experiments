@@ -70,8 +70,6 @@ int main(int argc, char* argv[]){
 
     // file extension map
     std::unordered_map<std::string, std::string> extMap = configParser.getSectionContents("Extension Mapping");
-    extMap["txt"] = "";
-    extMap["sh"] = "";
 
     std::filesystem::path wd;
     if(!filePath){
@@ -92,7 +90,6 @@ int main(int argc, char* argv[]){
         std::string icon = getIcon(iconNameMap, extMap, curPath);
         if(fileName.substr(0,1)=="."){ continue; }
         formattedFiles.push_back(icon+" "+fileName);
-        // std::cout << icon << " " << fileName << sep;
     }
     size_t filesC = formattedFiles.size();
     int long_mode = filesC > 10 || flagLong;
