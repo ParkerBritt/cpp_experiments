@@ -14,6 +14,7 @@ class ConfigParser{
     public:
         ConfigParser(std::string configFilePath);
         std::unordered_map<std::string, std::string> getSectionContents(std::string section);
+        void debugPrintSectionContents();
     private:
         std::string configFilePath;
         std::unordered_map<std::string, int> sectionLineIndex; // basically a glossary, maps section name to a line number

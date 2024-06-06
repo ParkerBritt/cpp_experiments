@@ -47,9 +47,7 @@ void displayHelp(){
 
 int main(int argc, char* argv[]){
     ConfigParser configParser = ConfigParser("pls.config");
-    // auto iconNameMapTest = configParser.getSectionContents("foo");
-    // std::cout << iconNameMapTest["CMakeLists.txt"] << std::endl;
-    return 0;
+
     // def colors
     const AnsiUtils::colorVector red = {255,0,0};
 
@@ -68,17 +66,10 @@ int main(int argc, char* argv[]){
     std::optional<std::string> filePath = argParser.getArgVal<std::string>("dirPath");
     // std::cout << "file path:" << file_path << std::endl;
     // icon name map
-    std::unordered_map<std::string, std::string> iconNameMap;
-    iconNameMap["CMakeLists.txt"] = "";
-    iconNameMap["Desktop"] = "";
-    iconNameMap["Pictures"] = "󰉏";
-    iconNameMap["Videos"] = "";
-    iconNameMap["Games"] = "󰮂";
-    iconNameMap["bin"] = "";
-    iconNameMap["Projects"] = "";
+    std::unordered_map<std::string, std::string> iconNameMap = configParser.getSectionContents("Icon Name Mapping");
 
     // file extension map
-    std::unordered_map<std::string, std::string> extMap;
+    std::unordered_map<std::string, std::string> extMap = configParser.getSectionContents("Extension Mapping");
     extMap["txt"] = "";
     extMap["sh"] = "";
 
