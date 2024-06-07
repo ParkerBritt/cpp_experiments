@@ -115,11 +115,8 @@ void ArgumentParser::unkownArg(const std::string name){
     std::cerr << "UnkownArg: " << name << std::endl;
 }
 
-bool ArgumentParser::getArgVal(const char flagName){
-    return getArgVal(flagName, false);
-}
-
-bool ArgumentParser::getArgVal(const char flagName, bool defaultVal){
+template <>
+std::optional<bool> ArgumentParser::getArgVal(const char flagName, bool defaultVal){
     bool argVal = shortArgBoolMap[flagName];
     if(argVal){
         return argVal;
@@ -129,10 +126,23 @@ bool ArgumentParser::getArgVal(const char flagName, bool defaultVal){
     }
 }
 
+template <>
+std::optional<bool> ArgumentParser::getArgVal<bool>(const char flagName){
+    return getArgVal<bool>(flagName, false);
+}
 
 template <>
 std::optional<bool> ArgumentParser::getArgVal<bool>(const std::string flagName, bool defaultVal){
     return longArgBoolMap[flagName];
+}
+
+template <>
+std::optional<std::string> ArgumentParser::getArgVal<std::string>(const char flagName){
+    if(shortArgValMap.find(flagName)!=shortArgValMap.end()){
+        return shortArgValMap[flagName];
+    }else{
+        return std::nullopt;
+    }
 }
 
 template <>

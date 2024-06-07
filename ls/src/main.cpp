@@ -46,7 +46,6 @@ void displayHelp(){
 }
 
 int main(int argc, char* argv[]){
-    ConfigParser configParser = ConfigParser("pls.config");
 
     // def colors
     const AnsiUtils::colorVector red = {255,0,0};
@@ -55,13 +54,25 @@ int main(int argc, char* argv[]){
 
     argParser.addArgument('l', argParser.Bool);
     argParser.addArgument('a', argParser.Bool);
+    argParser.addArgument('c', argParser.String);
     argParser.addArgument("dirPath", argParser.Positional);
 
     if(!argParser.parseArgs(argc, argv)){
         return -1;
     }
-    bool flagLong = argParser.getArgVal('l');
-    bool flagShowAll = argParser.getArgVal('a');
+
+    std::optional<bool> flagLong = argParser.getArgVal<bool>('l');
+    std::optional<bool> flagShowAll = argParser.getArgVal<bool>('a');
+
+    std::optional<std::string> configPathArg = argParser.getArgVal<std::string>('c');
+    std::string configPath;
+    if(configPathArg){
+        configPath = *configPathArg;
+    }
+    else{
+        configPath = "pls.config";
+    }
+    ConfigParser configParser = ConfigParser(configPath);
 
     std::optional<std::string> filePath = argParser.getArgVal<std::string>("dirPath");
     // std::cout << "file path:" << file_path << std::endl;

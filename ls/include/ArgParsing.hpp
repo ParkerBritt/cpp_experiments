@@ -79,8 +79,11 @@ class ArgumentParser{
     //     std::string argVal = shortArgValMap[name];
     //     return argVal=="true";
     // }
-    bool getArgVal(const char flagName);
-    bool getArgVal(const char flagName, bool defaultVal);
+    template <typename T>
+    std::optional<T> getArgVal(const char flagName);
+
+    template <typename T>
+    std::optional<T> getArgVal(const char flagName, T defaultVal);
 
     template <typename T>
     std::optional<T> getArgVal(const std::string);
