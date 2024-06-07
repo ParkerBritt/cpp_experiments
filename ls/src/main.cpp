@@ -45,7 +45,12 @@ void displayHelp(){
     std::cout << "Help Placeholder" << std::endl;
 }
 
+struct ColorTheme{
+    AnsiUtils::Color symLink = AnsiUtils::Color(0,0,255);
+};
+
 int main(int argc, char* argv[]){
+    ColorTheme colorTheme;
 
     // def colors
     const AnsiUtils::colorVector red = {255,0,0};
@@ -105,7 +110,7 @@ int main(int argc, char* argv[]){
         if(fileName[0]=='.'){ continue; }
         formatedLine = icon+" "+fileName;
         if(*flagSymlink && fs::is_symlink(curPath)){
-            formatedLine+="  "+fs::read_symlink(curPath).string();
+            formatedLine+="  "+colorTheme.symLink.getEscape()+fs::read_symlink(curPath).string()+AnsiUtils::reset();
         }
         formattedFiles.push_back(formatedLine);
     }
