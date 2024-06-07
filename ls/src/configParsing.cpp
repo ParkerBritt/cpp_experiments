@@ -14,21 +14,6 @@ ConfigParser::ConfigParser(std::string configFilePath){
     std::ifstream configFile(configFilePath);
     std::string lineBuffer;
     if(configFile.is_open()){
-        // find first section
-        while(getline(configFile, lineBuffer)){
-            if(lineBuffer[0]=='#' || lineBuffer.empty()) continue; // skip comments
-            // std::cout << "First line: " << lineBuffer << std::endl;
-            if(lineBuffer[0] != '[' || lineBuffer[lineBuffer.size()-1] != ']'){
-                throw std::runtime_error("expected first line to be section header, got: ");
-            }
-            std::string sectionName = lineBuffer.substr(1, lineBuffer.size()-2);
-            // std::cout << "section name: " << sectionName << std::endl;
-            std::unordered_map<std::string, std::string> keyValueMap;
-            sectionMap[sectionName] = keyValueMap;
-            keyValueBuffer = &sectionMap[sectionName];
-            break;
-        }
-
         while(getline(configFile, lineBuffer)){
             if(lineBuffer[0]=='#' || lineBuffer.empty()) continue; // skip comments
             if(lineBuffer[0] == '[' && lineBuffer[lineBuffer.size()-1] == ']'){ // if section header
@@ -38,6 +23,9 @@ ConfigParser::ConfigParser(std::string configFilePath){
                 sectionMap[sectionName] = keyValueMap;
                 keyValueBuffer = &sectionMap[sectionName];
                 continue;
+            }
+            if(sectionMap.empty()){
+                throw std::runtime_error("Invalid config. Expected header before key value pairs");
             }
             const std::string delimeter = " ";
             const int delimeterIndx = lineBuffer.find(delimeter);
