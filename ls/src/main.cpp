@@ -55,6 +55,7 @@ int main(int argc, char* argv[]){
     argParser.addArgument('l', argParser.Bool);
     argParser.addArgument('a', argParser.Bool);
     argParser.addArgument('c', argParser.String);
+    argParser.addArgument('s', argParser.Bool);
     argParser.addArgument("dirPath", argParser.Positional);
 
     if(!argParser.parseArgs(argc, argv)){
@@ -63,6 +64,7 @@ int main(int argc, char* argv[]){
 
     std::optional<bool> flagLong = argParser.getArgVal<bool>('l');
     std::optional<bool> flagShowAll = argParser.getArgVal<bool>('a');
+    std::optional<bool> flagSymlink = argParser.getArgVal<bool>('s');
 
     std::optional<std::string> configPathArg = argParser.getArgVal<std::string>('c');
     std::string configPath;
@@ -96,11 +98,16 @@ int main(int argc, char* argv[]){
     bool showHidden = false;
     std::vector<std::string> formattedFiles;
     for (std::filesystem::directory_entry const& dir_entry : std::filesystem::directory_iterator(wd)){
+        std::string formatedLine;
         const std::filesystem::path curPath = dir_entry.path();
         std::string fileName = curPath.filename().string();
         std::string icon = getIcon(iconNameMap, extMap, curPath);
-        if(fileName.substr(0,1)=="."){ continue; }
-        formattedFiles.push_back(icon+" "+fileName);
+        if(fileName[0]=='.'){ continue; }
+        formatedLine = icon+" "+fileName;
+        if(*flagSymlink && fs::is_symlink(curPath)){
+            formatedLine+="  "+fs::read_symlink(curPath).string();
+        }
+        formattedFiles.push_back(formatedLine);
     }
     size_t filesC = formattedFiles.size();
     int long_mode = filesC > 10 || flagLong;
