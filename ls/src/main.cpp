@@ -9,13 +9,13 @@
 
 namespace fs = std::filesystem;
 
-std::string getIcon(const std::unordered_map<std::string, std::string> iconNameMap,
-        const std::unordered_map<std::string, std::string> extMap,
+std::string getIcon(const std::unordered_map<std::string, std::vector<std::string>> iconNameMap,
+        const std::unordered_map<std::string, std::vector<std::string>> extMap,
         const fs::path& curPath){
     std::string icon;
     std::string fileName = curPath.filename().string();
     if(iconNameMap.count(fileName) > 0){
-        icon = iconNameMap.at(fileName);
+        icon = iconNameMap.at(fileName)[0];
         return icon;
     }
     if(std::filesystem::is_directory(curPath)){ // is dir
@@ -32,7 +32,7 @@ std::string getIcon(const std::unordered_map<std::string, std::string> iconNameM
         fileExt = fileExt.substr(1);
         // check if match found in map
         if(extMap.count(fileExt) > 0){
-            icon = extMap.at(fileExt);
+            icon = extMap.at(fileExt)[0];
             return icon;
         }
     }
@@ -84,10 +84,10 @@ int main(int argc, char* argv[]){
     std::optional<std::string> filePath = argParser.getArgVal<std::string>("dirPath");
     // std::cout << "file path:" << file_path << std::endl;
     // icon name map
-    std::unordered_map<std::string, std::string> iconNameMap = configParser.getSectionContents("Icon Name Mapping");
+    auto iconNameMap = configParser.getSectionContents("Icon Name Mapping");
 
     // file extension map
-    std::unordered_map<std::string, std::string> extMap = configParser.getSectionContents("Extension Mapping");
+    auto extMap = configParser.getSectionContents("Extension Mapping");
 
     std::filesystem::path wd;
     if(!filePath){

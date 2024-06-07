@@ -7,18 +7,19 @@
 #include <unordered_map>
 #include <fstream>
 #include <filesystem>
+#include <vector>
 
 namespace fs = std::filesystem;
 
 class ConfigParser{
     public:
         ConfigParser(std::string configFilePath);
-        std::unordered_map<std::string, std::string> getSectionContents(std::string section);
+        std::unordered_map<std::string, std::vector<std::string>> getSectionContents(std::string section);
         void debugPrintSectionContents();
     private:
         std::string configFilePath;
         std::unordered_map<std::string, int> sectionLineIndex; // basically a glossary, maps section name to a line number
-        std::unordered_map<std::string, std::unordered_map<std::string, std::string>> sectionMap;
+        std::unordered_map<std::string, std::unordered_map<std::string, std::vector<std::string>>> sectionMap;
 };
 
 
