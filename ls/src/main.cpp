@@ -77,7 +77,7 @@ int main(int argc, char* argv[]){
         configPath = *configPathArg;
     }
     else{
-        configPath = "pls.config";
+        configPath = std::string(std::getenv("HOME"))+"/.config/pls.config";
     }
     ConfigParser configParser = ConfigParser(configPath);
 
