@@ -73,6 +73,7 @@ int main(int argc, char* argv[]){
     std::optional<bool> flagLong = argParser.getArgVal<bool>('l');
     std::optional<bool> flagShowAll = argParser.getArgVal<bool>('a');
     std::optional<bool> flagSymlink = argParser.getArgVal<bool>('s');
+    std::optional<bool> flagBorder = argParser.getArgVal<bool>('b'); // placeholder
 
     std::optional<std::string> configPathArg = argParser.getArgVal<std::string>('c');
     std::string configPath;
