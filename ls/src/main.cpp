@@ -46,7 +46,10 @@ void displayHelp(){
 }
 
 struct ColorTheme{
-    AnsiUtils::Color symLink = AnsiUtils::Color(0,0,255);
+    AnsiUtils::Color symLink = AnsiUtils::Color(255,255,255);
+    AnsiUtils::Color symLinkArrow = AnsiUtils::Color(255,255,255);
+    AnsiUtils::Color iconDefault = AnsiUtils::Color(255,255,255);
+    AnsiUtils::Color textDefault = AnsiUtils::Color(255,255,255);
 };
 
 int main(int argc, char* argv[]){
@@ -108,9 +111,9 @@ int main(int argc, char* argv[]){
         std::string fileName = curPath.filename().string();
         std::string icon = getIcon(iconNameMap, extMap, curPath);
         if(fileName[0]=='.'){ continue; }
-        formatedLine = icon+" "+fileName;
+        formatedLine = colorTheme.iconDefault.getEscape()+icon+" "+colorTheme.textDefault.getEscape()+fileName;
         if(*flagSymlink && fs::is_symlink(curPath)){
-            formatedLine+="  "+colorTheme.symLink.getEscape()+fs::read_symlink(curPath).string()+AnsiUtils::reset();
+            formatedLine+=colorTheme.symLinkArrow.getEscape()+"  "+colorTheme.symLink.getEscape()+fs::read_symlink(curPath).string()+AnsiUtils::reset();
         }
         formattedFiles.push_back(formatedLine);
     }
