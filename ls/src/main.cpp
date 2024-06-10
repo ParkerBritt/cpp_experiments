@@ -86,6 +86,10 @@ int main(int argc, char* argv[]){
     // std::cout << "file path:" << file_path << std::endl;
     // icon name map
     auto iconNameMap = configParser.getSectionContents("Icon Name Mapping");
+    auto colorThemeConfig = configParser.getSectionContents("Color Theme");
+    colorThemeConfig["foo"];
+    std::cout << "FOO: " << colorThemeConfig["foo"][0] << colorThemeConfig["foo"][1] << std::endl;
+    // colorTheme.add("iconDefault", 255, 255, 255);
 
     // file extension map
     auto extMap = configParser.getSectionContents("Extension Mapping");

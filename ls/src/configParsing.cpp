@@ -30,9 +30,26 @@ ConfigParser::ConfigParser(std::string configFilePath){
             const std::string delimeter = " ";
             const int delimeterIndx = lineBuffer.find(delimeter);
             const std::string key = lineBuffer.substr(0, delimeterIndx);
-            const std::string value = lineBuffer.substr(delimeterIndx+1, lineBuffer.size()-delimeterIndx-1);
+            // std::cout << "key: " << key << std::endl;
             std::vector<std::string> values;
-            values.push_back(value);
+
+            // get values
+            {
+                size_t delimLen = delimeter.length();
+                size_t posStart = delimeterIndx+delimLen;
+                size_t posEnd;
+                std::string value;
+                while( (posEnd = lineBuffer.find(delimeter, posStart) ) != std::string::npos  ){
+                    value = lineBuffer.substr(posStart, posEnd - posStart);
+                    posStart = posEnd + delimLen;
+                    values.push_back(value);
+                    // std::cout << "value: " << value << std::endl;
+                }
+                value = lineBuffer.substr(posStart);
+                // std::cout << "value: " << value << std::endl;
+                values.push_back(value);
+            }
+            // const std::string value = lineBuffer.substr(delimeterIndx+1, lineBuffer.size()-delimeterIndx-1);
             keyValueBuffer->insert_or_assign(key, values);
         }
         configFile.close();
