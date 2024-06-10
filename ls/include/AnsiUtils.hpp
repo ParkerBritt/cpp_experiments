@@ -20,8 +20,9 @@ namespace AnsiUtils{
         public:
             ColorTheme() = default;
             void add(std::string, int r, int g, int b);
+            void add(std::string name, AnsiUtils::Color color);
+
             std::string get(std::string name); 
-            Color& operator[]( std::string name);
         private:
             std::unordered_map<std::string, AnsiUtils::Color> themeMap;
     };

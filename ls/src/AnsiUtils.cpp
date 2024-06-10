@@ -38,6 +38,9 @@ namespace AnsiUtils{
     void ColorTheme::add(std::string name, int r, int g, int b){
         themeMap.emplace(name, AnsiUtils::Color(r, g, b));
     }
+    void ColorTheme::add(std::string name, AnsiUtils::Color color){
+        themeMap.emplace(name, color);
+    }
     std::string ColorTheme::get(std::string name){
         return themeMap.at(name).getEscape();
     }
