@@ -45,22 +45,12 @@ void displayHelp(){
     std::cout << "Help Placeholder" << std::endl;
 }
 
-struct ColorTheme{
-    AnsiUtils::Color symLink = AnsiUtils::Color(255,255,255);
-    AnsiUtils::Color symLinkArrow = AnsiUtils::Color(255,255,255);
-    AnsiUtils::Color iconDefault = AnsiUtils::Color(255,255,255);
-    AnsiUtils::Color textDefault = AnsiUtils::Color(255,255,255);
-};
-
 int main(int argc, char* argv[]){
-    std::unordered_map<std::string, AnsiUtils::Color> colorTheme;
-    colorTheme.emplace("symLink", AnsiUtils::Color(255, 255, 255));
-    colorTheme.emplace("symLinkArrow", AnsiUtils::Color(255, 255, 255));
-    colorTheme.emplace("iconDefault", AnsiUtils::Color(255, 255, 255));
-    colorTheme.emplace("textDefault", AnsiUtils::Color(255, 255, 255));
-    // colorTheme["symLinkArrow"] = AnsiUtils::Color(255,255,255);
-    // colorTheme["iconDefault"] = AnsiUtils::Color(255,255,255);
-    // colorTheme["textDefault"] = AnsiUtils::Color(255,255,255);
+    AnsiUtils::ColorTheme colorTheme;
+    colorTheme.add("symLink", 255, 255, 255);
+    colorTheme.add("symLinkArrow", 255, 255, 255);
+    colorTheme.add("iconDefault", 255, 255, 255);
+    colorTheme.add("textDefault", 255, 255, 255);
 
     // def colors
     const AnsiUtils::colorVector red = {255,0,0};
@@ -119,11 +109,11 @@ int main(int argc, char* argv[]){
         std::string fileName = curPath.filename().string();
         std::string icon = getIcon(iconNameMap, extMap, curPath);
         if(fileName[0]=='.'){ continue; }
-        std::string iconDefaultColor = colorTheme.at("iconDefault").getEscape();
-        std::string textDefaultColor = colorTheme.at("textDefault").getEscape();
+        std::string iconDefaultColor = colorTheme.get("iconDefault");
+        std::string textDefaultColor = colorTheme.get("textDefault");
         formatedLine = iconDefaultColor+icon+" "+textDefaultColor+fileName;
         if(*flagSymlink && fs::is_symlink(curPath)){
-            formatedLine+=colorTheme.at("symLinkArrow").getEscape()+"  "+colorTheme.at("symLink").getEscape()+fs::read_symlink(curPath).string()+AnsiUtils::reset();
+            formatedLine+=colorTheme.get("symLinkArrow")+"  "+colorTheme.get("symLink")+fs::read_symlink(curPath).string()+AnsiUtils::reset();
         }
         formattedFiles.push_back(formatedLine);
     }

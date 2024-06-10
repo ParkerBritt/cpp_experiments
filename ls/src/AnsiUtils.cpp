@@ -17,6 +17,7 @@ namespace AnsiUtils{
         return "\e[1m";
     }
 
+    // Class Color
     Color::Color(int colorVector[3]){
         r=colorVector[0];
         g=colorVector[1];
@@ -31,5 +32,13 @@ namespace AnsiUtils{
     }
     std::string Color::getEscape(){
         return "\e[38;2;"+std::to_string(r)+";"+std::to_string(g)+";"+std::to_string(b)+"m";
+    }
+
+    // Class Color Theme
+    void ColorTheme::add(std::string name, int r, int g, int b){
+        themeMap.emplace(name, AnsiUtils::Color(r, g, b));
+    }
+    std::string ColorTheme::get(std::string name){
+        return themeMap.at(name).getEscape();
     }
 }
