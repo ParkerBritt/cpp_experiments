@@ -23,6 +23,6 @@ The result is a **framework for manipulating and viewing cellular** interactions
 
 ## Screenshots
 <div align="center">
-    <img height="400em" src="cellular_automata/screenshots/cellular_automata_demo.gif"/>
-    <img height="400em" src="cellular_automata/screenshots/sand_sim_01.gif"/>
+    <img height="400em" src="screenshots/cellular_automata_demo.gif"/>
+    <img height="400em" src="screenshots/sand_sim_01.gif"/>
 </div>
