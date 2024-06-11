@@ -6,6 +6,6 @@
     </div>
     A collection of experimental C++ programs for the purpose of learning and personal exploration.
     <br><br>
-    <img height="500em" src="cellular_automata/screenshots/cellular_automata_demo.gif"/>
-    <img height="500em" src="cellular_automata/screenshots/sand_sim_01.gif"/>
+    <a href="https://github.com/ParkerBritt/cpp_experiments/tree/main/cellular_automata"><img height="400em" src="cellular_automata/screenshots/cellular_automata_demo.gif"/></a>
+    <a href="https://github.com/ParkerBritt/cpp_experiments/tree/main/cellular_automata"><img height="400em" src="cellular_automata/screenshots/sand_sim_01.gif"/></a>
 </div>
