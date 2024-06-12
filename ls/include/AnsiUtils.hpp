@@ -12,6 +12,7 @@ namespace AnsiUtils{
             Color(int colorVector[3]);
             Color(int r, int g, int b);
             Color(std::string colorHex);
+            Color();
             std::string getEscape();
         private:
             int r,g,b;
