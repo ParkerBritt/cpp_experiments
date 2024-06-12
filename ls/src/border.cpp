@@ -10,6 +10,10 @@ std::string Border::getTop(){
     return borderTop;
 }
 
-void Border::setWidth(int width){
+void Border::setWidth(unsigned int width){
     Border::width = width;
+}
+
+unsigned int Border::getWidth(){
+    return Border::width;
 }

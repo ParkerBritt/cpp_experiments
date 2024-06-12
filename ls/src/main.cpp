@@ -7,6 +7,8 @@
 #include "AnsiUtils.hpp"
 #include "configParsing.hpp"
 #include "border.hpp"
+#include <algorithm>
+#include "File.hpp"
 
 namespace fs = std::filesystem;
 
@@ -117,28 +119,22 @@ int main(int argc, char* argv[]){
 
     bool showHidden = false;
     int longestFilename=0;
-    std::vector<std::string> formattedFiles;
+    std::vector<File> formattedFiles;
+    size_t filesCnt = 0;
     for (std::filesystem::directory_entry const& dir_entry : std::filesystem::directory_iterator(wd)){
         std::string formatedLine;
         const std::filesystem::path curPath = dir_entry.path();
-        std::string fileName = curPath.filename().string();
-        std::string icon = getIcon(iconNameMap, extMap, curPath);
-        if(fileName[0]=='.'){ continue; }
-        std::string iconDefaultColor = colorTheme.get("iconDefault");
-        std::string textDefaultColor = colorTheme.get("textDefault");
-        formatedLine = iconDefaultColor+icon+" "+textDefaultColor+fileName;
-        if(*flagSymlink && fs::is_symlink(curPath)){
-            formatedLine+=colorTheme.get("symLinkArrow")+"  "+colorTheme.get("symLink")+fs::read_symlink(curPath).string()+AnsiUtils::reset();
-        }
-        const int lineLen = icon.size()+1+fileName.size();
+        File file(curPath);
+        file.setIcon(iconNameMap, extMap);
+        int lineLen = file.getLineLen();
         if(lineLen>longestFilename){
             longestFilename=lineLen;
             std::cout << formatedLine << " > " << longestFilename << std::endl;
         }
-        formattedFiles.push_back(formatedLine);
+        formattedFiles.push_back(file);
+        filesCnt++;
     }
-    size_t filesC = formattedFiles.size();
-    int long_mode = filesC > 10 || *flagLong;
+    int long_mode = filesCnt > 10 || *flagLong;
     char sep = long_mode ? '\n' : ' ';
     std::string allFiles;
 
@@ -150,14 +146,27 @@ int main(int argc, char* argv[]){
     }
     {
         int i=0;
-        for(i; i<filesC; i++){
+        for(i; i<filesCnt; i++){
             // border left side
+            std::string line;
             if(*flagBorder){
                 allFiles+=border->vertical;
             }
-            allFiles+=formattedFiles[i];
+            allFiles+=formattedFiles[i].getFormattedLine();
             // border right side
-            if(i<filesC-1){
+            // if(*flagBorder){
+            //     const unsigned int spacerLen = (line.size()<border->getWidth()) ? border->getWidth()-line.size() : 0;
+            //     std::string rightBorderBuffer;
+            //     std::cout << "spacerLen: " << spacerLen << std::endl;
+            //     std::cout << "borderWidth: " << border->getWidth() << std::endl;
+            //     std::cout << "lineLen: " << line.size() << std::endl;
+            //     for(int i=0; i<spacerLen; i++){
+            //         std::cout << "adding" << std::endl;
+            //         rightBorderBuffer+=" ";
+            //     }
+            //     rightBorderBuffer+=border->vertical;
+            // }
+            if(i<filesCnt-1){
                 allFiles+=sep;
             }
         }

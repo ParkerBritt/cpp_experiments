@@ -19,7 +19,7 @@ namespace AnsiUtils{
 
     // Class Color
     Color::Color(){
-        Color(0,0,0);
+        Color(255,255,255);
     }
     Color::Color(int colorVector[3]){
         r=colorVector[0];

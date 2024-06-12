@@ -18,11 +18,12 @@ class Border{
         Border() = default;
         
         std::string getTop();
-        void setWidth(int width);
+        void setWidth(unsigned  width);
+        unsigned  getWidth();
     private:
-        int horizontalPadding = 0;
-        int verticalPadding = 0;
-        int width = 0;
+        unsigned int horizontalPadding = 0;
+        unsigned int verticalPadding = 0;
+        unsigned int width = 0;
 
 };
 
