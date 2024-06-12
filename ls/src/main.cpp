@@ -6,6 +6,7 @@
 #include "ArgParsing.hpp"
 #include "AnsiUtils.hpp"
 #include "configParsing.hpp"
+#include "border.hpp"
 
 namespace fs = std::filesystem;
 
@@ -40,12 +41,12 @@ std::string getIcon(const std::unordered_map<std::string, std::vector<std::strin
     return icon;
 }
 
-
 void displayHelp(){
     std::cout << "Help Placeholder" << std::endl;
 }
 
 int main(int argc, char* argv[]){
+    std::unique_ptr<Border> border(nullptr);
     AnsiUtils::ColorTheme colorTheme;
     colorTheme.add("symLink", 255, 255, 255);
     colorTheme.add("symLinkArrow", 255, 255, 255);
@@ -55,24 +56,33 @@ int main(int argc, char* argv[]){
     // def colors
     const AnsiUtils::colorVector red = {255,0,0};
 
+    // -- start arg parsing --
+    // create arg parser
     ArgumentParser argParser = ArgumentParser();
 
+    // add arguments
     argParser.addArgument('l', argParser.Bool);
     argParser.addArgument('a', argParser.Bool);
     argParser.addArgument('c', argParser.String);
     argParser.addArgument('s', argParser.Bool);
+    argParser.addArgument('b', argParser.Bool);
     argParser.addArgument("dirPath", argParser.Positional);
 
+    // parse args
     if(!argParser.parseArgs(argc, argv)){
         return -1;
     }
 
+    // read bool flags
     std::optional<bool> flagLong = argParser.getArgVal<bool>('l');
     std::optional<bool> flagShowAll = argParser.getArgVal<bool>('a');
     std::optional<bool> flagSymlink = argParser.getArgVal<bool>('s');
-    std::optional<bool> flagBorder = argParser.getArgVal<bool>('b'); // placeholder
+    std::optional<bool> flagBorder = argParser.getArgVal<bool>('b');
 
+    // read token arguments
     std::optional<std::string> configPathArg = argParser.getArgVal<std::string>('c');
+    // -- end arg parsing --
+
     std::string configPath;
     if(configPathArg){
         configPath = *configPathArg;
@@ -105,6 +115,7 @@ int main(int argc, char* argv[]){
     }
 
     bool showHidden = false;
+    int longestFilename=0;
     std::vector<std::string> formattedFiles;
     for (std::filesystem::directory_entry const& dir_entry : std::filesystem::directory_iterator(wd)){
         std::string formatedLine;
@@ -118,6 +129,11 @@ int main(int argc, char* argv[]){
         if(*flagSymlink && fs::is_symlink(curPath)){
             formatedLine+=colorTheme.get("symLinkArrow")+"  "+colorTheme.get("symLink")+fs::read_symlink(curPath).string()+AnsiUtils::reset();
         }
+        const int lineLen = icon.size()+1+fileName.size();
+        if(lineLen>longestFilename){
+            longestFilename=lineLen;
+            std::cout << formatedLine << " > " << longestFilename << std::endl;
+        }
         formattedFiles.push_back(formatedLine);
     }
     size_t filesC = formattedFiles.size();
@@ -125,13 +141,23 @@ int main(int argc, char* argv[]){
     char sep = long_mode ? '\n' : ' ';
     std::string allFiles;
 
+
+    if(flagBorder){
+        border = std::make_unique<Border>();
+        border->setWidth(longestFilename);
+        allFiles+=border->getTop();
+    }
     {
         int i=0;
-        for(i; i<filesC-1; i++){
-            allFiles+=formattedFiles[i]+sep;
+        for(i; i<filesC; i++){
+            if(flagBorder){
+                allFiles+=border->vertical;
+            }
+            allFiles+=formattedFiles[i];
+            if(i<filesC-1){
+                allFiles+=sep;
+            }
         }
-        // last file without sep
-        allFiles+=formattedFiles[i];
     }
 
     std::cout << allFiles << std::endl;
