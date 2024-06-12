@@ -83,6 +83,7 @@ int main(int argc, char* argv[]){
     std::optional<std::string> configPathArg = argParser.getArgVal<std::string>('c');
     // -- end arg parsing --
 
+    // -- start config parsing --
     std::string configPath;
     if(configPathArg){
         configPath = *configPathArg;
@@ -142,7 +143,7 @@ int main(int argc, char* argv[]){
     std::string allFiles;
 
 
-    if(flagBorder){
+    if(*flagBorder){
         border = std::make_unique<Border>();
         border->setWidth(longestFilename);
         allFiles+=border->getTop();
@@ -150,7 +151,7 @@ int main(int argc, char* argv[]){
     {
         int i=0;
         for(i; i<filesC; i++){
-            if(flagBorder){
+            if(*flagBorder){
                 allFiles+=border->vertical;
             }
             allFiles+=formattedFiles[i];
