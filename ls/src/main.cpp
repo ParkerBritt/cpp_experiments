@@ -138,7 +138,7 @@ int main(int argc, char* argv[]){
         formattedFiles.push_back(formatedLine);
     }
     size_t filesC = formattedFiles.size();
-    int long_mode = filesC > 10 || flagLong;
+    int long_mode = filesC > 10 || *flagLong;
     char sep = long_mode ? '\n' : ' ';
     std::string allFiles;
 
@@ -151,10 +151,12 @@ int main(int argc, char* argv[]){
     {
         int i=0;
         for(i; i<filesC; i++){
+            // border left side
             if(*flagBorder){
                 allFiles+=border->vertical;
             }
             allFiles+=formattedFiles[i];
+            // border right side
             if(i<filesC-1){
                 allFiles+=sep;
             }
