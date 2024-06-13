@@ -11,6 +11,10 @@
 
 namespace fs = std::filesystem;
 
+namespace ConfigParsing{
+    using configMap = std::unordered_map<std::string, std::vector<std::string>>;
+}
+
 class ConfigParser{
     public:
         ConfigParser(std::string configFilePath);

@@ -1,5 +1,6 @@
 #include "File.hpp"
 
+// ---- Class File ----
 // -- constructors --
 File::File(fs::path path){
     File::path = path;
@@ -62,9 +63,6 @@ void File::setIcon(const std::unordered_map<std::string, std::vector<std::string
                 fileIcon = extMap.at(fileExt)[0];
             }
         }
-        else{
-            fileIcon = "";
-        }
     }
     setLineLen();
 }
@@ -77,3 +75,32 @@ void File::setLineLen(){
     lineLen = lineLenBuffer;
 }
 // -- end setters --
+// ---- end class File ----
+
+// ---- start class FileCollection ----
+FileCollection::FileCollection(std::shared_ptr<ConfigParser> configParser){
+    iconNameMap = configParser->getSectionContents("Icon Name Mapping");
+    iconExtMap = configParser->getSectionContents("Extension Mapping");
+}
+
+std::string FileCollection::getFormattedFiles(){
+    std::string returnBuffer;
+    for(size_t i=0; i<filesVector.size(); i++){
+       returnBuffer += filesVector[i].getFormattedLine();
+    }
+    return returnBuffer;
+}
+
+void FileCollection::newFile(fs::path path){
+    File file(path);
+    FileCollection::addFile(file);
+}
+
+void FileCollection::addFile(File file){
+    filesVector.push_back(file);
+    filesCnt++;
+}
+
+size_t FileCollection::getCnt(){
+    return filesCnt;
+}

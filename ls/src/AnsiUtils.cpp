@@ -19,7 +19,9 @@ namespace AnsiUtils{
 
     // Class Color
     Color::Color(){
-        Color(255,255,255);
+        r = 255;
+        g = 255;
+        b = 255;
     }
     Color::Color(int colorVector[3]){
         r=colorVector[0];
@@ -31,8 +33,8 @@ namespace AnsiUtils{
         Color::g = g;
         Color::b = b;
     }
-    Color::Color(std::string colorHex){
-    }
+    // Color::Color(std::string colorHex){
+    // }
     std::string Color::getEscape(){
         return "\e[38;2;"+std::to_string(r)+";"+std::to_string(g)+";"+std::to_string(b)+"m";
     }

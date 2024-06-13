@@ -4,6 +4,9 @@
 #include "AnsiUtils.hpp"
 #include <filesystem>
 #include <vector>
+#include "configParsing.hpp"
+#include <memory>
+#include <unordered_map>
 
 namespace fs = std::filesystem;
 
@@ -25,7 +28,7 @@ class File{
     private:
         fs::path path;
 
-        std::string fileIcon;
+        std::string fileIcon = "";
         AnsiUtils::Color fileIconColor;
 
         std::string fileName;
@@ -51,6 +54,17 @@ class File{
 class FileCollection{
     public:
         FileCollection() = default;
+        FileCollection(std::shared_ptr<ConfigParser> configParser);
+        void addFile(File file);
+        void newFile(fs::path path);
+        std::string getFormattedFiles();
+        size_t getCnt();
+    private:
+        std::vector<File> filesVector;
+        ConfigParsing::configMap iconNameMap;
+        ConfigParsing::configMap iconExtMap;
+
+        size_t filesCnt = 0;
 
 };
 
