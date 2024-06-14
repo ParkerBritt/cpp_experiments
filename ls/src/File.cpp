@@ -68,7 +68,8 @@ void File::setIcon(const std::unordered_map<std::string, std::vector<std::string
 }
 
 void File::setLineLen(){
-    size_t lineLenBuffer = fileIcon.size()+1+fileName.size();
+    //                     v using 1 as a standin for icon size for now, fix later
+    size_t lineLenBuffer = 1+1+fileName.size();
     if(showSymLink && isSymLink){
         lineLenBuffer += 1+symLinkIcon.size()+1+symLinkPath.size();
     }
@@ -85,23 +86,36 @@ FileCollection::FileCollection(std::shared_ptr<ConfigParser> configParser){
 
 std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
     std::string returnBuffer;
+    size_t iMax = filesVector.size();
     if(showBorder){
         border = std::make_unique<Border>();
-        border->setWidth(maxFileNameCnt);
+        size_t borderWidth=0;
+        if(longMode){
+            borderWidth = maxFileNameCnt;
+        }
+        else{
+            for(size_t i=0; i<iMax; i++){
+                // std::cout << '1';
+                const File curFile = filesVector[i];
+                borderWidth+=curFile.getLineLen()+1;
+
+            }
+        }
+        border->setWidth(borderWidth);
         returnBuffer+=border->getTop();
     }
+    if(showBorder && !longMode) returnBuffer += border->vertical;
     char sep = longMode ? '\n' : ' ';
-    size_t iMax = filesVector.size();
     for(size_t i=0; i<iMax; i++){
         // left border
-        if(showBorder) returnBuffer += border->vertical;
+        if(showBorder && longMode) returnBuffer += border->vertical;
         
         // file contents
         const File curFile = filesVector[i];
         returnBuffer += curFile.getFormattedLine();
 
         // right border
-        if(showBorder){
+        if(showBorder && longMode){
 
             const size_t lineSize = curFile.getLineLen();
             const unsigned int spacerLen = (lineSize<border->getWidth()) ? border->getWidth()-lineSize : 0;
@@ -117,6 +131,7 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
         if(i!=iMax) returnBuffer+=sep;
     }
     if(showBorder){
+        if(!longMode) returnBuffer+=border->vertical+"\n";
         returnBuffer+=border->getBottom();
     }
     return returnBuffer;
