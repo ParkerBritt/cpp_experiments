@@ -78,9 +78,9 @@ int main(int argc, char* argv[]){
         const std::filesystem::path curPath = dir_entry.path();
         fileCollection.newFile(curPath);
     }
-    bool long_mode = fileCollection.getCnt() > 10 || *flagLong;
 
-    std::cout << fileCollection.getFormattedFiles(long_mode, *flagBorder) << std::endl;
+    std::cout << fileCollection.getFormattedFiles(*flagLong, *flagBorder) << std::endl;
+
     return 0;
 
 }
