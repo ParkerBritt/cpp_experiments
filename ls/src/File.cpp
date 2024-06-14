@@ -83,16 +83,22 @@ FileCollection::FileCollection(std::shared_ptr<ConfigParser> configParser){
     iconExtMap = configParser->getSectionContents("Extension Mapping");
 }
 
-std::string FileCollection::getFormattedFiles(){
+std::string FileCollection::getFormattedFiles(bool long_mode){
     std::string returnBuffer;
-    for(size_t i=0; i<filesVector.size(); i++){
+    char sep = long_mode ? '\n' : ' ';
+    size_t iMax = filesVector.size();
+    for(size_t i=0; i<iMax; i++){
        returnBuffer += filesVector[i].getFormattedLine();
+       if(i!=iMax){
+           returnBuffer+=sep;
+       }
     }
     return returnBuffer;
 }
 
 void FileCollection::newFile(fs::path path){
     File file(path);
+    file.setIcon(iconNameMap, iconExtMap);
     FileCollection::addFile(file);
 }
 

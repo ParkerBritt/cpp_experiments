@@ -57,7 +57,7 @@ class FileCollection{
         FileCollection(std::shared_ptr<ConfigParser> configParser);
         void addFile(File file);
         void newFile(fs::path path);
-        std::string getFormattedFiles();
+        std::string getFormattedFiles(bool long_mode);
         size_t getCnt();
     private:
         std::vector<File> filesVector;

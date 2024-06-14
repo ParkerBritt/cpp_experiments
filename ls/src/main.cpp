@@ -115,7 +115,7 @@ int main(int argc, char* argv[]){
         // formattedFiles.push_back(file);
     }
     std::cout << "file cnt: " << fileCollection.getCnt() << std::endl;
-    int long_mode = fileCollection.getCnt() > 10 || *flagLong;
+    bool long_mode = fileCollection.getCnt() > 10 || *flagLong;
     char sep = long_mode ? '\n' : ' ';
     std::string allFiles;
 
@@ -125,7 +125,7 @@ int main(int argc, char* argv[]){
         border->setWidth(longestFilename);
         allFiles+=border->getTop();
     }
-    allFiles+=fileCollection.getFormattedFiles();
+    allFiles+=fileCollection.getFormattedFiles(long_mode);
     // {
     //     int i=0;
     //     for(i; i<fileCollection.getCnt(); i++){
