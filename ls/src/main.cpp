@@ -113,7 +113,6 @@ int main(int argc, char* argv[]){
         // fileCollection.addFile(file);
         // formattedFiles.push_back(file);
     }
-    std::cout << "file cnt: " << fileCollection.getCnt() << std::endl;
     bool long_mode = fileCollection.getCnt() > 10 || *flagLong;
     char sep = long_mode ? '\n' : ' ';
     std::string allFiles;

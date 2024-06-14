@@ -106,11 +106,7 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
             const size_t lineSize = curFile.getLineLen();
             const unsigned int spacerLen = (lineSize<border->getWidth()) ? border->getWidth()-lineSize : 0;
             std::string rightBorderBuffer;
-            std::cout << "spacerLen: " << spacerLen << std::endl;
-            std::cout << "borderWidth: " << border->getWidth() << std::endl;
-            std::cout << "lineLen: " << lineSize << std::endl;
             for(int i=0; i<spacerLen; i++){
-                std::cout << "adding" << std::endl;
                 rightBorderBuffer+=" ";
             }
             rightBorderBuffer+=border->vertical;
