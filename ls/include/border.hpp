@@ -17,7 +17,8 @@ class Border{
         //member functions
         Border() = default;
         
-        std::string getTop();
+        std::string getTop() const;
+        std::string getBottom() const;
         void setWidth(unsigned  width);
         unsigned  getWidth();
     private:

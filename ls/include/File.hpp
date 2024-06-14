@@ -7,6 +7,7 @@
 #include "configParsing.hpp"
 #include <memory>
 #include <unordered_map>
+#include "border.hpp"
 
 namespace fs = std::filesystem;
 
@@ -18,8 +19,8 @@ class File{
         // getters
         std::string getFileName();
         std::string getFilePath();
-        std::string getFormattedLine();
-        size_t getLineLen();
+        std::string getFormattedLine() const;
+        size_t getLineLen() const;
         
         // setters
         void setIcon(const std::unordered_map<std::string, std::vector<std::string>> iconNameMap,
@@ -53,13 +54,14 @@ class File{
 
 class FileCollection{
     public:
-        FileCollection() = default;
         FileCollection(std::shared_ptr<ConfigParser> configParser);
         void addFile(File file);
         void newFile(fs::path path);
-        std::string getFormattedFiles(bool long_mode);
+        std::string getFormattedFiles(bool longMode=false, bool showBorder=false);
         size_t getCnt();
     private:
+        size_t maxFileNameCnt = 0;
+        std::unique_ptr<Border> border;
         std::vector<File> filesVector;
         ConfigParsing::configMap iconNameMap;
         ConfigParsing::configMap iconExtMap;

@@ -20,14 +20,14 @@ std::string File::getFileName(){
     }
     return fileName;
 }
-std::string File::getFormattedLine(){
+std::string File::getFormattedLine() const{
     std::string formattedLine = fileIconColor.getEscape()+fileIcon+" "+fileNameColor.getEscape()+fileName;
     if(showSymLink && isSymLink){
         formattedLine += symLinkIconColor.getEscape()+' '+symLinkIcon+' '+symLinkPathColor.getEscape()+fs::read_symlink(path).string();
     }
     return formattedLine;
 }
-size_t File::getLineLen(){
+size_t File::getLineLen() const{
     return lineLen;
 }
 
@@ -83,15 +83,45 @@ FileCollection::FileCollection(std::shared_ptr<ConfigParser> configParser){
     iconExtMap = configParser->getSectionContents("Extension Mapping");
 }
 
-std::string FileCollection::getFormattedFiles(bool long_mode){
+std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
     std::string returnBuffer;
-    char sep = long_mode ? '\n' : ' ';
+    if(showBorder){
+        border = std::make_unique<Border>();
+        border->setWidth(maxFileNameCnt);
+        returnBuffer+=border->getTop();
+    }
+    char sep = longMode ? '\n' : ' ';
     size_t iMax = filesVector.size();
     for(size_t i=0; i<iMax; i++){
-       returnBuffer += filesVector[i].getFormattedLine();
-       if(i!=iMax){
-           returnBuffer+=sep;
-       }
+        // left border
+        if(showBorder) returnBuffer += border->vertical;
+        
+        // file contents
+        const File curFile = filesVector[i];
+        returnBuffer += curFile.getFormattedLine();
+
+        // right border
+        if(showBorder){
+
+            const size_t lineSize = curFile.getLineLen();
+            const unsigned int spacerLen = (lineSize<border->getWidth()) ? border->getWidth()-lineSize : 0;
+            std::string rightBorderBuffer;
+            std::cout << "spacerLen: " << spacerLen << std::endl;
+            std::cout << "borderWidth: " << border->getWidth() << std::endl;
+            std::cout << "lineLen: " << lineSize << std::endl;
+            for(int i=0; i<spacerLen; i++){
+                std::cout << "adding" << std::endl;
+                rightBorderBuffer+=" ";
+            }
+            rightBorderBuffer+=border->vertical;
+            returnBuffer+=rightBorderBuffer;
+        }
+
+        // separator
+        if(i!=iMax) returnBuffer+=sep;
+    }
+    if(showBorder){
+        returnBuffer+=border->getBottom();
     }
     return returnBuffer;
 }
@@ -104,6 +134,8 @@ void FileCollection::newFile(fs::path path){
 
 void FileCollection::addFile(File file){
     filesVector.push_back(file);
+    const size_t lineLen = file.getLineLen();
+    if(lineLen>maxFileNameCnt) maxFileNameCnt = lineLen;
     filesCnt++;
 }
 

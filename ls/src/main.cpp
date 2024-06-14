@@ -26,7 +26,6 @@ int main(int argc, char* argv[]){
 
 
 
-    std::unique_ptr<Border> border(nullptr);
     AnsiUtils::ColorTheme colorTheme;
     colorTheme.add("symLink", 255, 255, 255);
     colorTheme.add("symLinkArrow", 255, 255, 255);
@@ -120,12 +119,7 @@ int main(int argc, char* argv[]){
     std::string allFiles;
 
 
-    if(*flagBorder){
-        border = std::make_unique<Border>();
-        border->setWidth(longestFilename);
-        allFiles+=border->getTop();
-    }
-    allFiles+=fileCollection.getFormattedFiles(long_mode);
+    allFiles+=fileCollection.getFormattedFiles(long_mode, *flagBorder);
     // {
     //     int i=0;
     //     for(i; i<fileCollection.getCnt(); i++){
@@ -137,17 +131,17 @@ int main(int argc, char* argv[]){
             // allFiles+=formattedFiles[i].getFormattedLine();
             // border right side
             // if(*flagBorder){
-                // std::string foo = "";
-                // const unsigned int spacerLen = (line.size()<border->getWidth()) ? border->getWidth()-line.size() : 0;
-                // std::string rightBorderBuffer;
-                // std::cout << "spacerLen: " << spacerLen << std::endl;
-                // std::cout << "borderWidth: " << border->getWidth() << std::endl;
-                // std::cout << "lineLen: " << line.size() << std::endl;
-                // for(int i=0; i<spacerLen; i++){
-                //     std::cout << "adding" << std::endl;
-                //     rightBorderBuffer+=" ";
-                // }
-                // rightBorderBuffer+=border->vertical;
+            //     std::string foo = "";
+            //     const unsigned int spacerLen = (line.size()<border->getWidth()) ? border->getWidth()-line.size() : 0;
+            //     std::string rightBorderBuffer;
+            //     std::cout << "spacerLen: " << spacerLen << std::endl;
+            //     std::cout << "borderWidth: " << border->getWidth() << std::endl;
+            //     std::cout << "lineLen: " << line.size() << std::endl;
+            //     for(int i=0; i<spacerLen; i++){
+            //         std::cout << "adding" << std::endl;
+            //         rightBorderBuffer+=" ";
+            //     }
+            //     rightBorderBuffer+=border->vertical;
             // }
     //         if(i<fileCollection.getCnt()-1){
     //             allFiles+=sep;

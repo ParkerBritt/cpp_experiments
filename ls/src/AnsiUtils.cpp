@@ -35,7 +35,7 @@ namespace AnsiUtils{
     }
     // Color::Color(std::string colorHex){
     // }
-    std::string Color::getEscape(){
+    std::string Color::getEscape() const{
         return "\e[38;2;"+std::to_string(r)+";"+std::to_string(g)+";"+std::to_string(b)+"m";
     }
 
