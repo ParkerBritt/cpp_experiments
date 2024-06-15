@@ -86,11 +86,12 @@ FileCollection::FileCollection(std::shared_ptr<ConfigParser> configParser){
 
 std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
     auto winSize = getWinSize();
-    std::cout << std::get<0>(winSize) << " " << std::get<1>(winSize) << std::endl;
-    for(int i=0; i<std::get<1>(winSize); i++){
-        std::cout << 'i';
-    }
-    std::cout << std::endl;
+    unsigned short winWidth = std::get<1>(winSize);
+    // std::cout << std::get<0>(winSize) << " " << std::get<1>(winSize) << std::endl;
+    // for(int i=0; i<std::get<1>(winSize); i++){
+    //     std::cout << 'i';
+    // }
+    // std::cout << std::endl;
 
     std::string returnBuffer;
     size_t iMax = filesVector.size();
@@ -104,24 +105,45 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
         }
         else{
             for(size_t i=0; i<iMax; i++){
-                // std::cout << '1';
                 const File curFile = filesVector[i];
                 borderWidth+=curFile.getLineLen()+1;
+                if(borderWidth>winWidth){
+                    borderWidth = winWidth-2;
+                    break;
+                }
 
             }
         }
         border->setWidth(borderWidth);
         returnBuffer+=border->getTop();
     }
+
     if(showBorder && !longMode) returnBuffer += border->vertical;
+    int curLineLen = 0;
     char sep = longMode ? '\n' : ' ';
+    bool isNewLine = false;
     for(size_t i=0; i<iMax; i++){
+        isNewLine=false;
+        const File curFile = filesVector[i];
+        size_t curFileLen = curFile.getLineLen();
+        if(curLineLen+curFileLen>winWidth){
+            isNewLine=true;
+            if(showBorder){
+                returnBuffer+=border->vertical+"\n"+border->vertical;
+                curLineLen=1;
+            }
+            else{
+                returnBuffer+="\n";
+                curLineLen=0;
+            }
+        }
+
         // left border
         if(showBorder && longMode) returnBuffer += border->vertical;
         
         // file contents
-        const File curFile = filesVector[i];
         returnBuffer += curFile.getFormattedLine();
+        curLineLen+= curFile.getLineLen();
 
         // right border
         if(showBorder && longMode){
@@ -137,7 +159,10 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
         }
 
         // separator
-        if(i!=iMax) returnBuffer+=sep;
+        if(i!=iMax){
+            returnBuffer+=sep;
+            curLineLen++;
+        }
     }
     if(showBorder){
         if(!longMode) returnBuffer+=border->vertical+"\n";
