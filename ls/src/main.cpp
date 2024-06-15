@@ -1,13 +1,8 @@
 #include <iostream>
 #include <filesystem>
-#include <vector>
-#include <unordered_map>
-#include <regex>
 #include "ArgParsing.hpp"
 #include "AnsiUtils.hpp"
 #include "configParsing.hpp"
-#include "border.hpp"
-#include <algorithm>
 #include "File.hpp"
 #include <memory>
 

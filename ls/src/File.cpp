@@ -85,8 +85,17 @@ FileCollection::FileCollection(std::shared_ptr<ConfigParser> configParser){
 }
 
 std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
+    auto winSize = getWinSize();
+    std::cout << std::get<0>(winSize) << " " << std::get<1>(winSize) << std::endl;
+    for(int i=0; i<std::get<1>(winSize); i++){
+        std::cout << 'i';
+    }
+    std::cout << std::endl;
+
     std::string returnBuffer;
     size_t iMax = filesVector.size();
+
+    // top border
     if(showBorder){
         border = std::make_unique<Border>();
         size_t borderWidth=0;
