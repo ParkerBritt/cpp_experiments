@@ -196,53 +196,39 @@ void FileCollection::addFile(File file){
     std::string newFileName = file.getCompFileName();
 
     if(filesVector.size()==0){
-        std::cout << "adding file: " << file.getCompFileName() << " to empty vector" << std::endl;
         filesVector.push_back(file);
     }
     else if(filesVector.size()==1){
         // if greater than existing item in vector
         if(newFileName > filesVector[0].getCompFileName()) {
-            std::cout << "adding file: " << file.getCompFileName() << " after existing file " << filesVector[0].getCompFileName() << std::endl;
             filesVector.push_back(file);
         }
         else{
-            std::cout << "adding file: " << file.getCompFileName() << " before existing file " << filesVector[0].getCompFileName() << std::endl;
             filesVector.insert(filesVector.begin(), file);
         }
     }
     else{
         bool foundPlace = false;
         if(newFileName < filesVector[0].getCompFileName()){
-            std::cout << "adding " << file.getCompFileName() << " to start of vector" << std::endl;
             filesVector.insert(filesVector.begin(), file);
         }
         else{
-            for(size_t i = 1; i<filesVector.size()-1; i++){
+            for(size_t i = 1; i<filesVector.size(); i++){
                 std::string prevFileName = filesVector[i-1].getCompFileName();
                 std::string nextFileName = filesVector[i].getCompFileName();
 
                 if(prevFileName < newFileName && newFileName < nextFileName) {
-                    std::cout << "adding file " << newFileName << " after " << prevFileName << std::endl;
-                    std::cout << prevFileName << " < " << newFileName << " < " << nextFileName << std::endl;
-                    std::cout << "prevFileName == " << prevFileName <<std::endl;
-                    std::cout << "nextFileName == " << nextFileName <<std::endl;
-                    std::cout << "string " << (prevFileName < newFileName && newFileName < nextFileName) << std::endl;
                     filesVector.insert(filesVector.begin()+i, file);
                     foundPlace = true;
                     break;
                 }
             }
             if(!foundPlace){
-                std::cout << "couldn't find spot adding file: " << file.getCompFileName() << " to end" << std::endl;
+                //std::cout << "couldn't find spot adding file: " << file.getCompFileName() << " to end" << std::endl;
                 filesVector.push_back(file);
             }
         }
     }
-    std::cout << "   ";
-    for(int i =0; i < filesVector.size(); i++){
-        std::cout << filesVector[i].getFileName() << ' ';
-    }
-    std::cout << '\n' << std::endl;
     const size_t lineLen = file.getLineLen();
     if(lineLen>maxFileNameCnt) maxFileNameCnt = lineLen;
     filesCnt++;
