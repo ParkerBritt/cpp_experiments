@@ -19,6 +19,7 @@ class File{
 
         // getters
         std::string getFileName();
+        std::string getCompFileName();
         std::string getFilePath();
         std::string getFormattedLine() const;
         size_t getLineLen() const;

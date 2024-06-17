@@ -219,14 +219,11 @@ void FileCollection::addFile(File file){
         else{
             for(size_t i = 1; i<filesVector.size()-1; i++){
                 std::string prevFileName = filesVector[i-1].getCompFileName();
-                std::string nextFileName = filesVector[i].getCompFileName();
+                std::string nextFileName = filesVector[i+1].getCompFileName();
 
                 if(prevFileName < newFileName && newFileName < nextFileName) {
                     std::cout << "adding file " << newFileName << " after " << prevFileName << std::endl;
-                    std::cout << prevFileName << " < " << newFileName << " < " << nextFileName << std::endl;
-                    std::cout << "prevFileName == " << prevFileName <<std::endl;
-                    std::cout << "nextFileName == " << nextFileName <<std::endl;
-                    std::cout << "string " << (prevFileName < newFileName && newFileName < nextFileName) << std::endl;
+                    std::cout << prevFileName[0] << " < " << newFileName[0] << " < " << nextFileName[0] << std::endl;
                     filesVector.insert(filesVector.begin()+i, file);
                     foundPlace = true;
                     break;
