@@ -93,7 +93,7 @@ FileCollection::FileCollection(std::shared_ptr<ConfigParser> configParser){
 std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
     auto winSize = getWinSize();
     unsigned short winWidth = std::get<1>(winSize);
-    size_t columns = 4;
+    size_t columns = 5;
 
     std::string returnBuffer;
     size_t iMax = filesVector.size();
@@ -120,12 +120,13 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
             returnBuffer+='\n';
             curLineCnt = 0;
         }
-        // size_t fileIndex = fmax(0, i-4);
-        size_t fileIndex;
-        bool isOverFlow = (i+1)%4==0;
-        fileIndex = floor(i/4.0) + (i%4) * 3 - isOverFlow;
+        size_t fileIndex = i;
+        int rows = ceil(iMax/static_cast<float>(columns));
+        fileIndex = floor(i/static_cast<float>(columns)) + (i%columns) * (rows);
+        fileIndex -= fileIndex>=floor(iMax/static_cast<float>(columns))*columns;
 
-        std::cout << "file index " << i << " = " << fileIndex << std::endl;
+
+        // std::cout << "file index " << i << " = " << fileIndex << std::endl;
         const File curFile = filesVector.at(fileIndex);
 
         // size_t nSpace = maxColFile.getLineLen()-curFile.getLineLen();
