@@ -1,4 +1,6 @@
 #include "File.hpp"
+#include "Utils.hpp"
+#include <iostream>
 
 // ---- Class File ----
 // -- constructors --

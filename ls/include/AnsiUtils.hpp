@@ -3,7 +3,6 @@
 
 #include <string>
 #include <unordered_map>
-#include <iostream>
 
 namespace AnsiUtils{
     using colorVector = int[3];

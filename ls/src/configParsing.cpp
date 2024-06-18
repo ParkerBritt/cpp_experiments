@@ -1,4 +1,9 @@
 #include "configParsing.hpp"
+#include <iostream>
+#include <fstream>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 ConfigParser::ConfigParser(std::string configFilePath){
     // check validity

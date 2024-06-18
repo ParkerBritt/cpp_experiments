@@ -9,8 +9,6 @@
 #include <unordered_map>
 #include "border.hpp"
 #include <cmath>
-#include <algorithm>
-#include "Utils.hpp"
 
 namespace fs = std::filesystem;
 

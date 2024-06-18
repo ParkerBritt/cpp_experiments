@@ -1,15 +1,9 @@
 #ifndef CONFIG_PARSING_HPP
 #define CONFIG_PARSING_HPP
 
-#include <regex>
-#include <iostream>
 #include <string>
 #include <unordered_map>
-#include <fstream>
-#include <filesystem>
 #include <vector>
-
-namespace fs = std::filesystem;
 
 namespace ConfigParsing{
     using configMap = std::unordered_map<std::string, std::vector<std::string>>;

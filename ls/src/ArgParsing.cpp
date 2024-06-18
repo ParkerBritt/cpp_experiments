@@ -1,4 +1,5 @@
 #include "ArgParsing.hpp"
+#include "AnsiUtils.hpp"
 
 ArgumentParser::ArgumentParser(){
     // std::cout << "constructor successful" << std::endl;
@@ -21,11 +22,10 @@ void ArgumentParser::addArgument(const std::string name, Type type){
 }
 
 bool ArgumentParser::parseArgs(int argc, char* argv[]){
-    int optind = 1;
     int column_cnt = -1;
     int row_cnt = -1;
     int positionalIndex = 0;
-    for(optind; optind<argc; optind++){
+    for(size_t optind; optind<argc; optind++){
         const std::string opt = argv[optind];
         if(opt[0]!='-'){ // break if no flag detected
             std::string argName = positionalArgs[positionalIndex];
