@@ -98,14 +98,41 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
     std::string returnBuffer;
     size_t iMax = filesVector.size();
 
+    std::vector<size_t> colMaxLengths; 
+    // for(size_t column=0; column<std::floor(iMax/columns); column++){
+    //     size_t maxFileLen=0;
+    //     for(int row=0; row<columns; row++){
+    //         File& file = filesVector[column*4+row]
+    //         if()
+    //     }
+    // }
+
+
+    size_t curLineCnt = 0;
     for(size_t i=0; i<iMax; i++){
         size_t fileIndex = i;
-        // fileIndex = fileIndex>filesVector.size() ? filesVector.size()-1 : fileIndex;
+        const File curFile = filesVector.at(fileIndex);
+        std::cout << " " + curFile.getFormattedLine();
+    }
+    std::cout << std::endl;
+    for(size_t i=0; i<iMax; i++){
+        if(curLineCnt>=columns){
+            returnBuffer+='\n';
+            curLineCnt = 0;
+        }
+        // size_t fileIndex = fmax(0, i-4);
+        size_t fileIndex;
+        bool isOverFlow = (i+1)%4==0;
+        fileIndex = floor(i/4.0) + (i%4) * 3 - isOverFlow;
+
+        std::cout << "file index " << i << " = " << fileIndex << std::endl;
         const File curFile = filesVector.at(fileIndex);
 
+        // size_t nSpace = maxColFile.getLineLen()-curFile.getLineLen();
         // file contents
         returnBuffer += curFile.getFormattedLine();
         returnBuffer+= ' ';
+        curLineCnt++;
         // returnBuffer+= '\t';
     }
 
