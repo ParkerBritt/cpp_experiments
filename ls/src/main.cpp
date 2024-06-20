@@ -32,6 +32,7 @@ int main(int argc, char* argv[]){
 
     // parse args
     if(!argParser.parseArgs(argc, argv)){
+        std::cout << "Failed arg parsing" << std::endl;
         return -1;
     }
 
@@ -60,6 +61,7 @@ int main(int argc, char* argv[]){
 
     std::filesystem::path wd;
     if(!filePath){
+        std::cout << "setting current path" << std::endl;
         wd = fs::current_path();
     }else{
         if(!fs::exists(*filePath)){
