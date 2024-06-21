@@ -99,7 +99,15 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
     unsigned short winWidth = std::get<1>(winSize);
     std::string returnBuffer;
     size_t totalItems = filesVector.size();
-    size_t columns = 3;
+    size_t columns = 1;
+    if(longMode){
+        columns = 1;
+    }
+    else{
+        std::cout << "max file name count: " << maxFileNameCnt << std::endl;
+        std::cout << "winWidth: " << winWidth << std::endl;
+        columns = fmax(1, floor(winWidth/static_cast<float>(maxFileNameCnt)));
+    }
     size_t rows = ceil(totalItems / static_cast<float>(columns));
     std::cout << "creating " << rows << " rows and " << columns << " columns" << std::endl;
     std::string sep = " ";
@@ -117,7 +125,7 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
             if(curLineLen >colMaxLength) colMaxLength = curLineLen;
         }
         colMaxLengths.push_back(colMaxLength);
-        std::cout << "column: " << col << " max length: " << colMaxLength << std::endl;
+        // std::cout << "column: " << col << " max length: " << colMaxLength << std::endl;
     }
 
     for(size_t row = 0; row < rows; row++) {
@@ -132,9 +140,7 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
             File curFile = filesVector.at(fileIndex);
             sep = "  ";
             size_t sepSize = colMaxLengths[col]-curFile.getLineLen();
-            std::cout << "sepSize: " << sepSize << std::endl;
             for(size_t i=0;i<sepSize; i++){
-                // std::cout << "foo" << std::endl;
                 sep+=' ';
             }
             returnBuffer += curFile.getFormattedLine() + sep;
