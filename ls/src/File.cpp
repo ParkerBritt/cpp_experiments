@@ -100,6 +100,13 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
     std::string returnBuffer;
     size_t totalItems = filesVector.size();
     int colPadding = 2;
+    std::vector<size_t> fileLineLengths;
+    
+    // calculate file lengths
+    for(size_t i = 0; i < totalItems; i++){
+        size_t curFileLineLen = filesVector.at(i).getLineLen();
+        fileLineLengths.push_back(curFileLineLen);
+    }
     
     // calculate rows and collumns
     size_t columns = winWidth;
@@ -122,7 +129,8 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
                 if (fileIndex >= totalItems) {
                     continue;
                 }
-                size_t curLineLen = filesVector[fileIndex].getLineLen()+colPadding;
+                // size_t curLineLen = filesVector[fileIndex].getLineLen()+colPadding;
+                size_t curLineLen = fileLineLengths.at(fileIndex)+colPadding;
                 if(curLineLen >colMaxLength) colMaxLength = curLineLen;
             }
             std::cout << "\tcolumn len: " << colMaxLength << std::endl;
