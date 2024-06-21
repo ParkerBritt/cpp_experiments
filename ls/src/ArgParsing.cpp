@@ -24,9 +24,7 @@ void ArgumentParser::addArgument(const std::string name, Type type){
 bool ArgumentParser::parseArgs(int argc, char* argv[]){
     int positionalIndex = 0;
     for(size_t optind = 1; optind<argc; optind++){
-        std::cout << "FOO" << std::endl;
         const std::string opt = argv[optind];
-        std::cout << "parsing arg: " << opt << std::endl;
         if(opt[0]!='-'){ // break if no flag detected
             std::string argName = positionalArgs[positionalIndex];
             longArgValMap[argName] = opt;

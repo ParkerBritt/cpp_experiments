@@ -4,4 +4,4 @@ cmake .. && \
   cp ./compile_commands.json .. && \
   make && \
   cd .. && \
-  ./build/pls
+  ./build/bin/pls

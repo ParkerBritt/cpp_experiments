@@ -1,6 +1,8 @@
 #include "File.hpp"
 #include "Utils.hpp"
+#include <csignal>
 #include <iostream>
+#include <string>
 
 // ---- Class File ----
 // -- constructors --
@@ -95,124 +97,54 @@ FileCollection::FileCollection(std::shared_ptr<ConfigParser> configParser){
 std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
     auto winSize = getWinSize();
     unsigned short winWidth = std::get<1>(winSize);
+    size_t totalItems = filesVector.size();
     size_t columns = 5;
+    size_t rows = ceil(totalItems / static_cast<float>(columns));
+    std::cout << "creating " << rows << " rows and " << columns << " columns" << std::endl;
 
+    for(size_t row = 0; row < rows; row++) {
+        for(size_t col = 0; col < columns; col++) {
+            size_t fileIndex = row + col * rows;
+            if (fileIndex < totalItems) {
+                std::cout << filesVector[fileIndex].getFormattedLine() << ' ';
+            }
+        }
+        std::cout << std::endl;
+    }
+
+    return "";
     std::string returnBuffer;
-    size_t iMax = filesVector.size();
 
     std::vector<size_t> colMaxLengths; 
-    // for(size_t column=0; column<std::floor(iMax/columns); column++){
-    //     size_t maxFileLen=0;
-    //     for(int row=0; row<columns; row++){
-    //         File& file = filesVector[column*4+row]
-    //         if()
-    //     }
-    // }
-
 
     size_t curLineCnt = 0;
-    for(size_t i=0; i<iMax; i++){
+    for(size_t i=0; i<totalItems; i++){
         size_t fileIndex = i;
         const File curFile = filesVector.at(fileIndex);
         std::cout << " " + curFile.getFormattedLine();
     }
     std::cout << std::endl;
-    for(size_t i=0; i<iMax; i++){
+    for(size_t i=0; i<totalItems; i++){
         if(curLineCnt>=columns){
             returnBuffer+='\n';
             curLineCnt = 0;
         }
-        size_t fileIndex = i;
-        int rows = ceil(iMax/static_cast<float>(columns));
-        fileIndex = floor(i/static_cast<float>(columns)) + (i%columns) * (rows);
-        fileIndex -= fileIndex>=floor(iMax/static_cast<float>(columns))*columns;
+        size_t col = i % columns;
+        size_t row = i / columns;
+        size_t fileIndex = row + col * rows;
 
 
-        // std::cout << "file index " << i << " = " << fileIndex << std::endl;
+        std::cout << "file index " << i << " = " << fileIndex << std::endl;
+        std::cout << i/static_cast<float>(totalItems-1)*100 << "% through" << std::endl;;
+        if(fileIndex >= totalItems){
+            throw std::out_of_range("fileVector out of range at index: " + std::to_string(i) + " value: " + std::to_string(fileIndex) + " max value: " + std::to_string(totalItems));
+        }
         const File curFile = filesVector.at(fileIndex);
 
-        // size_t nSpace = maxColFile.getLineLen()-curFile.getLineLen();
-        // file contents
         returnBuffer += curFile.getFormattedLine();
         returnBuffer+= ' ';
         curLineCnt++;
-        // returnBuffer+= '\t';
     }
-
-
-    // // top border
-    // if(showBorder){
-    //     border = std::make_unique<Border>();
-    //     size_t borderWidth=0;
-    //     if(longMode){
-    //         borderWidth = maxFileNameCnt;
-    //     }
-    //     else{
-    //         for(size_t i=0; i<iMax; i++){
-    //             const File curFile = filesVector[i];
-    //             borderWidth+=curFile.getLineLen()+1;
-    //             if(borderWidth>winWidth){
-    //                 borderWidth = winWidth-2;
-    //                 break;
-    //             }
-
-    //         }
-    //     }
-    //     border->setWidth(borderWidth);
-    //     returnBuffer+=border->getTop();
-    // }
-
-    // if(showBorder && !longMode) returnBuffer += border->vertical;
-    // int curLineLen = 0;
-    // char sep = longMode ? '\n' : '\t';
-    // bool isNewLine = false;
-    // for(size_t i=0; i<iMax; i++){
-    //     isNewLine=false;
-    //     const File curFile = filesVector[i];
-    //     size_t curFileLen = curFile.getLineLen();
-    //     if(!longMode && curLineLen+curFileLen>winWidth){
-    //         isNewLine=true;
-    //         if(showBorder){
-    //             returnBuffer+=border->vertical+"\n"+border->vertical;
-    //             curLineLen=1;
-    //         }
-    //         else{
-    //             returnBuffer+="\n";
-    //             curLineLen=0;
-    //         }
-    //     }
-
-    //     // left border
-    //     if(showBorder && longMode) returnBuffer += border->vertical;
-    //     
-    //     // file contents
-    //     returnBuffer += curFile.getFormattedLine();
-    //     // curLineLen+= curFile.getLineLen();
-    //     curLineLen += maxFileNameCnt;
-
-    //     // right border
-    //     if(showBorder && longMode){
-
-    //         const size_t lineSize = curFile.getLineLen();
-    //         const unsigned int spacerLen = (lineSize<border->getWidth()) ? border->getWidth()-lineSize : 0;
-    //         std::string rightBorderBuffer;
-    //         for(int i=0; i<spacerLen; i++){
-    //             rightBorderBuffer+=" ";
-    //         }
-    //         rightBorderBuffer+=border->vertical;
-    //         returnBuffer+=rightBorderBuffer;
-    //     }
-
-    //     // separator
-    //     if(i!=iMax){
-    //         returnBuffer+=sep;
-    //         curLineLen++;
-    //     }
-    // }
-    // if(showBorder){
-    //     if(!longMode) returnBuffer+=border->vertical+"\n";
-    //     returnBuffer+=border->getBottom();
-    // }
     return returnBuffer;
 }
 
