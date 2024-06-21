@@ -115,8 +115,6 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
 
     size_t debugIter = 0;
     while(overFlow){
-        std::cout << "debug iter: " << debugIter << std::endl;
-
         overFlow = false;
         rows = ceil(totalItems/static_cast<float>(columns));
 
@@ -133,7 +131,7 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
                 size_t curLineLen = fileLineLengths.at(fileIndex)+colPadding;
                 if(curLineLen >colMaxLength) colMaxLength = curLineLen;
             }
-            std::cout << "\tcolumn len: " << colMaxLength << std::endl;
+            // std::cout << "\tcolumn len: " << colMaxLength << std::endl;
             colMaxLengths.push_back(colMaxLength);
         }
 
@@ -159,9 +157,6 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
         columns = 1;
         rows = totalItems;
     }
-
-    std::cout << "creating " << rows << " rows and " << columns << " columns" << std::endl;
-    // return "";
 
     // fetch max length for each column for generating separator length 
     std::vector<size_t> colMaxLengths; 
@@ -201,7 +196,7 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
                 returnBuffer+=sep;
             }
         }
-        returnBuffer += '\n';
+        if(row<rows-1) returnBuffer += '\n';
     }
     return returnBuffer;
 
