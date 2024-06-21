@@ -99,34 +99,53 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
     unsigned short winWidth = std::get<1>(winSize);
     std::string returnBuffer;
     size_t totalItems = filesVector.size();
+    int colPadding = 2;
     
     // calculate rows and collumns
     size_t columns = winWidth;
     size_t rows;
     bool overFlow = true;
-    size_t rowItems;
+
+    size_t debugIter = 0;
     while(overFlow){
+        std::cout << "debug iter: " << debugIter << std::endl;
+
         overFlow = false;
         rows = ceil(totalItems/static_cast<float>(columns));
-        for(size_t row = 0; row < rows; row++) {
-            size_t rowLen = 0;
-            rowItems = 0;
-            for(size_t col = 0; col < columns; col++) {
+
+        // figure out max length for each column
+        std::vector<size_t> colMaxLengths; 
+        for(size_t col = 0; col < columns; col++) {
+            size_t colMaxLength = 0;
+            for(size_t row = 0; row < rows; row++) {
                 size_t fileIndex = row + col * rows;
                 if (fileIndex >= totalItems) {
                     continue;
                 }
-                size_t curLineLen = filesVector[fileIndex].getLineLen();
-                overFlow = rowLen+curLineLen > winWidth;
-                if(overFlow) break;
-
-                rowLen += curLineLen;
-                rowItems++;
+                size_t curLineLen = filesVector[fileIndex].getLineLen()+colPadding;
+                if(curLineLen >colMaxLength) colMaxLength = curLineLen;
             }
-            if(overFlow) break;
+            std::cout << "\tcolumn len: " << colMaxLength << std::endl;
+            colMaxLengths.push_back(colMaxLength);
         }
+
+        size_t rowLen = 0;
+        size_t rowItems = 0;
+        for(size_t col = 0; col < columns; col++){
+            
+
+            size_t colLineLen = colMaxLengths.at(col);
+            overFlow = rowLen+colLineLen > winWidth;
+            if(overFlow) break;
+
+            rowLen += colLineLen;
+            rowItems++;
+        }
+
         if(!overFlow) break;
         columns=rowItems;
+
+        debugIter++;
     }
     if(columns == 0 && rows == 0){
         columns = 1;
@@ -135,7 +154,6 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
 
     std::cout << "creating " << rows << " rows and " << columns << " columns" << std::endl;
     // return "";
-    std::string sep = " ";
 
     // fetch max length for each column for generating separator length 
     std::vector<size_t> colMaxLengths; 
@@ -167,9 +185,9 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
             
             // add separator
             if(col<columns-1){
-                sep = "  ";
+                std::string sep = "";
                 size_t sepSize = colMaxLengths[col]-curFile.getLineLen();
-                for(size_t i=0;i<sepSize; i++){
+                for(size_t i=0;i<sepSize+colPadding; i++){
                     sep+=' ';
                 }
                 returnBuffer+=sep;
