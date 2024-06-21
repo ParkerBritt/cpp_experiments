@@ -97,32 +97,54 @@ FileCollection::FileCollection(std::shared_ptr<ConfigParser> configParser){
 std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
     auto winSize = getWinSize();
     unsigned short winWidth = std::get<1>(winSize);
+    std::string returnBuffer;
     size_t totalItems = filesVector.size();
-    size_t columns = 5;
+    size_t columns = 3;
     size_t rows = ceil(totalItems / static_cast<float>(columns));
     std::cout << "creating " << rows << " rows and " << columns << " columns" << std::endl;
+    std::string sep = " ";
+
+    //
+    std::vector<size_t> colMaxLengths; 
+    for(size_t col = 0; col < columns; col++) {
+        size_t colMaxLength = 0;
+        for(size_t row = 0; row < rows; row++) {
+            size_t fileIndex = row + col * rows;
+            if (fileIndex >= totalItems) {
+                continue;
+            }
+            size_t curLineLen = filesVector[fileIndex].getLineLen();
+            if(curLineLen >colMaxLength) colMaxLength = curLineLen;
+        }
+        colMaxLengths.push_back(colMaxLength);
+        std::cout << "column: " << col << " max length: " << colMaxLength << std::endl;
+    }
 
     for(size_t row = 0; row < rows; row++) {
         for(size_t col = 0; col < columns; col++) {
+            // std::cout << "col: " << col << " row: " << row << std::endl;
             size_t fileIndex = row + col * rows;
-            if (fileIndex < totalItems) {
-                std::cout << filesVector[fileIndex].getFormattedLine() << ' ';
+            // std::cout << "\tfile index: " << fileIndex << std::endl;
+            if (fileIndex >= totalItems) {
+                // std::cout<< "continuing" << std::endl;
+                continue;
             }
+            File curFile = filesVector.at(fileIndex);
+            sep = "  ";
+            size_t sepSize = colMaxLengths[col]-curFile.getLineLen();
+            std::cout << "sepSize: " << sepSize << std::endl;
+            for(size_t i=0;i<sepSize; i++){
+                // std::cout << "foo" << std::endl;
+                sep+=' ';
+            }
+            returnBuffer += curFile.getFormattedLine() + sep;
         }
-        std::cout << std::endl;
+        returnBuffer += '\n';
     }
+    return returnBuffer;
 
-    return "";
-    std::string returnBuffer;
-
-    std::vector<size_t> colMaxLengths; 
 
     size_t curLineCnt = 0;
-    for(size_t i=0; i<totalItems; i++){
-        size_t fileIndex = i;
-        const File curFile = filesVector.at(fileIndex);
-        std::cout << " " + curFile.getFormattedLine();
-    }
     std::cout << std::endl;
     for(size_t i=0; i<totalItems; i++){
         if(curLineCnt>=columns){
