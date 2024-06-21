@@ -99,20 +99,45 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
     unsigned short winWidth = std::get<1>(winSize);
     std::string returnBuffer;
     size_t totalItems = filesVector.size();
-    size_t columns = 1;
-    if(longMode){
+    
+    // calculate rows and collumns
+    size_t columns = winWidth;
+    size_t rows;
+    bool overFlow = true;
+    size_t rowItems;
+    while(overFlow){
+        overFlow = false;
+        rows = ceil(totalItems/static_cast<float>(columns));
+        for(size_t row = 0; row < rows; row++) {
+            size_t rowLen = 0;
+            rowItems = 0;
+            for(size_t col = 0; col < columns; col++) {
+                size_t fileIndex = row + col * rows;
+                if (fileIndex >= totalItems) {
+                    continue;
+                }
+                size_t curLineLen = filesVector[fileIndex].getLineLen();
+                overFlow = rowLen+curLineLen > winWidth;
+                if(overFlow) break;
+
+                rowLen += curLineLen;
+                rowItems++;
+            }
+            if(overFlow) break;
+        }
+        if(!overFlow) break;
+        columns=rowItems;
+    }
+    if(columns == 0 && rows == 0){
         columns = 1;
+        rows = totalItems;
     }
-    else{
-        std::cout << "max file name count: " << maxFileNameCnt << std::endl;
-        std::cout << "winWidth: " << winWidth << std::endl;
-        columns = fmax(1, floor(winWidth/static_cast<float>(maxFileNameCnt)));
-    }
-    size_t rows = ceil(totalItems / static_cast<float>(columns));
+
     std::cout << "creating " << rows << " rows and " << columns << " columns" << std::endl;
+    // return "";
     std::string sep = " ";
 
-    //
+    // fetch max length for each column for generating separator length 
     std::vector<size_t> colMaxLengths; 
     for(size_t col = 0; col < columns; col++) {
         size_t colMaxLength = 0;
@@ -138,12 +163,17 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
                 continue;
             }
             File curFile = filesVector.at(fileIndex);
-            sep = "  ";
-            size_t sepSize = colMaxLengths[col]-curFile.getLineLen();
-            for(size_t i=0;i<sepSize; i++){
-                sep+=' ';
+            returnBuffer += curFile.getFormattedLine();
+            
+            // add separator
+            if(col<columns-1){
+                sep = "  ";
+                size_t sepSize = colMaxLengths[col]-curFile.getLineLen();
+                for(size_t i=0;i<sepSize; i++){
+                    sep+=' ';
+                }
+                returnBuffer+=sep;
             }
-            returnBuffer += curFile.getFormattedLine() + sep;
         }
         returnBuffer += '\n';
     }
