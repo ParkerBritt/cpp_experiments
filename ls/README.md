@@ -17,3 +17,7 @@
 - Custom config parser
 
 ## Screenshots
+
+## Build Dependencies
+- `Cmake`
+- `Catch2` for tests
