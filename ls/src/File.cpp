@@ -13,7 +13,7 @@ File::File(fs::path path){
     }
     isSymLink = fs::is_symlink(path);
     if(isSymLink) symLinkPath = fs::read_symlink(path);
-    fileName = path.filename().string();
+    setFileName();
 }
 File::File(std::string path){
     File(fs::path(path));
