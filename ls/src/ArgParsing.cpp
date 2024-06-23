@@ -167,7 +167,7 @@ void ArgumentParser::errNoTokenFound(const char argName, const ArgumentParser::T
             typeString = "unknown";
             break;
     }
-    std::cerr << AnsiUtils::color(255,0,0) << "Error: No token found. Expected token of type: " << typeString << " for arg: " << AnsiUtils::bold() << argName << std::endl;
+    std::cerr << AnsiUtils::color(255,0,0) << "Error: No token found. Expected token of type: " << typeString << " for arg: " << AnsiUtils::bold() << argName << AnsiUtils::reset() <<  std::endl;
 }
 void ArgumentParser::errNoTokenFound(const std::string argName, const ArgumentParser::Type tokenType){
     std::string typeString;
