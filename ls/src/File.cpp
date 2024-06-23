@@ -14,6 +14,7 @@ File::File(fs::path path){
     isSymLink = fs::is_symlink(path);
     if(isSymLink) symLinkPath = fs::read_symlink(path);
     setFileName();
+    setLineLen();
 }
 File::File(std::string path) : File(fs::path(path)){
 }

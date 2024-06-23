@@ -18,7 +18,21 @@ TEST_CASE("file operations"){
     std::string file_path = "/dev/null";
     File file(file_path);
 
+    SECTION("set icon"){
+        std::unordered_map<std::string, std::vector<std::string>> iconNameMap;
+        std::unordered_map<std::string, std::vector<std::string>> extMap;
+
+        std::vector<std::string> v = {""};
+        iconNameMap["null"] = v;
+        file.setIcon(iconNameMap, extMap);
+        // REQUIRE(file.getFormattedLine() == "\e[38;2;255;255;255m null\e[1m");
+    }
+
     SECTION("get line len"){
+        REQUIRE(file.getLineLen() == 6);
+    }
+
+    SECTION("file name"){
         REQUIRE(file.getFileName() == "null");
     }
 }
