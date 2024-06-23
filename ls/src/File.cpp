@@ -15,8 +15,7 @@ File::File(fs::path path){
     if(isSymLink) symLinkPath = fs::read_symlink(path);
     setFileName();
 }
-File::File(std::string path){
-    File(fs::path(path));
+File::File(std::string path) : File(fs::path(path)){
 }
 // -- end constructors --
 

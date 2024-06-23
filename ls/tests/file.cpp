@@ -15,10 +15,10 @@ TEST_CASE("create file object"){
 }
 
 TEST_CASE("file operations"){
-    std::string file_path = "/home/parker/evidence_reel.txt";
+    std::string file_path = "/dev/null";
     File file(file_path);
 
-    SECTION("line len"){
-        REQUIRE(file.getFileName() == "hello");
+    SECTION("get line len"){
+        REQUIRE(file.getFileName() == "null");
     }
 }
