@@ -25,7 +25,7 @@ TEST_CASE("file operations"){
         std::vector<std::string> v = {""};
         iconNameMap["null"] = v;
         file.setIcon(iconNameMap, extMap);
-        // REQUIRE(file.getFormattedLine() == "\e[38;2;255;255;255m null\e[1m");
+        REQUIRE(file.getFormattedLine() == "[38;2;255;255;255m [38;2;255;255;255mnull");
     }
 
     SECTION("get line len"){
