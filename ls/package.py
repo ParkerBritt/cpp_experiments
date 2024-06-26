@@ -21,7 +21,8 @@ requires = [
 
 uuid = "03722972ecca45818a2f7540ff623317"
 
-build_command = "bash {root}/build.sh"
+build_command = 'python {root}/build.py {install}'
+# build_command = "bash {root}/build.sh"
 
 def commands():
     env.PATH.append("{root}/build/bin")
