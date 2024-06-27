@@ -25,5 +25,5 @@ build_command = 'python {root}/build.py {install}'
 # build_command = "bash {root}/build.sh"
 
 def commands():
-    env.PATH.append("{root}/build/bin")
+    env.PATH.append("{root}/bin")
 

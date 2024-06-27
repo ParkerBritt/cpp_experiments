@@ -4,6 +4,8 @@ import os
 import os.path
 import sys
 import subprocess
+import shutil
+import stat
 
 
 def build(source_path, build_path, install_path, targets):
@@ -16,8 +18,33 @@ def build(source_path, build_path, install_path, targets):
         subprocess.run(["make"])
 
     def _install():
+        # clean
+        print("Cleaning")
+        print(os.listdir(install_path))
+        for name in ("bin", "foo"):
+            path = os.path.join(install_path, name)
+            if(os.path.exists(path)):
+                print("removing: ", path)
+                shutil.rmtree(path)
+
         # install
-        pass
+        # find file
+        print("Installing Package")
+        src_path = os.path.join(source_path, "build/bin/pls")
+        if(not os.path.exists(src_path)):
+            raise Exception("source binary not found")
+
+        bin_path = os.path.join(install_path, "bin")
+        if(os.path.exists(bin_path)):
+            print("Bin dir found")
+        else:
+            print("creating bin dir")
+            os.mkdir(bin_path)
+        dst_path = os.path.join(bin_path, "pls")
+        shutil.copyfile(src_path, dst_path)
+        mode = (stat.S_IRUSR | stat.S_IRGRP |
+                stat.S_IXUSR | stat.S_IXGRP)
+        os.chmod(dst_path, mode)
 
     _build()
 
