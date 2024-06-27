@@ -1,7 +1,9 @@
 #include "File.hpp"
+#include "AnsiUtils.hpp"
 #include "Utils.hpp"
 #include <csignal>
 #include <iostream>
+#include <stdexcept>
 #include <string>
 
 // ---- Class File ----
@@ -55,8 +57,26 @@ void File::setIcon(const std::unordered_map<std::string, std::vector<std::string
     const std::unordered_map<std::string, std::vector<std::string>> extMap){
 
     // file name mapping
+    std::string iconColorEscape = "";
     if(iconNameMap.find(fileName) != iconNameMap.end()){
-        fileIcon = iconNameMap.at(fileName)[0];
+        std::vector<std::string> configValues = iconNameMap.at(fileName);
+        fileIcon = configValues[0];
+
+        if(configValues.size()>1){
+            std::string rawConfigColor = configValues[1];
+
+            // get r,g,b components
+            if(rawConfigColor.size()>11){
+                throw std::runtime_error("Config read fail: color value too long");
+            }
+
+            int commaPos = rawConfigColor.find(',');
+            int r = atoi(rawConfigColor.substr(0, commaPos).c_str());
+            int nextCommaPos = rawConfigColor.find(',', commaPos+1);
+            int g = atoi(rawConfigColor.substr(commaPos+1, nextCommaPos-commaPos).c_str());
+            int b = atoi(rawConfigColor.substr(nextCommaPos+1, rawConfigColor.size()-1-nextCommaPos).c_str());
+            iconColorEscape = AnsiUtils::Color(r,g,b).getEscape();
+        }
     }
     // is directory
     else if(std::filesystem::is_directory(path)){ // is dir
@@ -77,6 +97,7 @@ void File::setIcon(const std::unordered_map<std::string, std::vector<std::string
             }
         }
     }
+    fileIcon = iconColorEscape + fileIcon;
     setLineLen();
 }
 
