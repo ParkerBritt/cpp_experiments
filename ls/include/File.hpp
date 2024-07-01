@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include "border.hpp"
 #include <cmath>
+#include <optional>
 
 namespace fs = std::filesystem;
 
@@ -29,6 +30,8 @@ class File{
         const std::unordered_map<std::string, std::vector<std::string>> extMap);
 
     private:
+        std::optional<std::tuple<std::string, std::string>> parseConfigIconMap(const std::unordered_map<std::string, std::vector<std::string>> configMap, std::string key);
+
         fs::path path;
 
         std::string fileIcon = "";

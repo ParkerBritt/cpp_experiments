@@ -5,6 +5,8 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <tuple>
+#include <optional>
 
 // ---- Class File ----
 // -- constructors --
@@ -36,7 +38,7 @@ std::string File::getCompFileName(){
 }
 
 std::string File::getFormattedLine() const{
-    std::string formattedLine = fileIconColor.getEscape()+fileIcon+" "+fileNameColor.getEscape()+fileName;
+    std::string formattedLine = fileIconColor.getEscape()+fileIcon+" "/* +fileNameColor.getEscape() */+fileName;
     if(showSymLink && isSymLink){
         formattedLine += symLinkIconColor.getEscape()+' '+symLinkIcon+' '+symLinkPathColor.getEscape()+fs::read_symlink(path).string();
     }
@@ -53,31 +55,49 @@ void File::setFileName(){
     fileName = path.filename().string();
 }
 
+std::optional<std::tuple<std::string, std::string>> File::parseConfigIconMap(const std::unordered_map<std::string, std::vector<std::string>> configMap, std::string key){
+    // search through icons in the given map and extract the icon and the color of the icon
+    // returns icon and the color of the icon as an escape sequence if successful and nullopt if not found
+
+    bool foundIcon = configMap.find(key) != configMap.end();
+    if(!foundIcon) return std::nullopt;
+
+    std::string iconColorEscape = "";
+    std::string icon = "";
+
+    std::vector<std::string> configValues = configMap.at(key);
+    icon = configValues[0];
+
+    if(configValues.size()>1){
+        std::string rawConfigColor = configValues[1];
+
+        // get r,g,b components
+        if(rawConfigColor.size()>11){
+            throw std::runtime_error("Config read fail: color value too long for: " + key);
+        }
+
+        int commaPos = rawConfigColor.find(',');
+        int r = atoi(rawConfigColor.substr(0, commaPos).c_str());
+        int nextCommaPos = rawConfigColor.find(',', commaPos+1);
+        int g = atoi(rawConfigColor.substr(commaPos+1, nextCommaPos-commaPos).c_str());
+        int b = atoi(rawConfigColor.substr(nextCommaPos+1, rawConfigColor.size()-1-nextCommaPos).c_str());
+        iconColorEscape = AnsiUtils::Color(r,g,b).getEscape();
+    }
+
+    return std::make_tuple(icon, iconColorEscape);
+}
+
 void File::setIcon(const std::unordered_map<std::string, std::vector<std::string>> iconNameMap,
     const std::unordered_map<std::string, std::vector<std::string>> extMap){
 
     // file name mapping
     std::string iconColorEscape = "";
-    if(iconNameMap.find(fileName) != iconNameMap.end()){
-        std::vector<std::string> configValues = iconNameMap.at(fileName);
-        fileIcon = configValues[0];
-
-        if(configValues.size()>1){
-            std::string rawConfigColor = configValues[1];
-
-            // get r,g,b components
-            if(rawConfigColor.size()>11){
-                throw std::runtime_error("Config read fail: color value too long");
-            }
-
-            int commaPos = rawConfigColor.find(',');
-            int r = atoi(rawConfigColor.substr(0, commaPos).c_str());
-            int nextCommaPos = rawConfigColor.find(',', commaPos+1);
-            int g = atoi(rawConfigColor.substr(commaPos+1, nextCommaPos-commaPos).c_str());
-            int b = atoi(rawConfigColor.substr(nextCommaPos+1, rawConfigColor.size()-1-nextCommaPos).c_str());
-            iconColorEscape = AnsiUtils::Color(r,g,b).getEscape();
-        }
+    auto fileNameValues = parseConfigIconMap(iconNameMap, fileName);
+    if(fileNameValues){
+        fileIcon = std::get<0>(*fileNameValues);
+        iconColorEscape = std::get<1>(*fileNameValues);
     }
+
     // is directory
     else if(std::filesystem::is_directory(path)){ // is dir
         if(std::filesystem::is_empty(path)){
@@ -88,14 +108,16 @@ void File::setIcon(const std::unordered_map<std::string, std::vector<std::string
     }
     else{
         std::string fileExt = path.extension().string();
-        // check if file extension exists
         if(fileExt.length() > 0){
             fileExt = fileExt.substr(1);
-            // check if match found in map
-            if(extMap.count(fileExt) > 0){
-                fileIcon = extMap.at(fileExt)[0];
-            }
         }
+
+        auto fileExtValues = parseConfigIconMap(extMap, fileExt);
+        if(fileExtValues){
+            fileIcon = std::get<0>(*fileExtValues);
+            iconColorEscape = std::get<1>(*fileExtValues);
+        }
+
     }
     fileIcon = iconColorEscape + fileIcon;
     setLineLen();
