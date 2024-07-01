@@ -5,6 +5,8 @@
     </div><br>
     My own implementation of the <b>ls command</b>, using exclusively C++ standard libraries.<br>
     The name is a play on my first initial <b>p</b> and the unix <b>ls</b> command: <b>pls</b>
+    <br><br>
+    <a href="https://github.com/ParkerBritt/cpp_experiments/tree/main/ls"><img height="400em" src="screenshots/basic_demo.gif"/></a>
 </div><br>
 
 
