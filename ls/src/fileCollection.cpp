@@ -136,7 +136,7 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
             for(int i=0; i<spacerCnt; i++){
                 rowBuffer+=' ';
             }
-            rowBuffer+= border->vertical; // border right side
+            rowBuffer+= border->borderColor.getEscape() + border->vertical; // border right side
         }
 
         if(row<rows-1){

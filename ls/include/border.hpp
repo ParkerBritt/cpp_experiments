@@ -2,6 +2,7 @@
 #define BORDER_HPP
 
 #include <string>
+#include "AnsiUtils.hpp"
 
 class Border{
     public:
@@ -12,10 +13,11 @@ class Border{
         std::string bottomLeftCorner="╰";
         std::string topRightCorner="╮";
         std::string bottomRightCorner="╯";
+        AnsiUtils::Color borderColor;
 
 
         //member functions
-        Border() = default;
+        Border();
         
         std::string getTop() const;
         std::string getBottom() const;

@@ -2,7 +2,6 @@
 #include "AnsiUtils.hpp"
 #include "Utils.hpp"
 #include <csignal>
-#include <iostream>
 #include <stdexcept>
 #include <string>
 #include <tuple>
