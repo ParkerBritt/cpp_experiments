@@ -225,16 +225,19 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
         // std::cout << "column: " << col << " max length: " << colMaxLength << std::endl;
     }
 
-    if(borderWidth+2 > winWidth) borderWidth = winWidth-2;
-    border->setWidth(borderWidth);
-    returnBuffer += border->getTop();
+    if(showBorder){
+        if(borderWidth+2 > winWidth) borderWidth = winWidth-2;
+        border->setWidth(borderWidth);
+        returnBuffer += border->getTop();
+    }
 
     // start iterating through files and adding to buffer
     for(size_t row = 0; row < rows; row++) {
         std::string rowBuffer = "";
         size_t rowLen = 0;
 
-        rowBuffer += border->vertical;
+        if(showBorder) rowBuffer += border->vertical; // border left side
+
         rowLen += 1; // count up
         for(size_t col = 0; col < columns; col++) {
             size_t fileIndex = row + col * rows;
@@ -257,11 +260,13 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
             }
         }
 
-        int spacerCnt = borderWidth - rowLen+1;
-        for(int i=0; i<spacerCnt; i++){
-            rowBuffer+=' ';
+        if(showBorder){
+            int spacerCnt = borderWidth - rowLen+1;
+            for(int i=0; i<spacerCnt; i++){
+                rowBuffer+=' ';
+            }
+            rowBuffer+= border->vertical; // border right side
         }
-        rowBuffer+= border->vertical;
 
         if(row<rows-1){
             rowBuffer += '\n';
@@ -269,7 +274,7 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
         returnBuffer += rowBuffer;
     }
 
-    returnBuffer += '\n'+border->getBottom();
+    if(showBorder) returnBuffer += '\n'+border->getBottom(); // border bottom
 
     return returnBuffer;
 
