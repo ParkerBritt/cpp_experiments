@@ -61,7 +61,6 @@ int main(int argc, char* argv[]){
 
     std::filesystem::path wd;
     if(!filePath){
-        std::cout << "setting current path" << std::endl;
         wd = fs::current_path();
     }else{
         if(!fs::exists(*filePath)){

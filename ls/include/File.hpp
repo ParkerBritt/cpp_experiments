@@ -66,7 +66,7 @@ class FileCollection{
         size_t getCnt();
     private:
         size_t maxFileNameCnt = 0;
-        std::unique_ptr<Border> border;
+        std::unique_ptr<Border> border = std::make_unique<Border>();
         std::vector<File> filesVector;
         ConfigParsing::configMap iconNameMap;
         ConfigParsing::configMap iconExtMap;

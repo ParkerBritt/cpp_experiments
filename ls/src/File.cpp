@@ -147,6 +147,7 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
     size_t totalItems = filesVector.size();
     int colPadding = 2;
     std::vector<size_t> fileLineLengths;
+    size_t borderWidth = 0;
     
     // calculate file lengths
     for(size_t i = 0; i < totalItems; i++){
@@ -204,6 +205,7 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
         rows = totalItems;
     }
 
+
     // fetch max length for each column for generating separator length 
     std::vector<size_t> colMaxLengths; 
     for(size_t col = 0; col < columns; col++) {
@@ -217,16 +219,19 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
             if(curLineLen >colMaxLength) colMaxLength = curLineLen;
         }
         colMaxLengths.push_back(colMaxLength);
+        if(colMaxLength>0) borderWidth += colMaxLength+colPadding;
         // std::cout << "column: " << col << " max length: " << colMaxLength << std::endl;
     }
 
+    if(borderWidth+2 > winWidth) borderWidth = winWidth-2;
+    border->setWidth(borderWidth);
+    returnBuffer += border->getTop();
+
+    // start iterating through files and adding to buffer
     for(size_t row = 0; row < rows; row++) {
         for(size_t col = 0; col < columns; col++) {
-            // std::cout << "col: " << col << " row: " << row << std::endl;
             size_t fileIndex = row + col * rows;
-            // std::cout << "\tfile index: " << fileIndex << std::endl;
             if (fileIndex >= totalItems) {
-                // std::cout<< "continuing" << std::endl;
                 continue;
             }
             File curFile = filesVector.at(fileIndex);
