@@ -204,6 +204,8 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
         columns = 1;
         rows = totalItems;
     }
+    // remove blank columns
+    columns = ceil(static_cast<float>(totalItems)/rows);
 
 
     // fetch max length for each column for generating separator length 
@@ -229,13 +231,19 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
 
     // start iterating through files and adding to buffer
     for(size_t row = 0; row < rows; row++) {
+        std::string rowBuffer = "";
+        size_t rowLen = 0;
+
+        rowBuffer += border->vertical;
+        rowLen += 1; // count up
         for(size_t col = 0; col < columns; col++) {
             size_t fileIndex = row + col * rows;
             if (fileIndex >= totalItems) {
                 continue;
             }
             File curFile = filesVector.at(fileIndex);
-            returnBuffer += curFile.getFormattedLine();
+            rowBuffer += curFile.getFormattedLine();
+            rowLen += curFile.getLineLen(); // count up
             
             // add separator
             if(col<columns-1){
@@ -244,11 +252,25 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
                 for(size_t i=0;i<sepSize+colPadding; i++){
                     sep+=' ';
                 }
-                returnBuffer+=sep;
+                rowBuffer+=sep;
+                rowLen += sepSize+colPadding; // count up
             }
         }
-        if(row<rows-1) returnBuffer += '\n';
+
+        int spacerCnt = borderWidth - rowLen+1;
+        for(int i=0; i<spacerCnt; i++){
+            rowBuffer+=' ';
+        }
+        rowBuffer+= border->vertical;
+
+        if(row<rows-1){
+            rowBuffer += '\n';
+        }
+        returnBuffer += rowBuffer;
     }
+
+    returnBuffer += '\n'+border->getBottom();
+
     return returnBuffer;
 
 
