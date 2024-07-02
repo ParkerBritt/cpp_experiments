@@ -11,4 +11,5 @@
     <a href="https://github.com/ParkerBritt/cpp_experiments/tree/main/cellular_automata"><img height="400em" src="cellular_automata/screenshots/sand_sim_01.gif"/></a>
     <h3>Pls</h3>
     <a href="https://github.com/ParkerBritt/cpp_experiments/tree/main/ls"><img height="400em" src="ls/screenshots/basic_demo.gif"/></a>
+    <a href="https://github.com/ParkerBritt/cpp_experiments/tree/main/ls"><img width="800" src="ls/screenshots/pls_border.png"/></a>
 </div>
