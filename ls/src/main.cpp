@@ -3,7 +3,7 @@
 #include "ArgParsing.hpp"
 #include "AnsiUtils.hpp"
 #include "configParsing.hpp"
-#include "File.hpp"
+#include "FileCollection.hpp"
 #include <memory>
 
 namespace fs = std::filesystem;
