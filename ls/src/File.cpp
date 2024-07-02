@@ -99,7 +99,16 @@ void File::setIcon(const std::unordered_map<std::string, std::vector<std::string
 
     // is directory
     else if(std::filesystem::is_directory(path)){ // is dir
-        if(std::filesystem::is_empty(path)){
+        bool isDirEmpty;
+
+        try{
+            isDirEmpty = std::filesystem::is_empty(path);
+        }
+        catch (const std::filesystem::filesystem_error& e){
+            isDirEmpty = false;
+        }
+
+        if(isDirEmpty){
             fileIcon = "";
         }else{
             fileIcon = "";
