@@ -2,6 +2,7 @@
 #include "AnsiUtils.hpp"
 #include "Utils.hpp"
 #include <csignal>
+#include <filesystem>
 #include <stdexcept>
 #include <string>
 #include <tuple>
@@ -11,8 +12,8 @@
 // -- constructors --
 File::File(fs::path path){
     File::path = path;
-    if(!fs::exists(path)){
-        throw fs::filesystem_error("File does not exist ", std::make_error_code(std::errc::no_such_file_or_directory));
+    if(!fs::exists(path) && !fs::is_symlink(path)){
+        throw fs::filesystem_error("File does not exist: " + path.string(), std::make_error_code(std::errc::no_such_file_or_directory));
     }
     isSymLink = fs::is_symlink(path);
     if(isSymLink) symLinkPath = fs::read_symlink(path);
