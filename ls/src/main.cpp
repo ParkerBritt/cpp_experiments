@@ -75,7 +75,7 @@ int main(int argc, char* argv[]){
         fileCollection.newFile(curPath);
     }
 
-    std::cout << fileCollection.getFormattedFiles(*flagLong, *flagBorder) << std::endl;
+    std::cout << fileCollection.getFormattedFiles(*flagLong, *flagBorder, *flagShowAll) << std::endl;
 
     return 0;
 

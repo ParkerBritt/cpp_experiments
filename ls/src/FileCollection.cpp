@@ -11,18 +11,30 @@ FileCollection::FileCollection(std::shared_ptr<ConfigParser> configParser){
     iconExtMap = configParser->getSectionContents("Extension Mapping");
 }
 
-std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
+std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder, bool showHiddenFiles){
     auto winSize = getWinSize();
     unsigned short winWidth = std::get<1>(winSize);
     std::string returnBuffer;
-    size_t totalItems = filesVector.size();
+
+    // create a new vector of files
+    std::vector<std::reference_wrapper<File>> displayFilesVector;
+    for(int i = 0; i<filesVector.size(); i++){
+        File& file = filesVector.at(i);
+        if(!showHiddenFiles && file.getFileName()[0]=='.'){
+            continue;
+        }
+        displayFilesVector.push_back(file);
+    }
+    
+
+    size_t totalItems = displayFilesVector.size();
     int colPadding = 2;
     std::vector<size_t> fileLineLengths;
     size_t borderWidth = 0;
     
     // calculate file lengths
     for(size_t i = 0; i < totalItems; i++){
-        size_t curFileLineLen = filesVector.at(i).getLineLen();
+        size_t curFileLineLen = displayFilesVector.at(i).get().getLineLen();
         fileLineLengths.push_back(curFileLineLen);
     }
     
@@ -45,7 +57,7 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
                 if (fileIndex >= totalItems) {
                     continue;
                 }
-                // size_t curLineLen = filesVector[fileIndex].getLineLen()+colPadding;
+                // size_t curLineLen = displayFilesVector[fileIndex].getLineLen()+colPadding;
                 size_t curLineLen = fileLineLengths.at(fileIndex)+colPadding;
                 if(curLineLen >colMaxLength) colMaxLength = curLineLen;
             }
@@ -88,7 +100,7 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
             if (fileIndex >= totalItems) {
                 continue;
             }
-            size_t curLineLen = filesVector[fileIndex].getLineLen();
+            size_t curLineLen = displayFilesVector[fileIndex].get().getLineLen();
             if(curLineLen >colMaxLength) colMaxLength = curLineLen;
         }
         colMaxLengths.push_back(colMaxLength);
@@ -115,7 +127,7 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
             if (fileIndex >= totalItems) {
                 continue;
             }
-            File curFile = filesVector.at(fileIndex);
+            File curFile = displayFilesVector.at(fileIndex);
             rowBuffer += curFile.getFormattedLine();
             rowLen += curFile.getLineLen(); // count up
             
@@ -167,7 +179,7 @@ std::string FileCollection::getFormattedFiles(bool longMode, bool showBorder){
         if(fileIndex >= totalItems){
             throw std::out_of_range("fileVector out of range at index: " + std::to_string(i) + " value: " + std::to_string(fileIndex) + " max value: " + std::to_string(totalItems));
         }
-        const File curFile = filesVector.at(fileIndex);
+        const File curFile = displayFilesVector.at(fileIndex);
 
         returnBuffer += curFile.getFormattedLine();
         returnBuffer+= ' ';

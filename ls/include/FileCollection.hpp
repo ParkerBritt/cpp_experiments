@@ -16,7 +16,7 @@ class FileCollection{
         FileCollection(std::shared_ptr<ConfigParser> configParser);
         void addFile(File file);
         void newFile(fs::path path);
-        std::string getFormattedFiles(bool longMode=false, bool showBorder=false);
+        std::string getFormattedFiles(bool longMode=false, bool showBorder=false, bool showHiddenFiles=false);
         size_t getCnt();
     private:
         size_t maxFileNameCnt = 0;
