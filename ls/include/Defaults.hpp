@@ -3,9 +3,10 @@
 
 class Defaults{
     public:
+        Defaults();
+        const bool showBorder = true;
         
     private:
-        bool showBorder = true;
 };
 
 #endif

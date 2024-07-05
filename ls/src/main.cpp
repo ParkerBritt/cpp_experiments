@@ -5,11 +5,14 @@
 #include "configParsing.hpp"
 #include "FileCollection.hpp"
 #include <memory>
+#include "Defaults.hpp"
 
 namespace fs = std::filesystem;
 
 int main(int argc, char* argv[]){
     AnsiUtils::ColorTheme colorTheme;
+    Defaults defaults = Defaults();
+
     colorTheme.add("symLink", 255, 255, 255);
     colorTheme.add("symLinkArrow", 255, 255, 255);
     // colorTheme.add("iconDefault", 255, 255, 255);
@@ -75,7 +78,7 @@ int main(int argc, char* argv[]){
         fileCollection.newFile(curPath);
     }
 
-    std::cout << fileCollection.getFormattedFiles(*flagLong, *flagBorder, *flagShowAll) << std::endl;
+    std::cout << fileCollection.getFormattedFiles(*flagLong, *flagBorder^defaults.showBorder, *flagShowAll) << std::endl;
 
     return 0;
 
