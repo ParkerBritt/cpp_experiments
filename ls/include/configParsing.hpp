@@ -6,7 +6,7 @@
 #include <vector>
 
 namespace ConfigParsing{
-    using configMap = std::unordered_map<std::string, std::vector<std::string>>;
+    using ConfigMap = std::unordered_map<std::string, std::vector<std::string>>;
 }
 
 class ConfigParser{

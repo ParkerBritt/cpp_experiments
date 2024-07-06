@@ -60,6 +60,8 @@ int main(int argc, char* argv[]){
     std::shared_ptr<ConfigParser> configParserPtr = std::make_unique<ConfigParser>(configPath);
     FileCollection fileCollection(configParserPtr);
 
+    defaults.setFromConfig(configParserPtr);
+
     std::optional<std::string> filePath = argParser.getArgVal<std::string>("dirPath");
 
     std::filesystem::path wd;
