@@ -1,31 +1,19 @@
-#include <iostream>
+#include <ftxui/component/component.hpp>
+#include <ftxui/component/screen_interactive.hpp>
+#include <ftxui/dom/elements.hpp>
 
-#include "ftxui/dom/elements.hpp"
-#include "ftxui/screen/screen.hpp"
-#include "ftxui/screen/string.hpp"
+namespace ui = ftxui;
+int main(){
+     auto screen = ftxui::ScreenInteractive::Fullscreen();
 
-int main(void) {
-  using namespace ftxui;
+    std::string inputStr = "";
+    ftxui::InputOption inputOptions = ui::InputOption::Default();
+    inputOptions.Default();
+    inputOptions.transform = [](ui::InputState state){
+        state.element |= ui::borderRounded;
+        return state.element;
+    };
 
-  auto helloWorldSection = [&] {
-    auto content = vbox({
-        hbox({text(L" Hello World ") | color(Color::Blue), text(L"🙂") | bold}) | color(Color::Green),
-    });
-    return window(text(L" Header "), content);
-  };
-
-  auto document =  //
-      vbox({
-          helloWorldSection()
-      });
-
-  // Limit the size of the document to 80 char.
-  document = document | size(WIDTH, LESS_THAN, 80);
-
-  auto screen = Screen::Create(Dimension::Full(), Dimension::Fit(document));
-  Render(screen, document);
-
-  std::cout << screen.ToString() << '\0' << std::endl;
-
-  return EXIT_SUCCESS;
+    ftxui::Component input = ui::Input(inputStr);
+    screen.Loop(input);
 }
