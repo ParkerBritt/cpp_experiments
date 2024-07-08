@@ -2,6 +2,8 @@
 #include <ftxui/component/screen_interactive.hpp>
 #include <ftxui/dom/elements.hpp>
 
+#include <cstdlib>
+
 namespace ui = ftxui;
 int main(){
      auto screen = ftxui::ScreenInteractive::TerminalOutput();
@@ -25,6 +27,9 @@ int main(){
             ui::text("world" + inputStr),
         }) | ui::borderRounded;
     });
+    if(const char* dataDirs = std::getenv("XDG_DATA_DIRS")){
+        std::cout << "val: " << std::getenv("XDG_DATA_DIRS") << std::endl;;
+    }
 
     screen.Loop(renderer);
 }
