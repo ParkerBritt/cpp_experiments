@@ -12,7 +12,19 @@ int main(){
         state.element |= ui::borderRounded;
         return state.element;
     };
+    inputOptions.multiline = false;
 
-    ftxui::Component input = ui::Input(inputStr, inputOptions);
-    screen.Loop(input);
+    ftxui::Component input = ui::Input(&inputStr, inputOptions);
+    ui::Component mainLayout = ui::Container::Vertical({
+        input,
+    });
+
+    auto renderer = ui::Renderer(mainLayout, [&] {
+        return ui::vbox({
+            input->Render(),
+            ui::text("world" + inputStr),
+        }) | ui::borderRounded;
+    });
+
+    screen.Loop(renderer);
 }
