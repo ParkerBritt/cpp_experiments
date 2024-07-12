@@ -1,8 +1,8 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 set -e
 
-rm -rf ./build
-mkdir ./build 
+# rm -rf ./build
+mkdir ./build  -p
 cd build 
 cmake .. 
 make 
