@@ -10,11 +10,12 @@ FetchContent_Declare(ftxui
 FetchContent_MakeAvailable(ftxui)
 
 # add boost
-FIND_PACKAGE(Boost 1.83 COMPONENTS program_options REQUIRED)
-INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
-
-set(Boost_INCLUDE_DIR /usr/include)
+# set(Boost_INCLUDE_DIR /usr/include)
 set(Boost_LIBRARY_DIR /usr/lib64)
+
+find_package(Boost 1.83.0 COMPONENTS REQUIRED)
+include_directories(${Boost_INCLUDE_DIR})
+
  
 # set bin dir
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -30,3 +31,4 @@ target_link_libraries(${PROJECT_NAME}
   ${Boost_LIBRARIES}
 )
 
+message(STATUS "boost libraries: " ${Boost_LIBRARIES})
