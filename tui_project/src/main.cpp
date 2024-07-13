@@ -9,6 +9,7 @@
 #include <boost/filesystem.hpp>
 
 
+#include <unordered_set>
 #include <cstdlib>
 #include <iostream>
 #include <filesystem>
@@ -47,17 +48,23 @@ int main(){
         boost::split(dataDirsSplit, dataDirsRaw, boost::is_any_of(":"));
 
         // filter vector to unique values
-        std::sort(dataDirsSplit.begin(), dataDirsSplit.end());
-        std::vector<std::string>::iterator lastUniquePos = std::unique(dataDirsSplit.begin(), dataDirsSplit.end());
-        dataDirsSplit.erase(lastUniquePos, dataDirsSplit.end());
+        std::vector<std::string> uniqueDataDirs;
+        std::unordered_set<std::string> seen;
+        for(auto dataDir : dataDirsSplit){
+            if(seen.find(dataDir) == seen.end()){
+                std::cout << "seen: " << dataDir << std::endl;
+                seen.insert(dataDir);
+                uniqueDataDirs.push_back(dataDir);
+            }
+        }
 
-        for(int i=0; i<dataDirsSplit.size(); i++){
-            std::cout << "path: " << dataDirsSplit[i] << std::endl;
-            bfs::path path = bfs::path(dataDirsSplit[i])/"applications";
+        for(int i=0; i<uniqueDataDirs.size(); i++){
+            std::cout << "path: " << uniqueDataDirs[i] << std::endl;
+            bfs::path path = bfs::path(uniqueDataDirs[i])/"applications";
             if(bfs::exists(path)){
                 std::cout << "successs" << std::endl;
                 for (bfs::directory_entry& dirEntry : bfs::directory_iterator(path)){
-                    std::cout<< "\tinside: " << dirEntry.path() << std::endl;
+                    // std::cout<< "\tinside: " << dirEntry.path() << std::endl;
                 }
             }
             else std::cout << "failed" << std::endl;
