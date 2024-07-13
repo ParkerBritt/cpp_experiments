@@ -10,7 +10,6 @@ FetchContent_Declare(ftxui
 FetchContent_MakeAvailable(ftxui)
 
 # add boost
-# set(Boost_INCLUDE_DIR /usr/include)
 set(Boost_LIBRARY_DIR /usr/lib64)
 
 find_package(Boost 1.83.0 COMPONENTS REQUIRED)
