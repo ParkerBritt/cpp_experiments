@@ -1,0 +1,19 @@
+[ 0.x.x ]
+    working command
+    config parsing
+    arg parsing
+
+    border flag
+    symlink flag
+
+    config color control
+    config icon control
+    config flag defaults
+
+    automatically reorder according to window size
+    verical ordering
+
+[ 1.0.1 ]
+    add version number flag -v
+
+[ 1.0.2 ]
