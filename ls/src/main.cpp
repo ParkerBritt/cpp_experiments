@@ -6,7 +6,7 @@
 #include "FileCollection.hpp"
 #include <memory>
 #include "Defaults.hpp"
-#include "Utils.hpp"
+#include "Version.hpp"
 
 namespace fs = std::filesystem;
 
@@ -49,7 +49,7 @@ int main(int argc, char* argv[]){
     std::optional<bool> flagDisplayVersion = argParser.getArgVal<bool>('v');
 
     if(*flagDisplayVersion){
-        std::cout << utils::getVersionMessage();
+        std::cout << version::getVersionMessage();
         return 0;
     }
 
