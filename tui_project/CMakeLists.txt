@@ -13,7 +13,7 @@ FetchContent_MakeAvailable(ftxui)
 # add boost
 set(Boost_LIBRARY_DIR /usr/lib64)
 
-find_package(Boost 1.83.0 COMPONENTS REQUIRED)
+find_package(Boost 1.83.0 COMPONENTS filesystem REQUIRED)
 include_directories(${Boost_INCLUDE_DIR})
 
  

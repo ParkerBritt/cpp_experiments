@@ -1,14 +1,22 @@
+// ftxui
 #include <ftxui/component/component.hpp>
 #include <ftxui/component/screen_interactive.hpp>
 #include <ftxui/dom/elements.hpp>
+
+// boost
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
+#include <boost/filesystem.hpp>
+
 
 #include <cstdlib>
+#include <iostream>
 #include <filesystem>
 #include <stdexcept>
 
 namespace ui = ftxui;
+namespace bfs = boost::filesystem;
+
 int main(){
     auto screen = ftxui::ScreenInteractive::TerminalOutput();
 
@@ -33,17 +41,26 @@ int main(){
     });
     const char* envTemp = std::getenv("XDG_DATA_DIRS");
     if(envTemp){
-        // std::cout << "val: " << std::getenv("XDG_DATA_DIRS") << std::endl;;
+        // split env var into vector
         std::string dataDirsRaw = envTemp;
         std::vector<std::string> dataDirsSplit;
         boost::split(dataDirsSplit, dataDirsRaw, boost::is_any_of(":"));
 
+        // filter vector to unique values
         std::sort(dataDirsSplit.begin(), dataDirsSplit.end());
         std::vector<std::string>::iterator lastUniquePos = std::unique(dataDirsSplit.begin(), dataDirsSplit.end());
         dataDirsSplit.erase(lastUniquePos, dataDirsSplit.end());
 
         for(int i=0; i<dataDirsSplit.size(); i++){
             std::cout << "path: " << dataDirsSplit[i] << std::endl;
+            bfs::path path = bfs::path(dataDirsSplit[i])/"applications";
+            if(bfs::exists(path)){
+                std::cout << "successs" << std::endl;
+                for (bfs::directory_entry& dirEntry : bfs::directory_iterator(path)){
+                    std::cout<< "\tinside: " << dirEntry.path() << std::endl;
+                }
+            }
+            else std::cout << "failed" << std::endl;
         }
     }
     else{
