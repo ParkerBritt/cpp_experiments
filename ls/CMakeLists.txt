@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 
-project(pls VERSION 1.0)
+project(pls VERSION 1.0.1)
 set(GCC_COVERAGE_COMPILE_FLAGS "-Wall")
 
 # include header files

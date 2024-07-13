@@ -6,6 +6,7 @@
 #include "FileCollection.hpp"
 #include <memory>
 #include "Defaults.hpp"
+#include "Utils.hpp"
 
 namespace fs = std::filesystem;
 
@@ -26,11 +27,12 @@ int main(int argc, char* argv[]){
     ArgumentParser argParser = ArgumentParser();
 
     // add arguments
-    argParser.addArgument('l', argParser.Bool);
-    argParser.addArgument('a', argParser.Bool);
-    argParser.addArgument('c', argParser.String);
-    argParser.addArgument('s', argParser.Bool);
-    argParser.addArgument('b', argParser.Bool);
+    argParser.addArgument('l', argParser.Bool); // long mode
+    argParser.addArgument('a', argParser.Bool); // show all
+    argParser.addArgument('c', argParser.String); // config file path
+    argParser.addArgument('s', argParser.Bool); // show symlink
+    argParser.addArgument('b', argParser.Bool); // border
+    argParser.addArgument('v', argParser.Bool); // version
     argParser.addArgument("dirPath", argParser.Positional);
 
     // parse args
@@ -44,6 +46,12 @@ int main(int argc, char* argv[]){
     std::optional<bool> flagShowAll = argParser.getArgVal<bool>('a');
     std::optional<bool> flagSymlink = argParser.getArgVal<bool>('s');
     std::optional<bool> flagBorder = argParser.getArgVal<bool>('b');
+    std::optional<bool> flagDisplayVersion = argParser.getArgVal<bool>('v');
+
+    if(*flagDisplayVersion){
+        std::cout << utils::getVersionMessage();
+        return 0;
+    }
 
     // read token arguments
     std::optional<std::string> configPathArg = argParser.getArgVal<std::string>('c');

@@ -12,4 +12,9 @@ namespace utils{
     std::string tolower(std::string str);
 }
 
+namespace utils{
+    std::string getVersion();
+    std::string getVersionMessage();
+}
+
 #endif
