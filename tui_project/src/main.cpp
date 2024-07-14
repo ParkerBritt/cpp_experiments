@@ -11,6 +11,7 @@
 
 
 #include <fstream>
+#include <string>
 #include <unordered_set>
 #include <cstdlib>
 #include <iostream>
@@ -116,9 +117,13 @@ int main(){
     auto menu = ui::Menu(&menuEntries, &selectedEntry, menuOption);
 
     input |= ui::CatchEvent([&](ui::Event event) {
-        if(event.is_character()){
+        if(event.is_character() || event == ui::Event::Backspace){
             // std::cout << "char: " << event.character() << std::endl;
             std::vector<std::string> newMenuEntries;
+            std::string searchValue = inputStr;
+            if(event.is_character()) searchValue += event.character();
+            else if(event == ui::Event::Backspace) searchValue = searchValue.substr(0, searchValue.size()-1);
+
             // menuEntries.empty();
             size_t i = 0;
             for(auto appName : appNames){
@@ -126,8 +131,10 @@ int main(){
 
                 std::string lowerAppName = appName;
                 boost::algorithm::to_lower(lowerAppName);
-
-                if(lowerAppName.find(inputStr) != std::string::npos){
+                
+                size_t foundPos = lowerAppName.find(searchValue);
+                if(foundPos != std::string::npos){
+                    // appName +=  " " + std::to_string(foundPos) + " " + appName.substr(foundPos, searchValue.size());
                     newMenuEntries.push_back(appName);
                     i++;
                 }
