@@ -18,6 +18,43 @@
 namespace ui = ftxui;
 namespace bfs = boost::filesystem;
 
+std::vector<bfs::path> getDesktopFiles(std::string dataDirsRaw){
+    // split env var into vector
+    std::vector<std::string> dataDirsSplit;
+    boost::split(dataDirsSplit, dataDirsRaw, boost::is_any_of(":"));
+
+    // filter to only unique data dirs
+    std::vector<std::string> uniqueDataDirs;
+    std::unordered_set<std::string> seenDataDirs;
+    for(auto dataDir : dataDirsSplit){
+        if(seenDataDirs.find(dataDir) == seenDataDirs.end()){
+            // std::cout << "seenDataDirs: " << dataDir << std::endl;
+            seenDataDirs.insert(dataDir);
+            uniqueDataDirs.push_back(dataDir);
+        }
+    }
+
+    // filter to only unique desktop files
+    std::vector<bfs::path> desktopFilePaths;
+    std::unordered_set<std::string> seenDesktopFiles;
+    for(int i=0; i<uniqueDataDirs.size(); i++){
+        // std::cout << "path: " << uniqueDataDirs[i] << std::endl;
+
+        bfs::path path = bfs::path(uniqueDataDirs[i])/"applications";
+        if(!bfs::exists(path)) continue;
+
+        // std::cout << "successs" << std::endl;
+        for (bfs::directory_entry& dirEntry : bfs::directory_iterator(path)){
+            std::string desktopFilePath = dirEntry.path().filename().string();
+            if(seenDesktopFiles.find(desktopFilePath) != seenDesktopFiles.end()) continue;
+            seenDesktopFiles.insert(desktopFilePath);
+            desktopFilePaths.push_back(dirEntry.path());
+        }
+    }
+
+    return desktopFilePaths;
+}
+
 int main(){
     auto screen = ftxui::ScreenInteractive::TerminalOutput();
 
@@ -40,39 +77,19 @@ int main(){
             ui::text("input string: \"" + inputStr + "\""),
         }) | ui::borderRounded;
     });
+
+    // check XDG_DATA_DIRS env var is set
     const char* envTemp = std::getenv("XDG_DATA_DIRS");
-    if(envTemp){
-        // split env var into vector
-        std::string dataDirsRaw = envTemp;
-        std::vector<std::string> dataDirsSplit;
-        boost::split(dataDirsSplit, dataDirsRaw, boost::is_any_of(":"));
+    if(!envTemp) throw std::runtime_error("XDG_DATA_DIRS not set");
 
-        // filter vector to unique values
-        std::vector<std::string> uniqueDataDirs;
-        std::unordered_set<std::string> seen;
-        for(auto dataDir : dataDirsSplit){
-            if(seen.find(dataDir) == seen.end()){
-                std::cout << "seen: " << dataDir << std::endl;
-                seen.insert(dataDir);
-                uniqueDataDirs.push_back(dataDir);
-            }
-        }
+    std::vector<bfs::path> desktopFilePaths = getDesktopFiles(std::string(envTemp));
 
-        for(int i=0; i<uniqueDataDirs.size(); i++){
-            std::cout << "path: " << uniqueDataDirs[i] << std::endl;
-            bfs::path path = bfs::path(uniqueDataDirs[i])/"applications";
-            if(bfs::exists(path)){
-                std::cout << "successs" << std::endl;
-                for (bfs::directory_entry& dirEntry : bfs::directory_iterator(path)){
-                    // std::cout<< "\tinside: " << dirEntry.path() << std::endl;
-                }
-            }
-            else std::cout << "failed" << std::endl;
-        }
+    for(auto desktopFilePath : desktopFilePaths){
+        // std::cout << "foo:" << desktopFilePath.string() << std::endl;
     }
-    else{
-        throw std::runtime_error("XDG_DATA_DIRS not set");
-    }
+
+
+
 
     screen.Loop(renderer);
 }
