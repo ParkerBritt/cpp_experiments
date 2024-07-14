@@ -9,6 +9,7 @@
 #include <boost/filesystem.hpp>
 
 
+#include <fstream>
 #include <unordered_set>
 #include <cstdlib>
 #include <iostream>
@@ -67,6 +68,43 @@ int main(){
     inputOptions.multiline = false;
 
     ftxui::Component input = ui::Input(&inputStr, inputOptions);
+
+    // check XDG_DATA_DIRS env var is set
+    const char* envTemp = std::getenv("XDG_DATA_DIRS");
+    if(!envTemp) throw std::runtime_error("XDG_DATA_DIRS not set");
+
+    std::vector<bfs::path> desktopFilePaths = getDesktopFiles(std::string(envTemp));
+
+
+    std::vector<std::string> appNames;
+    for(auto desktopFilePath : desktopFilePaths){
+
+        std::string desktopFilePathStr = desktopFilePath.string();
+        std::cout << "foo:" << desktopFilePathStr << std::endl;
+        std::ifstream desktopFileStream(desktopFilePathStr);
+
+        if(!desktopFileStream.is_open()){
+            std::cerr << "failed to open file: " << desktopFilePathStr << std::endl; // add file path
+        }
+
+        std::string curLine;
+
+        while (getline(desktopFileStream, curLine)){
+            if(curLine.substr(0, 5)=="Name="){
+                std::string appName = curLine.substr(5);
+                std::cout << "\tappname: " << appName << std::endl;
+                appNames.push_back(appName);
+                break;
+            }
+        }
+
+        desktopFileStream.close();
+    }
+
+
+    // create menu
+    int selectedApp = 0;
+
     ui::Component mainLayout = ui::Container::Vertical({
         input,
     });
@@ -77,18 +115,6 @@ int main(){
             ui::text("input string: \"" + inputStr + "\""),
         }) | ui::borderRounded;
     });
-
-    // check XDG_DATA_DIRS env var is set
-    const char* envTemp = std::getenv("XDG_DATA_DIRS");
-    if(!envTemp) throw std::runtime_error("XDG_DATA_DIRS not set");
-
-    std::vector<bfs::path> desktopFilePaths = getDesktopFiles(std::string(envTemp));
-
-    for(auto desktopFilePath : desktopFilePaths){
-        // std::cout << "foo:" << desktopFilePath.string() << std::endl;
-    }
-
-
 
 
     screen.Loop(renderer);
