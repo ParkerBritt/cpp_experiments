@@ -7,6 +7,7 @@
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/string/case_conv.hpp>
 
 
 #include <fstream>
@@ -100,13 +101,47 @@ int main(){
 
         desktopFileStream.close();
     }
+    std::sort(appNames.begin(), appNames.end());
+
+    std::vector<std::string> menuEntries;
+
+    for(int i=0; i<3; i++){
+        menuEntries.push_back(appNames[i]);
+    }
 
 
     // create menu
-    int selectedApp = 0;
+    int selectedEntry = 0;
+    ui::MenuOption menuOption;
+    auto menu = ui::Menu(&menuEntries, &selectedEntry, menuOption);
+
+    input |= ui::CatchEvent([&](ui::Event event) {
+        if(event.is_character()){
+            // std::cout << "char: " << event.character() << std::endl;
+            std::vector<std::string> newMenuEntries;
+            // menuEntries.empty();
+            size_t i = 0;
+            for(auto appName : appNames){
+                if(i>10) break;
+
+                std::string lowerAppName = appName;
+                boost::algorithm::to_lower(lowerAppName);
+
+                if(lowerAppName.find(inputStr) != std::string::npos){
+                    newMenuEntries.push_back(appName);
+                    i++;
+                }
+                
+            }
+            menuEntries=newMenuEntries;
+        }
+        return false;
+        // return false;
+    });
 
     ui::Component mainLayout = ui::Container::Vertical({
         input,
+        menu,
     });
 
     auto renderer = ui::Renderer(mainLayout, [&] {
@@ -117,5 +152,5 @@ int main(){
     });
 
 
-    screen.Loop(renderer);
+    screen.Loop(mainLayout);
 }
