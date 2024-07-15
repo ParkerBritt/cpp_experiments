@@ -7,4 +7,4 @@ cd build
 cmake .. 
 make 
 cd .. 
-./build/bin/tui_application
+./build/bin/tui_app_launcher
