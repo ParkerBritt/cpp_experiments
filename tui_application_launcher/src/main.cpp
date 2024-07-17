@@ -1,5 +1,6 @@
 // ftxui
 #include <ftxui/component/component.hpp>
+#include <ftxui/component/component_base.hpp>
 #include <ftxui/component/screen_interactive.hpp>
 #include <ftxui/dom/elements.hpp>
 
@@ -10,13 +11,18 @@
 #include <boost/algorithm/string/case_conv.hpp>
 
 
+// std c++ libs
 #include <fstream>
+#include <memory>
 #include <string>
 #include <unordered_set>
 #include <cstdlib>
 #include <iostream>
 #include <filesystem>
 #include <stdexcept>
+
+// custom components
+#include "CompSearchBar.hpp"
 
 namespace ui = ftxui;
 namespace bfs = boost::filesystem;
@@ -61,15 +67,18 @@ std::vector<bfs::path> getDesktopFiles(std::string dataDirsRaw){
 int main(){
     auto screen = ftxui::ScreenInteractive::TerminalOutput();
 
-    std::string inputStr = "";
-    ftxui::InputOption inputOptions = ui::InputOption::Spacious();
-    inputOptions.transform = [](ui::InputState state){
-        state.element |= ui::borderRounded;
-        return state.element;
-    };
-    inputOptions.multiline = false;
+    // std::string inputStr = "";
+    // ftxui::InputOption inputOptions = ui::InputOption::Spacious();
+    // inputOptions.transform = [](ui::InputState state){
+    //     state.element |= ui::borderRounded;
+    //     return state.element;
+    // };
+    // inputOptions.multiline = false;
 
-    ftxui::Component input = ui::Input(&inputStr, inputOptions);
+    // ftxui::Component input = ui::Input(&inputStr, inputOptions);
+    std::string inputStr = "";
+    ui::Component input = std::make_shared<SearchBar>(inputStr);
+    // const std::string& inputStr = input->getContents();
 
     // check XDG_DATA_DIRS env var is set
     const char* envTemp = std::getenv("XDG_DATA_DIRS");
@@ -82,7 +91,7 @@ int main(){
     for(auto desktopFilePath : desktopFilePaths){
 
         std::string desktopFilePathStr = desktopFilePath.string();
-        std::cout << "foo:" << desktopFilePathStr << std::endl;
+        // std::cout << "foo:" << desktopFilePathStr << std::endl;
         std::ifstream desktopFileStream(desktopFilePathStr);
 
         if(!desktopFileStream.is_open()){
@@ -94,7 +103,7 @@ int main(){
         while (getline(desktopFileStream, curLine)){
             if(curLine.substr(0, 5)=="Name="){
                 std::string appName = curLine.substr(5);
-                std::cout << "\tappname: " << appName << std::endl;
+                // std::cout << "\tappname: " << appName << std::endl;
                 appNames.push_back(appName);
                 break;
             }
@@ -161,13 +170,14 @@ int main(){
         menu,
     });
 
-    auto renderer = ui::Renderer(mainLayout, [&] {
-        return ui::vbox({
-            input->Render(),
-            ui::text("input string: \"" + inputStr + "\""),
-        }) | ui::borderRounded;
-    });
+    // auto renderer = ui::Renderer(mainLayout, [&] {
+    //     return ui::vbox({
+    //         input->Render(),
+    //         ui::text("input string: \"" + inputStr + "\""),
+    //     }) | ui::borderRounded;
+    // });
 
 
+    std::cout << "starting main loop" << std::endl;
     screen.Loop(mainLayout);
 }
