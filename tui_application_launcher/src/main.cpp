@@ -113,8 +113,18 @@ int main(){
 
     // create menu
     int selectedEntry = 0;
-    ui::MenuOption menuOption;
-    auto menu = ui::Menu(&menuEntries, &selectedEntry, menuOption);
+    ui::MenuOption menuOptions;
+    // menuOptions.on_enter = [&] (){
+    //     input -> TakeFocus();
+    // };
+    auto menu = ui::Menu(&menuEntries, &selectedEntry, menuOptions);
+    menu |= ui::CatchEvent([&](ui::Event event){
+        if(event.is_character() || event == ui::Event::Backspace){
+            input->OnEvent(event);
+            return true;
+        }
+        else return false;
+    });
 
     input |= ui::CatchEvent([&](ui::Event event) {
         if(event.is_character() || event == ui::Event::Backspace){
