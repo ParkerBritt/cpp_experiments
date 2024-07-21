@@ -14,7 +14,7 @@
 
 ## Features
 - Icons
-  - Control based on file name or extension
+  - Control based on file name or extension in config file
 - Colors
 - Custom argument parser
 - Custom config parser
