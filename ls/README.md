@@ -14,10 +14,10 @@
 
 ## Features
 - Icons
-  - Control based on file name or extension in config file
 - Colors
 - Custom argument parser
 - Custom config parser
+  - Control icon or color based on file name or extension
 
 ## Screenshots
 
