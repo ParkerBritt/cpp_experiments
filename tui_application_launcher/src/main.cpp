@@ -77,7 +77,7 @@ int main(){
 
     // ftxui::Component input = ui::Input(&inputStr, inputOptions);
     std::string inputStr = "";
-    ui::Component input = std::make_shared<SearchBar>(inputStr);
+    std::shared_ptr<SearchBar> input = std::make_shared<SearchBar>(inputStr);
     // const std::string& inputStr = input->getContents();
 
     // check XDG_DATA_DIRS env var is set
@@ -129,13 +129,17 @@ int main(){
     auto menu = ui::Menu(&menuEntries, &selectedEntry, menuOptions);
     menu |= ui::CatchEvent([&](ui::Event event){
         if(event.is_character() || event == ui::Event::Backspace){
+            if(event.character() == "t") {
+                std::cout << "hello world" << std::endl;
+                // input->isFocusable = true;
+            }
             input->OnEvent(event);
             return true;
         }
         else return false;
     });
 
-    input |= ui::CatchEvent([&](ui::Event event) {
+    input->getComponent() |= ui::CatchEvent([&](ui::Event event) {
         if(event.is_character() || event == ui::Event::Backspace){
             // std::cout << "char: " << event.character() << std::endl;
             std::vector<std::string> newMenuEntries;

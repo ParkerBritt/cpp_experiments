@@ -1,5 +1,6 @@
 #include "CompSearchBar.hpp"
 #include <ftxui/component/component.hpp>
+#include "iostream"
 
 namespace ui = ftxui;
 
@@ -17,10 +18,13 @@ SearchBar::SearchBar(std::string& inputStr){
     Add(input_);
 }
 
-bool SearchBar::Focusable() const {
-    return false;
+ui::Component& SearchBar::getComponent(){
+    return input_;
 }
 
+bool SearchBar::Focusable() const {
+    return isFocusable;
+}
 
 ui::Element SearchBar::Render(){
     return input_->Render();

@@ -14,11 +14,12 @@ public:
     // overrides
     bool Focusable() const override;
     ui::Element Render() override;
+    bool isFocusable = false;
+    ui::Component& getComponent();
+    ui::Component input_;
 
 private:
-    ui::Component input_;
     ui::InputOption inputOptions_;
-
 };
 
 
