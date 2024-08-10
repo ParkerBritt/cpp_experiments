@@ -1,28 +1,28 @@
 {
-  description = "A development environment for my project";
+  description = "C++ Development with Nix";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-
-  outputs = { self, nixpkgs }:
-  let
-    system = "x86_64-linux";
-  in
-  {
-    devShells.${system} = import nixpkgs {
-      system = system;
-      config = { allowUnfree = true; };
-    }.mkShell {
-      buildInputs = with nixpkgs; [
-        python39
-        python39Packages.virtualenv
-        git
-        # Add other tools you need here
-      ];
-
-      shellHook = ''
-        echo "Welcome to the development shell!"
-      '';
-    };
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   };
-}
 
+  outputs = inputs@{ flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      # list of architectures that work with this project
+      systems = [
+        "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin"
+      ];
+      perSystem = { config, self', inputs', pkgs, system, ... }: {
+
+        # devShells.default describes the default shell with C++, cmake, boost,
+        # and catch2
+        devShells.default = pkgs.mkShell {
+          packages = with pkgs; [
+            # C++ Compiler is already part of stdenv
+            boost
+            catch2
+            cmake
+          ];
+        };
+      };
+    };
+}
