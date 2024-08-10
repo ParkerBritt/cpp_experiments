@@ -11,11 +11,10 @@ FetchContent_Declare(ftxui
 FetchContent_MakeAvailable(ftxui)
 
 # add boost
-set(Boost_INCLUDE_DIR /usr/include)
-set(Boost_LIBRARY_DIR /usr/lib64)
+# set(Boost_INCLUDE_DIR /usr/include)
+# set(Boost_LIBRARY_DIR /usr/lib64)
 
-find_package(Boost 1.83.0 COMPONENTS filesystem REQUIRED)
-include_directories(${Boost_INCLUDE_DIR} include)
+# find_package(Boost 1.81.0 COMPONENTS filesystem REQUIRED)
 
 file(GLOB SOURCES src/*.cpp)
  
@@ -26,11 +25,20 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 project(tui_app_launcher LANGUAGES CXX VERSION 1.0.0)
 
 add_executable(${PROJECT_NAME} ${SOURCES})
-target_link_libraries(${PROJECT_NAME}
-  PRIVATE ftxui::screen
-  PRIVATE ftxui::dom
-  PRIVATE ftxui::component
-  ${Boost_LIBRARIES}
-)
+
+
+find_package(Boost 1.81 REQUIRED COMPONENTS filesystem)
+
+if(Boost_FOUND)
+  include_directories(${Boost_INCLUDE_DIRS} include)
+  target_link_libraries(${PROJECT_NAME}
+    PRIVATE ftxui::screen
+    PRIVATE ftxui::dom
+    PRIVATE ftxui::component
+    PRIVATE ${Boost_LIBRARIES}
+  )
+else()
+  message(FATAL_ERROR "Could not find Boost")
+endif()
 
 message(STATUS "boost libraries: " ${Boost_LIBRARIES})
