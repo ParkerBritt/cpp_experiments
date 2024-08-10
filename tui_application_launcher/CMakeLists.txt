@@ -1,4 +1,8 @@
 cmake_minimum_required (VERSION 3.11)
+# set up project
+project(tui_app_launcher LANGUAGES CXX VERSION 1.0.0)
+
+# cmake options
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
  
 # fetch ftxui
@@ -11,34 +15,30 @@ FetchContent_Declare(ftxui
 FetchContent_MakeAvailable(ftxui)
 
 # add boost
+find_package(Boost 1.81 REQUIRED COMPONENTS filesystem)
 # set(Boost_INCLUDE_DIR /usr/include)
 # set(Boost_LIBRARY_DIR /usr/lib64)
 
-# find_package(Boost 1.81.0 COMPONENTS filesystem REQUIRED)
-
+# get source files
 file(GLOB SOURCES src/*.cpp)
+
+# get header files
+include_directories(${Boost_INCLUDE_DIR} include)
  
 # set bin dir
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-# set project name
-project(tui_app_launcher LANGUAGES CXX VERSION 1.0.0)
-
+# add executable
 add_executable(${PROJECT_NAME} ${SOURCES})
 
+# link libraries
+target_link_libraries(${PROJECT_NAME}
+  PRIVATE ftxui::screen
+  PRIVATE ftxui::dom
+  PRIVATE ftxui::component
+  PRIVATE Boost::filesystem
+  ${Boost_LIBRARIES}
+)
 
-find_package(Boost 1.81 REQUIRED COMPONENTS filesystem)
-
-if(Boost_FOUND)
-  include_directories(${Boost_INCLUDE_DIRS} include)
-  target_link_libraries(${PROJECT_NAME}
-    PRIVATE ftxui::screen
-    PRIVATE ftxui::dom
-    PRIVATE ftxui::component
-    PRIVATE ${Boost_LIBRARIES}
-  )
-else()
-  message(FATAL_ERROR "Could not find Boost")
-endif()
-
+# debug
 message(STATUS "boost libraries: " ${Boost_LIBRARIES})
