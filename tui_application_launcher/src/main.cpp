@@ -76,8 +76,7 @@ int main(){
     // inputOptions.multiline = false;
 
     // ftxui::Component input = ui::Input(&inputStr, inputOptions);
-    std::string inputStr = "";
-    std::shared_ptr<SearchBar> input = std::make_shared<SearchBar>(inputStr);
+    std::shared_ptr<SearchBar> input = std::make_shared<SearchBar>();
     // const std::string& inputStr = input->getContents();
 
     // check XDG_DATA_DIRS env var is set
@@ -113,11 +112,13 @@ int main(){
     }
     std::sort(appNames.begin(), appNames.end());
 
+
     std::vector<std::string> menuEntries;
 
     for(int i=0; i<3; i++){
         menuEntries.push_back(appNames[i]);
     }
+    input->setupSearchEvent(appNames, menuEntries);
 
 
     // create menu
@@ -133,44 +134,15 @@ int main(){
                 std::cout << "hello world" << std::endl;
                 // input->isFocusable = true;
             }
-            input->OnEvent(event);
+            input->getComponent()->OnEvent(event);
             return true;
         }
         else return false;
     });
 
-    input->getComponent() |= ui::CatchEvent([&](ui::Event event) {
-        if(event.is_character() || event == ui::Event::Backspace){
-            // std::cout << "char: " << event.character() << std::endl;
-            std::vector<std::string> newMenuEntries;
-            std::string searchValue = inputStr;
-            if(event.is_character()) searchValue += event.character();
-            else if(event == ui::Event::Backspace) searchValue = searchValue.substr(0, searchValue.size()-1);
-
-            // menuEntries.empty();
-            size_t i = 0;
-            for(auto appName : appNames){
-                if(i>10) break;
-
-                std::string lowerAppName = appName;
-                boost::algorithm::to_lower(lowerAppName);
-                
-                size_t foundPos = lowerAppName.find(searchValue);
-                if(foundPos != std::string::npos){
-                    // appName +=  " " + std::to_string(foundPos) + " " + appName.substr(foundPos, searchValue.size());
-                    newMenuEntries.push_back(appName);
-                    i++;
-                }
-                
-            }
-            menuEntries=newMenuEntries;
-        }
-        return false;
-        // return false;
-    });
 
     ui::Component mainLayout = ui::Container::Vertical({
-        input,
+        input->getComponent(),
         menu,
     });
 
