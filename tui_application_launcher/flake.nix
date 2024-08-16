@@ -21,6 +21,7 @@
             boost
             catch2
             cmake
+            clang-tools
           ];
         };
       };
