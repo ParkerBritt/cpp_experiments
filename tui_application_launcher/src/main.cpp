@@ -130,10 +130,6 @@ int main(){
     auto menu = ui::Menu(&menuEntries, &selectedEntry, menuOptions);
     menu |= ui::CatchEvent([&](ui::Event event){
         if(event.is_character() || event == ui::Event::Backspace){
-            if(event.character() == "t") {
-                std::cout << "hello world" << std::endl;
-                // input->isFocusable = true;
-            }
             input->getComponent()->OnEvent(event);
             return true;
         }

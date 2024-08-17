@@ -1,7 +1,8 @@
 #include "CompSearchBar.hpp"
 #include <boost/algorithm/string/case_conv.hpp>
 #include <ftxui/component/component.hpp>
-#include "iostream"
+#include "IconMap.hpp"
+#include <iostream>
 #include <vector>
 
 namespace ui = ftxui;
@@ -40,8 +41,14 @@ void SearchBar::setupSearchEvent(std::vector<std::string>& appNames, std::vector
                 
                 size_t foundPos = lowerAppName.find(searchValue);
                 if(foundPos != std::string::npos){
-                    // appName +=  " " + std::to_string(foundPos) + " " + appName.substr(foundPos, searchValue.size());
-                    newMenuEntries.push_back(appName);
+                    std::string displayName = appName;
+                    if(iconMap.find(lowerAppName) != iconMap.end()){
+                        displayName = iconMap[lowerAppName]+" "+displayName;
+                    }
+                    else{
+                        displayName = "  " + displayName;
+                    }
+                    newMenuEntries.push_back(displayName);
                     i++;
                 }
                 
@@ -58,7 +65,7 @@ ui::Component& SearchBar::getComponent(){
 }
 
 bool SearchBar::Focusable() const {
-    return isFocusable;
+    return false;
 }
 
 ui::Element SearchBar::Render(){
