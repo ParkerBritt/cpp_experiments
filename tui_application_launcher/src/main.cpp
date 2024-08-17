@@ -24,6 +24,8 @@
 // custom components
 #include "CompSearchBar.hpp"
 
+#include "Application.hpp"
+
 namespace ui = ftxui;
 namespace bfs = boost::filesystem;
 
@@ -88,6 +90,7 @@ int main(){
 
     std::vector<std::string> appNames;
     for(auto desktopFilePath : desktopFilePaths){
+        launcher::Application foo = launcher::Application(desktopFilePath);
 
         std::string desktopFilePathStr = desktopFilePath.string();
         // std::cout << "foo:" << desktopFilePathStr << std::endl;

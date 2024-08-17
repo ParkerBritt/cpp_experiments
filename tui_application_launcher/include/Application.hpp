@@ -6,10 +6,17 @@
 
 namespace bfs = boost::filesystem;
 
-class Application{
-    Application(bfs::path path);
+namespace launcher{
+    class Application{
+        public:
+            Application(bfs::path desktopPath);
 
-};
+        private:
+            bfs::path desktopPath;
+            std::string appName;
+
+    };
+}
 
 
 #endif
