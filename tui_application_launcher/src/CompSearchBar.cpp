@@ -46,7 +46,7 @@ void SearchBar::setupSearchEvent(std::vector<std::string>& appNames, std::vector
                         displayName = iconMap[lowerAppName]+" "+displayName;
                     }
                     else{
-                        displayName = "  " + displayName;
+                        displayName = "󰘔 " + displayName;
                     }
                     newMenuEntries.push_back(displayName);
                     i++;
