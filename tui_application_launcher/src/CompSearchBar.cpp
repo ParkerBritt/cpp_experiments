@@ -1,9 +1,11 @@
 #include "CompSearchBar.hpp"
 #include <boost/algorithm/string/case_conv.hpp>
 #include <ftxui/component/component.hpp>
+#include "Application.hpp"
 #include "IconMap.hpp"
 #include <iostream>
 #include <vector>
+#include "Application.hpp"
 
 namespace ui = ftxui;
 
@@ -22,7 +24,7 @@ SearchBar::SearchBar(){
     Add(input_);
 }
 
-void SearchBar::setupSearchEvent(std::vector<std::string>& appNames, std::vector<std::string>& menuEntries){
+void SearchBar::setupSearchEvent(std::vector<launcher::Application>& applications, std::vector<std::string>& menuEntries){
         input_ |= ui::CatchEvent([&](ui::Event event) {
         if(event.is_character() || event == ui::Event::Backspace){
             // std::cout << "char: " << event.character() << std::endl;
@@ -33,7 +35,8 @@ void SearchBar::setupSearchEvent(std::vector<std::string>& appNames, std::vector
 
             // menuEntries.empty();
             size_t i = 0;
-            for(auto appName : appNames){
+            for(auto application : applications){
+                std::string appName = application.getAppName();
                 if(i>10) break;
 
                 std::string lowerAppName = appName;

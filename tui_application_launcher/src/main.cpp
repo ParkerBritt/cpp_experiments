@@ -20,6 +20,7 @@
 #include <iostream>
 #include <filesystem>
 #include <stdexcept>
+#include <stdlib.h>
 
 // custom components
 #include "CompSearchBar.hpp"
@@ -89,8 +90,10 @@ int main(){
 
 
     std::vector<std::string> appNames;
+    std::vector<launcher::Application> applications;
     for(auto desktopFilePath : desktopFilePaths){
-        launcher::Application foo = launcher::Application(desktopFilePath);
+        launcher::Application app = launcher::Application(desktopFilePath);
+        applications.push_back(app);
 
         std::string desktopFilePathStr = desktopFilePath.string();
         // std::cout << "foo:" << desktopFilePathStr << std::endl;
@@ -119,9 +122,9 @@ int main(){
     std::vector<std::string> menuEntries;
 
     for(int i=0; i<3; i++){
-        menuEntries.push_back(appNames[i]);
+        menuEntries.push_back(applications[i].getAppName());
     }
-    input->setupSearchEvent(appNames, menuEntries);
+    input->setupSearchEvent(applications, menuEntries);
 
 
     // create menu

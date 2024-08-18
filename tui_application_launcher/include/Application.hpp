@@ -11,9 +11,14 @@ namespace launcher{
         public:
             Application(bfs::path desktopPath);
 
+            // getters
+            std::string getAppName();
+            std::string getExecCommand();
+
         private:
             bfs::path desktopPath;
             std::string appName;
+            std::string execCommand;
 
     };
 }

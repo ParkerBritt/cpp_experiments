@@ -4,6 +4,8 @@
 #include <ftxui/component/component.hpp>
 #include <vector>
 
+#include "Application.hpp"
+
 namespace ui = ftxui;
 
 class SearchBar : public ui::ComponentBase {
@@ -18,7 +20,7 @@ public:
     bool isFocusable = false;
     ui::Component& getComponent();
     ui::Component input_;
-    void setupSearchEvent(std::vector<std::string>& appNames, std::vector<std::string>& menuEntries);
+    void setupSearchEvent(std::vector<launcher::Application>& appNames, std::vector<std::string>& menuEntries);
 
 private:
     ui::InputOption inputOptions_;

@@ -19,13 +19,26 @@ launcher::Application::Application(bfs::path desktopPath){
 
     std::string curLine;
 
+    bool nameFound = false;
+    bool execFound = false;
     while (getline(desktopFileStream, curLine)){
-        if(curLine.substr(0, 5)=="Name="){
+        if(!nameFound && curLine.substr(0, 5)=="Name="){
             Application::appName = curLine.substr(5);
-            break;
         }
+        else if(!execFound && curLine.substr(0, 5)=="Exec="){
+            Application::execCommand = curLine.substr(5);
+        }
+        if(nameFound && execFound) break;
     }
 
     desktopFileStream.close();
 
 }
+
+// getters
+std::string launcher::Application::getAppName(){
+    return appName;
+};
+std::string launcher::Application::getExecCommand(){
+    return execCommand;
+};
