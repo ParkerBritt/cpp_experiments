@@ -3,7 +3,6 @@
 #include <ftxui/component/component.hpp>
 #include "Application.hpp"
 #include "IconMap.hpp"
-#include <iostream>
 #include <vector>
 #include "Application.hpp"
 
@@ -27,7 +26,6 @@ SearchBar::SearchBar(){
 void SearchBar::setupSearchEvent(std::vector<launcher::Application>& applications, std::vector<std::string>& menuEntries){
         input_ |= ui::CatchEvent([&](ui::Event event) {
         if(event.is_character() || event == ui::Event::Backspace){
-            // std::cout << "char: " << event.character() << std::endl;
             std::vector<std::string> newMenuEntries;
             std::string searchValue = inputStr_;
             if(event.is_character()) searchValue += event.character();
@@ -59,7 +57,6 @@ void SearchBar::setupSearchEvent(std::vector<launcher::Application>& application
             menuEntries=newMenuEntries;
         }
         return false;
-        // return false;
     });
 }
 

@@ -10,7 +10,6 @@ launcher::Application::Application(bfs::path desktopPath){
     Application::desktopPath = desktopPath;
 
     std::string desktopFilePathStr = desktopPath.string();
-    // std::cout << "foo:" << desktopFilePathStr << std::endl;
     std::ifstream desktopFileStream(desktopFilePathStr);
 
     if(!desktopFileStream.is_open()){

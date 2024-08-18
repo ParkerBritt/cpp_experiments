@@ -18,7 +18,6 @@
 #include <unordered_set>
 #include <cstdlib>
 #include <iostream>
-#include <filesystem>
 #include <stdexcept>
 #include <stdlib.h>
 
@@ -40,7 +39,6 @@ std::vector<bfs::path> getDesktopFiles(std::string dataDirsRaw){
     std::unordered_set<std::string> seenDataDirs;
     for(auto dataDir : dataDirsSplit){
         if(seenDataDirs.find(dataDir) == seenDataDirs.end()){
-            // std::cout << "seenDataDirs: " << dataDir << std::endl;
             seenDataDirs.insert(dataDir);
             uniqueDataDirs.push_back(dataDir);
         }
@@ -50,12 +48,10 @@ std::vector<bfs::path> getDesktopFiles(std::string dataDirsRaw){
     std::vector<bfs::path> desktopFilePaths;
     std::unordered_set<std::string> seenDesktopFiles;
     for(int i=0; i<uniqueDataDirs.size(); i++){
-        // std::cout << "path: " << uniqueDataDirs[i] << std::endl;
 
         bfs::path path = bfs::path(uniqueDataDirs[i])/"applications";
         if(!bfs::exists(path)) continue;
 
-        // std::cout << "successs" << std::endl;
         for (bfs::directory_entry& dirEntry : bfs::directory_iterator(path)){
             std::string desktopFilePath = dirEntry.path().filename().string();
             if(seenDesktopFiles.find(desktopFilePath) != seenDesktopFiles.end()) continue;
@@ -70,17 +66,7 @@ std::vector<bfs::path> getDesktopFiles(std::string dataDirsRaw){
 int main(){
     auto screen = ftxui::ScreenInteractive::TerminalOutput();
 
-    // std::string inputStr = "";
-    // ftxui::InputOption inputOptions = ui::InputOption::Spacious();
-    // inputOptions.transform = [](ui::InputState state){
-    //     state.element |= ui::borderRounded;
-    //     return state.element;
-    // };
-    // inputOptions.multiline = false;
-
-    // ftxui::Component input = ui::Input(&inputStr, inputOptions);
     std::shared_ptr<SearchBar> input = std::make_shared<SearchBar>();
-    // const std::string& inputStr = input->getContents();
 
     // check XDG_DATA_DIRS env var is set
     const char* envTemp = std::getenv("XDG_DATA_DIRS");
@@ -94,33 +80,11 @@ int main(){
     for(auto desktopFilePath : desktopFilePaths){
         launcher::Application app = launcher::Application(desktopFilePath);
         applications.push_back(app);
-
-        std::string desktopFilePathStr = desktopFilePath.string();
-        // std::cout << "foo:" << desktopFilePathStr << std::endl;
-        std::ifstream desktopFileStream(desktopFilePathStr);
-
-        if(!desktopFileStream.is_open()){
-            std::cerr << "failed to open file: " << desktopFilePathStr << std::endl; // add file path
-        }
-
-        std::string curLine;
-
-        while (getline(desktopFileStream, curLine)){
-            if(curLine.substr(0, 5)=="Name="){
-                std::string appName = curLine.substr(5);
-                // std::cout << "\tappname: " << appName << std::endl;
-                appNames.push_back(appName);
-                break;
-            }
-        }
-
-        desktopFileStream.close();
     }
     std::sort(applications.begin(), applications.end());
 
 
     std::vector<std::string> menuEntries;
-
     for(int i=0; i<3; i++){
         menuEntries.push_back(applications[i].getAppName());
     }
@@ -130,9 +94,6 @@ int main(){
     // create menu
     int selectedEntry = 0;
     ui::MenuOption menuOptions;
-    // menuOptions.on_enter = [&] (){
-    //     input -> TakeFocus();
-    // };
     auto menu = ui::Menu(&menuEntries, &selectedEntry, menuOptions);
     menu |= ui::CatchEvent([&](ui::Event event){
         if(event.is_character() || event == ui::Event::Backspace){
