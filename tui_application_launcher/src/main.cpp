@@ -85,8 +85,8 @@ int main(){
 
 
     std::vector<std::string> menuEntries;
-    for(int i=0; i<3; i++){
-        menuEntries.push_back(applications[i].getAppName());
+    for(int i=0; i<10; i++){
+        menuEntries.push_back(applications[i].getDisplayName());
     }
     input->setupSearchEvent(applications, menuEntries);
 
