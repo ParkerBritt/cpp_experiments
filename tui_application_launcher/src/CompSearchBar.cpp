@@ -37,18 +37,12 @@ void SearchBar::setupSearchEvent(std::vector<launcher::Application>& application
                 std::string appName = application.getAppName();
                 if(i>10) break;
 
-                std::string lowerAppName = appName;
-                boost::algorithm::to_lower(lowerAppName);
+                std::string lowerAppName = application.getLowerAppName();
                 
+                // if search input found in name then add to menu
                 size_t foundPos = lowerAppName.find(searchValue);
                 if(foundPos != std::string::npos){
-                    std::string displayName = appName;
-                    if(iconMap.find(lowerAppName) != iconMap.end()){
-                        displayName = iconMap[lowerAppName]+" "+displayName;
-                    }
-                    else{
-                        displayName = "󰘔 " + displayName;
-                    }
+                    std::string displayName = application.getDisplayName();
                     newMenuEntries.push_back(displayName);
                     i++;
                 }

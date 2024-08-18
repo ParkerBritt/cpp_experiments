@@ -3,15 +3,19 @@
 #include <fstream>
 #include <iostream>
 #include <boost/filesystem.hpp>
+#include "IconMap.hpp"
+#include <boost/algorithm/string/case_conv.hpp>
 
 namespace bfs = boost::filesystem;
+using namespace launcher;
 
-launcher::Application::Application(bfs::path desktopPath){
+Application::Application(bfs::path desktopPath){
     Application::desktopPath = desktopPath;
 
     std::string desktopFilePathStr = desktopPath.string();
     std::ifstream desktopFileStream(desktopFilePathStr);
 
+    // read file
     if(!desktopFileStream.is_open()){
         std::cerr << "failed to open file: " << desktopFilePathStr << std::endl; // add file path
     }
@@ -32,17 +36,32 @@ launcher::Application::Application(bfs::path desktopPath){
 
     desktopFileStream.close();
 
+    // set icon
+    lowerAppName = appName;
+    boost::algorithm::to_lower(lowerAppName);
+    if(iconMap.find(lowerAppName) != iconMap.end()){
+        Application::icon = iconMap[lowerAppName];
+    }
+    else{
+        Application::icon = "󰘔";
+    }
 }
 
 // getters
-std::string launcher::Application::getAppName() const{
+std::string Application::getAppName() const{
     return appName;
 };
-std::string launcher::Application::getExecCommand() const{
+std::string Application::getExecCommand() const{
     return execCommand;
 };
+std::string Application::getDisplayName() const{
+    return icon + " " + Application::getAppName();
+}
+std::string Application::getLowerAppName() const{
+    return lowerAppName;
+}
 
 // operators
-bool launcher::Application::operator<(const Application& rhs) const{
+bool Application::operator<(const Application& rhs) const{
     return appName < rhs.getAppName();
 }
