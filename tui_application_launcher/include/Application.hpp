@@ -7,20 +7,23 @@
 namespace bfs = boost::filesystem;
 
 namespace launcher{
-    class Application{
-        public:
-            Application(bfs::path desktopPath);
+class Application{
+public:
+    Application(bfs::path desktopPath);
 
-            // getters
-            std::string getAppName();
-            std::string getExecCommand();
+    // getters
+    std::string getAppName() const;
+    std::string getExecCommand() const;
 
-        private:
-            bfs::path desktopPath;
-            std::string appName;
-            std::string execCommand;
+    // operators
+    bool operator<(const Application& rhs) const;
 
-    };
+private:
+    bfs::path desktopPath;
+    std::string appName;
+    std::string execCommand;
+
+};
 }
 
 

@@ -36,9 +36,14 @@ launcher::Application::Application(bfs::path desktopPath){
 }
 
 // getters
-std::string launcher::Application::getAppName(){
+std::string launcher::Application::getAppName() const{
     return appName;
 };
-std::string launcher::Application::getExecCommand(){
+std::string launcher::Application::getExecCommand() const{
     return execCommand;
 };
+
+// operators
+bool launcher::Application::operator<(const Application& rhs) const{
+    return appName < rhs.getAppName();
+}

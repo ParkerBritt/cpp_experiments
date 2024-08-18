@@ -116,7 +116,7 @@ int main(){
 
         desktopFileStream.close();
     }
-    std::sort(appNames.begin(), appNames.end());
+    std::sort(applications.begin(), applications.end());
 
 
     std::vector<std::string> menuEntries;
