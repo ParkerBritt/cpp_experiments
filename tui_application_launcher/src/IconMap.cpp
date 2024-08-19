@@ -13,6 +13,7 @@ std::unordered_map<std::string, std::string> iconMap = {
     {"fish", ""},
     {"signal", ""},
     {"manage printing", "󰐪"},
+    {"obs", "󰃼"},
 
     {"btop", ""},
     {"btop++", ""},
