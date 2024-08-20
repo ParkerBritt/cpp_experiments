@@ -14,12 +14,13 @@ std::unordered_map<std::string, std::string> iconMap = {
     {"signal", ""},
     {"manage printing", "󰐪"},
     {"obs", "󰃼"},
+    {"zoom", ""},
 
     {"btop", ""},
     {"btop++", ""},
     {"rofi", ""},
 
-    {"bluetooth manager", ""},
+    {"blurtooth manager", ""},
     {"bluetooth adapters", ""},
 
     {"alacritty", ""},
