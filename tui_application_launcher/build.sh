@@ -5,6 +5,6 @@ set -e
 mkdir ./build  -p
 cd build 
 cmake .. 
-make 
+make -j
 cd .. 
 ./build/bin/tui_app_launcher
