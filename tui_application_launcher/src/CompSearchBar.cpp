@@ -23,32 +23,38 @@ SearchBar::SearchBar(){
     Add(input_);
 }
 
-void SearchBar::setupSearchEvent(std::vector<std::shared_ptr<launcher::Application>>& applications, std::vector<std::string>& menuEntries){
+// --------------
+// catch input event and update menu with new search
+// -------------
+void SearchBar::setupSearchEvent(std::vector<std::shared_ptr<launcher::Application>>& applications, std::vector<std::shared_ptr<launcher::Application>>& menuApplications, std::vector<std::string>& menuEntries){
         input_ |= ui::CatchEvent([&](ui::Event event) {
+        // catch typing events
         if(event.is_character() || event == ui::Event::Backspace){
-            std::vector<std::string> newMenuEntries;
+
+            // clear previous menu entries
+            menuEntries.clear();
+            menuApplications.clear();
+
+            // find the new search bar text
             std::string searchValue = inputStr_;
             if(event.is_character()) searchValue += event.character();
             else if(event == ui::Event::Backspace) searchValue = searchValue.substr(0, searchValue.size()-1);
 
-            // menuEntries.empty();
+            // iterate through applications
             size_t i = 0;
             for(auto application : applications){
-                std::string appName = application->getAppName();
                 if(i>10) break;
 
-                std::string lowerAppName = application->getLowerAppName();
-                
                 // if search input found in name then add to menu
+                std::string lowerAppName = application->getLowerAppName();
                 size_t foundPos = lowerAppName.find(searchValue);
                 if(foundPos != std::string::npos){
-                    std::string displayName = application->getDisplayName();
-                    newMenuEntries.push_back(displayName);
+                    menuApplications.push_back(application);
+                    menuEntries.push_back(application->getDisplayName());
                     i++;
                 }
                 
             }
-            menuEntries=newMenuEntries;
         }
         return false;
     });

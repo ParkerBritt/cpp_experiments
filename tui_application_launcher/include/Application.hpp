@@ -16,6 +16,7 @@ public:
     std::string getExecCommand() const;
     std::string getLowerAppName() const;
     std::string getDisplayName() const;
+    bfs::path getDesktopPath() const;
 
     // operators
     bool operator<(const Application& rhs) const;

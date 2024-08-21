@@ -60,6 +60,9 @@ std::string Application::getDisplayName() const{
 std::string Application::getLowerAppName() const{
     return lowerAppName;
 }
+bfs::path Application::getDesktopPath() const{
+    return desktopPath;
+}
 
 // operators
 bool Application::operator<(const Application& rhs) const{

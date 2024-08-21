@@ -92,7 +92,7 @@ int main(){
         menuEntries.push_back(applications[i]->getDisplayName());
         menuApplications.push_back(applications[i]);
     }
-    input->setupSearchEvent(applications, menuEntries);
+    input->setupSearchEvent(applications, menuApplications, menuEntries);
 
 
     // create menu
@@ -109,7 +109,7 @@ int main(){
     // menu |= ui::CatchEvent([&](ui::Event event) {
     menu |= ui::CatchEvent([&](ui::Event event) {
         if(event == ui::Event().Return){
-            std::cout << selectedEntry << std::endl;
+            std::cout << menuApplications[selectedEntry]->getDesktopPath().native()  << std::endl;
             return true;
         }
         return false;

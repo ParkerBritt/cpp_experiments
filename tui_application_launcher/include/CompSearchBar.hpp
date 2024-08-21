@@ -20,7 +20,7 @@ public:
     bool isFocusable = false;
     ui::Component& getComponent();
     ui::Component input_;
-    void setupSearchEvent(std::vector<std::shared_ptr<launcher::Application>>& applications, std::vector<std::string>& menuEntries);
+    void setupSearchEvent(std::vector<std::shared_ptr<launcher::Application>>& applications, std::vector<std::shared_ptr<launcher::Application>>& menuApplications, std::vector<std::string>& menuEntries);
 
 private:
     ui::InputOption inputOptions_;
