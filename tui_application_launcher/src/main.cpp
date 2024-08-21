@@ -76,17 +76,21 @@ int main(){
 
 
     std::vector<std::string> appNames;
-    std::vector<launcher::Application> applications;
+    std::vector<std::shared_ptr<launcher::Application>> applications;
     for(auto desktopFilePath : desktopFilePaths){
-        launcher::Application app = launcher::Application(desktopFilePath);
+        std::shared_ptr<launcher::Application> app = std::make_shared<launcher::Application>(desktopFilePath);
         applications.push_back(app);
     }
-    std::sort(applications.begin(), applications.end());
+    std::sort(applications.begin(), applications.end(), [](const std::shared_ptr<launcher::Application>& a, const std::shared_ptr<launcher::Application>& b){
+        return *a < *b;
+    });
 
 
     std::vector<std::string> menuEntries;
+    std::vector<std::shared_ptr<launcher::Application>> menuApplications;
     for(int i=0; i<10; i++){
-        menuEntries.push_back(applications[i].getDisplayName());
+        menuEntries.push_back(applications[i]->getDisplayName());
+        menuApplications.push_back(applications[i]);
     }
     input->setupSearchEvent(applications, menuEntries);
 
@@ -101,6 +105,14 @@ int main(){
             return true;
         }
         else return false;
+    });
+    // menu |= ui::CatchEvent([&](ui::Event event) {
+    menu |= ui::CatchEvent([&](ui::Event event) {
+        if(event == ui::Event().Return){
+            std::cout << selectedEntry << std::endl;
+            return true;
+        }
+        return false;
     });
 
 

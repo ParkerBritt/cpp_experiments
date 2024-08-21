@@ -23,7 +23,7 @@ SearchBar::SearchBar(){
     Add(input_);
 }
 
-void SearchBar::setupSearchEvent(std::vector<launcher::Application>& applications, std::vector<std::string>& menuEntries){
+void SearchBar::setupSearchEvent(std::vector<std::shared_ptr<launcher::Application>>& applications, std::vector<std::string>& menuEntries){
         input_ |= ui::CatchEvent([&](ui::Event event) {
         if(event.is_character() || event == ui::Event::Backspace){
             std::vector<std::string> newMenuEntries;
@@ -34,15 +34,15 @@ void SearchBar::setupSearchEvent(std::vector<launcher::Application>& application
             // menuEntries.empty();
             size_t i = 0;
             for(auto application : applications){
-                std::string appName = application.getAppName();
+                std::string appName = application->getAppName();
                 if(i>10) break;
 
-                std::string lowerAppName = application.getLowerAppName();
+                std::string lowerAppName = application->getLowerAppName();
                 
                 // if search input found in name then add to menu
                 size_t foundPos = lowerAppName.find(searchValue);
                 if(foundPos != std::string::npos){
-                    std::string displayName = application.getDisplayName();
+                    std::string displayName = application->getDisplayName();
                     newMenuEntries.push_back(displayName);
                     i++;
                 }
