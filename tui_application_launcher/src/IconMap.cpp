@@ -20,7 +20,7 @@ std::unordered_map<std::string, std::string> iconMap = {
     {"btop++", ""},
     {"rofi", ""},
 
-    {"blurtooth manager", ""},
+    {"bluetooth manager", ""},
     {"bluetooth adapters", ""},
 
     {"alacritty", ""},
