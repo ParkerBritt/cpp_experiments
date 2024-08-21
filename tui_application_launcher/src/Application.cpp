@@ -39,8 +39,8 @@ Application::Application(bfs::path desktopPath){
     // set icon
     lowerAppName = appName;
     boost::algorithm::to_lower(lowerAppName);
-    if(iconMap.find(lowerAppName) != iconMap.end()){
-        Application::icon = iconMap[lowerAppName];
+    if(iconNameMap.find(lowerAppName) != iconNameMap.end()){
+        Application::icon = iconNameMap[lowerAppName];
     }
     else{
         Application::icon = "󰘔";

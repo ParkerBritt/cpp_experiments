@@ -2,7 +2,7 @@
 #include <unordered_map>
 #include <string>
 
-std::unordered_map<std::string, std::string> iconMap = {
+std::unordered_map<std::string, std::string> iconNameMap = {
     {"discord", "󰙯"},
     {"firefox", "󰈹"},
     {"spotify", ""},
@@ -40,4 +40,7 @@ std::unordered_map<std::string, std::string> iconMap = {
     {"a widget factory", "󰊬"},
     {"gtk settings", "󰊬"},
 
+};
+
+std::unordered_map<std::string, std::string> iconKeywordMap = {
 };
