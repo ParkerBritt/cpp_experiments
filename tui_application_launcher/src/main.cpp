@@ -44,16 +44,22 @@ std::vector<bfs::path> getDesktopFiles(std::string dataDirsRaw){
         }
     }
 
-    // filter to only unique desktop files
     std::vector<bfs::path> desktopFilePaths;
     std::unordered_set<std::string> seenDesktopFiles;
     for(int i=0; i<uniqueDataDirs.size(); i++){
-
         bfs::path path = bfs::path(uniqueDataDirs[i])/"applications";
         if(!bfs::exists(path)) continue;
 
         for (bfs::directory_entry& dirEntry : bfs::directory_iterator(path)){
             std::string desktopFilePath = dirEntry.path().filename().string();
+
+            // check file ends with .desktop
+            std::string fileExtension = ".desktop";
+            bool correctExtension = desktopFilePath.size()>=fileExtension.size() &&
+            desktopFilePath.substr(desktopFilePath.size()-fileExtension.size()) == fileExtension;
+            if(!correctExtension) continue;
+
+            // check file is unique
             if(seenDesktopFiles.find(desktopFilePath) != seenDesktopFiles.end()) continue;
             seenDesktopFiles.insert(desktopFilePath);
             desktopFilePaths.push_back(dirEntry.path());
