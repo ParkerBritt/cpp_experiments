@@ -39,11 +39,23 @@ Application::Application(bfs::path desktopPath){
     // set icon
     lowerAppName = appName;
     boost::algorithm::to_lower(lowerAppName);
+    // default icon
+    Application::icon = "󰘔";
     if(iconNameMap.find(lowerAppName) != iconNameMap.end()){
         Application::icon = iconNameMap[lowerAppName];
     }
     else{
-        Application::icon = "󰘔";
+        for(auto i : iconKeywordMap){
+            std::string keyword = i.first;
+            std::string icon = i.second;
+
+            // find keyword in app name
+            size_t foundPos = lowerAppName.find(keyword);
+            // skip if keyword not found
+            if(foundPos == std::string::npos) continue;
+
+            Application::icon = icon;
+        }
     }
 }
 

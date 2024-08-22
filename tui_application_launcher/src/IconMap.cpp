@@ -43,4 +43,6 @@ std::unordered_map<std::string, std::string> iconNameMap = {
 };
 
 std::unordered_map<std::string, std::string> iconKeywordMap = {
+    {"bluetooth", ""},
+    {"rofi", ""},
 };
