@@ -4,7 +4,7 @@
 #include <iostream>
 #include <boost/filesystem.hpp>
 #include "IconMap.hpp"
-#include <boost/algorithm/string/case_conv.hpp>
+#include <boost/algorithm/string.hpp>
 
 namespace bfs = boost::filesystem;
 using namespace launcher;
@@ -45,16 +45,27 @@ Application::Application(bfs::path desktopPath){
         Application::icon = iconNameMap[lowerAppName];
     }
     else{
+        bool foundKeyword = false;
         for(auto i : iconKeywordMap){
             std::string keyword = i.first;
             std::string icon = i.second;
 
             // find keyword in app name
-            size_t foundPos = lowerAppName.find(keyword);
-            // skip if keyword not found
-            if(foundPos == std::string::npos) continue;
+            // size_t foundPos = lowerAppName.find(keyword);
+            std::vector<std::string> appNameSplit;
+            boost::split(appNameSplit, lowerAppName, boost::is_any_of(" "));
+            for(std::string namePart : appNameSplit){
+                if(keyword == namePart){
+                    foundKeyword = true;
+                    break;
+                };
+            }
+
+            // if keyword not in app name found check next keyword
+            if(!foundKeyword) continue;
 
             Application::icon = icon;
+            break;
         }
     }
 }
