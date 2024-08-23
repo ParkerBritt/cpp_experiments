@@ -40,9 +40,42 @@ std::unordered_map<std::string, std::string> iconNameMap = {
     {"a widget factory", "󰊬"},
     {"gtk settings", "󰊬"},
 
+    {"prism launcher", "󰍳"},
+
+    {"blender", "󰂫"},
+
+    {"bottles", "󰡔"},
+    {"activities", ""},
 };
 
 std::unordered_map<std::string, std::string> iconKeywordMap = {
     {"bluetooth", ""},
     {"rofi", ""},
+
+    {"mail", ""},
+    {"email", ""},
+    {"emails", ""},
+    {"kmail", ""},
+
+    {"print", "󰐪"},
+    {"printer", "󰐪"},
+    {"printers", "󰐪"},
+
+    {"account", ""},
+    {"accounts", ""},
+
+    {"access", ""},
+    {"accessibility", ""},
+
+    {"about", "󰋗"},
+    {"help", "󰋗"},
+
+    {"minecraft", "󰍳"},
+    {"atlauncher", "󰍳"},
+
+    {"bookmark", ""},
+
+    {"theme", ""},
+    {"style", ""},
+    {"appearance", ""},
 };
