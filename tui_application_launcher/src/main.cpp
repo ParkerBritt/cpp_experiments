@@ -23,7 +23,7 @@
 
 // custom components
 #include "CompSearchBar.hpp"
-
+#include "AppMenu.hpp"
 #include "Application.hpp"
 
 namespace ui = ftxui;
@@ -93,58 +93,17 @@ int main(){
 
 
     std::vector<std::string> menuEntries;
-    std::vector<std::shared_ptr<launcher::Application>> menuApplications;
+    std::vector<std::shared_ptr<launcher::Application>> visibleApplications;
     for(int i=0; i<10; i++){
         menuEntries.push_back(applications[i]->getDisplayName());
-        menuApplications.push_back(applications[i]);
+        visibleApplications.push_back(applications[i]);
     }
-    input->setupSearchEvent(applications, menuApplications, menuEntries);
+    input->setupSearchEvent(applications, visibleApplications, menuEntries);
 
 
     // create menu
     int selectedEntry = 0;
-    ui::MenuOption menuOptions = ui::MenuOption::Vertical();
-
-    // ---
-    menuOptions.entries_option.transform = [](ui::EntryState state) {
-        // Base label with a prefix for active item
-        ui::Color bgSelected = ui::Color::Purple3;
-        ui::Color bgActive = ui::Color::Grey19;
-        ui::Element leftSide = ui::text((state.active ? "" : " "));
-        ui::Element rightSide = ui::text((state.active ? "" : " "));
-        // state.label = state.label;
-        ui::Element e = hbox(leftSide, ui::text(state.label), rightSide);
-
-        // Modify the background color when the item is focused
-        if (state.focused) {
-          e = hbox(leftSide | color(bgSelected), ui::text(state.label) | bgcolor(bgSelected), rightSide | color(bgSelected));
-        }
-
-        // Modify the font style when the item is active
-        else if (state.active) {
-          e = hbox(leftSide | color(bgActive), ui::text(state.label) | bgcolor(bgActive), rightSide | color(bgActive));
-        }
-
-        return e;
-    };
-
-    // --
-    auto menu = ui::Menu(&menuEntries, &selectedEntry, menuOptions);
-    menu |= ui::CatchEvent([&](ui::Event event){
-        if(event.is_character() || event == ui::Event::Backspace){
-            input->getComponent()->OnEvent(event);
-            return true;
-        }
-        else return false;
-    });
-    // menu |= ui::CatchEvent([&](ui::Event event) {
-    menu |= ui::CatchEvent([&](ui::Event event) {
-        if(event == ui::Event().Return){
-            std::cout << menuApplications[selectedEntry]->getDesktopPath().native()  << std::endl;
-            return true;
-        }
-        return false;
-    });
+    ui::Component menu = launcher::makeMenu(menuEntries, visibleApplications, selectedEntry, input);
 
 
     ui::Component mainLayout = ui::Container::Vertical({
