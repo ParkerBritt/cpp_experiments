@@ -108,17 +108,21 @@ int main(){
     // ---
     menuOptions.entries_option.transform = [](ui::EntryState state) {
         // Base label with a prefix for active item
-        state.label = (state.active ? "| " : " | ") + state.label + (state.active ? " |" : "");
-            ui::Element e = ui::text(state.label);
+        ui::Color bgSelected = ui::Color::Blue;
+        ui::Color bgActive = ui::Color::Green;
+        ui::Element leftSide = ui::text((state.active ? "" : " "));
+        ui::Element rightSide = ui::text((state.active ? "" : " "));
+        // state.label = state.label;
+        ui::Element e = hbox(leftSide, ui::text(state.label), rightSide);
 
         // Modify the background color when the item is focused
         if (state.focused) {
-          e = e | bgcolor(ui::Color::Blue) | color(ui::Color::White);  // Blue background, white text when focused
+          e = hbox(leftSide | color(bgSelected), ui::text(state.label) | bgcolor(bgSelected), rightSide | color(bgSelected));
         }
 
         // Modify the font style when the item is active
-        if (state.active) {
-          e = e | ui::bold | color(ui::Color::Green);  // Bold and green text when active
+        else if (state.active) {
+          e = hbox(leftSide | color(bgActive), ui::text(state.label) | bgcolor(bgActive), rightSide | color(bgActive));
         }
 
         return e;
