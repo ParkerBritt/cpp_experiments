@@ -108,8 +108,8 @@ int main(){
     // ---
     menuOptions.entries_option.transform = [](ui::EntryState state) {
         // Base label with a prefix for active item
-        ui::Color bgSelected = ui::Color::Blue;
-        ui::Color bgActive = ui::Color::Green;
+        ui::Color bgSelected = ui::Color::Purple3;
+        ui::Color bgActive = ui::Color::Grey19;
         ui::Element leftSide = ui::text((state.active ? "" : " "));
         ui::Element rightSide = ui::text((state.active ? "" : " "));
         // state.label = state.label;
