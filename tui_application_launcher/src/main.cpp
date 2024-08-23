@@ -103,7 +103,28 @@ int main(){
 
     // create menu
     int selectedEntry = 0;
-    ui::MenuOption menuOptions;
+    ui::MenuOption menuOptions = ui::MenuOption::Vertical();
+
+    // ---
+    menuOptions.entries_option.transform = [](ui::EntryState state) {
+        // Base label with a prefix for active item
+        state.label = (state.active ? "| " : " | ") + state.label + (state.active ? " |" : "");
+            ui::Element e = ui::text(state.label);
+
+        // Modify the background color when the item is focused
+        if (state.focused) {
+          e = e | bgcolor(ui::Color::Blue) | color(ui::Color::White);  // Blue background, white text when focused
+        }
+
+        // Modify the font style when the item is active
+        if (state.active) {
+          e = e | ui::bold | color(ui::Color::Green);  // Bold and green text when active
+        }
+
+        return e;
+    };
+
+    // --
     auto menu = ui::Menu(&menuEntries, &selectedEntry, menuOptions);
     menu |= ui::CatchEvent([&](ui::Event event){
         if(event.is_character() || event == ui::Event::Backspace){
