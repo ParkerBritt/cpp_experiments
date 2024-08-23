@@ -11,6 +11,10 @@ class Application{
 public:
     Application(bfs::path desktopPath);
 
+    // formatters
+    std::string formatExecCommand(std::string unformattedCommand);
+
+
     // getters
     std::string getAppName() const;
     std::string getExecCommand() const;

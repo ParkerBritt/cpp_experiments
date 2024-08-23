@@ -38,7 +38,7 @@ ui::Component launcher::makeMenu(std::vector<std::string>& menuEntries, std::vec
     });
     menu |= ui::CatchEvent([&](ui::Event event) {
         if(event == ui::Event().Return){
-            std::cout << visibleApplications[selectedEntry]->getDesktopPath().native()  << std::endl;
+            std::cout << visibleApplications[selectedEntry]->getExecCommand()  << std::endl;
             return true;
         }
         return false;

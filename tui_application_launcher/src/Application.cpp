@@ -29,7 +29,7 @@ Application::Application(bfs::path desktopPath){
             Application::appName = curLine.substr(5);
         }
         else if(!execFound && curLine.substr(0, 5)=="Exec="){
-            Application::execCommand = curLine.substr(5);
+            Application::execCommand = formatExecCommand(curLine.substr(5));
         }
         if(nameFound && execFound) break;
     }
@@ -68,6 +68,29 @@ Application::Application(bfs::path desktopPath){
             break;
         }
     }
+}
+
+// formatters
+std::string Application::formatExecCommand(std::string unformattedCommand){
+    std::string formattedCommand;
+    size_t strLen = unformattedCommand.size();
+
+    size_t start = 0;
+    size_t end = 0;
+    for(size_t i=0; i<strLen; i++){
+        const char c = unformattedCommand[i];
+        if(i == strLen-1){
+            formattedCommand+=unformattedCommand.substr(start, strLen-start+1);
+        }
+        else if(c == '%'){
+            size_t end = i;
+            formattedCommand+=unformattedCommand.substr(start, end-start);
+
+            i+=2;
+            size_t start = i;
+        }
+    }
+    return formattedCommand;
 }
 
 // getters
