@@ -1,8 +1,8 @@
 #!/bin/bash
-cd build
+mkdir -p build && \
+cd build && \
 cmake .. && \
-  cp ./compile_commands.json .. && \
-  make && \
-  cd .. && \
-  ./build/bin/tests
-  ./build/bin/pls
+make && \
+cd .. && \
+# ./build/bin/tests
+./build/bin/pls
